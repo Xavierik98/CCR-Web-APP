@@ -2,7 +2,7 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// Base hebergee sur Supabase (decision du 25/11). DATABASE_URL passe par le pooler
+// Base hébergée sur Supabase (décision du 25/11). DATABASE_URL passe par le pooler
 // Supavisor (port 6543, pgbouncer=true) pour l'application ; DIRECT_URL (port 5432)
 // sert uniquement aux migrations Prisma, qui ne passent pas par un pooler de transactions.
 datasource db {
@@ -15,6 +15,20 @@ enum MembershipStatus {
   ACTIVE
   INACTIVE
   DEPARTED
+}
+
+// Reflète les trois listes du fichier de suivi papier/Excel (Hommes, Femmes,
+// Enfants) fourni par le client (26/11), pour garder la même répartition à
+// la migration des données.
+enum MemberCategory {
+  MAN
+  WOMAN
+  CHILD
+}
+
+enum CheckInMethod {
+  MANUAL
+  QR_CODE
 }
 
 enum ProfessionalStatus {
@@ -70,11 +84,15 @@ model Member {
   phone              String?
   email              String?
   neighborhood       String?
+  category           MemberCategory       @default(MAN)
+  birthDate          DateTime?
   membershipStatus   MembershipStatus     @default(ACTIVE)
   departedAt         DateTime?
+  departureReason    String?
   professionalStatus ProfessionalStatus?
   departmentId       String?
   department         Department?          @relation(fields: [departmentId], references: [id])
+  departmentRole     String?
   groupId            String?
   group              Group?               @relation("GroupMembers", fields: [groupId], references: [id])
   ledGroup           Group?               @relation("GroupLeader")
@@ -82,6 +100,10 @@ model Member {
   pledges            Pledge[]
   socialSupport      SocialSupportRecord?
   user               User?
+  // Jeton stable encodé dans le QR code personnel du membre (section "calcul
+  // automatique des présences", décision du 26/11) : scanné à l'entrée, il
+  // identifie le membre sans exposer son identifiant de base de données.
+  qrToken            String?              @unique
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
 }
@@ -108,21 +130,31 @@ model Group {
 }
 
 model ServiceEvent {
-  id          String       @id @default(cuid())
-  title       String
-  type        EventType    @default(SERVICE)
-  startAt     DateTime
-  isPublic    Boolean      @default(false)
-  attendances Attendance[]
+  id                     String       @id @default(cuid())
+  title                  String
+  type                   EventType    @default(SERVICE)
+  startAt                DateTime
+  isPublic               Boolean      @default(false)
+  attendances            Attendance[]
+  // Horodatage du dernier envoi du rapport de présence (section "génère un
+  // rapport qui envoie le message") ; null tant qu'aucun rapport n'a été
+  // généré pour ce culte.
+  attendanceReportSentAt DateTime?
 }
 
+// Une ligne par membre et par culte/événement, créée seulement à la présence
+// (scan QR ou pointage manuel) : le nombre de présents par événement est donc
+// un simple COUNT, jamais recalculé ni stocké en double (section "calcul
+// automatique des présences").
 model Attendance {
-  id       String       @id @default(cuid())
-  memberId String
-  member   Member       @relation(fields: [memberId], references: [id])
-  eventId  String
-  event    ServiceEvent @relation(fields: [eventId], references: [id])
-  present  Boolean      @default(true)
+  id            String        @id @default(cuid())
+  memberId      String
+  member        Member        @relation(fields: [memberId], references: [id])
+  eventId       String
+  event         ServiceEvent  @relation(fields: [eventId], references: [id])
+  present       Boolean       @default(true)
+  checkedInAt   DateTime      @default(now())
+  checkInMethod CheckInMethod @default(MANUAL)
 
   @@unique([memberId, eventId])
 }
@@ -145,10 +177,10 @@ model Pledge {
   comment        String?
 }
 
-// Table physiquement separee de Member : la regle d'acces (role Accompagnement
-// social uniquement) est appliquee en Row Level Security Postgres, pas que dans le
-// code applicatif, pour qu'une requete mal ecrite ne puisse jamais faire fuiter ces
-// donnees (cahier des charges CCR, section 5).
+// Table physiquement séparée de Member : la règle d'accès (rôle Accompagnement
+// social uniquement) est appliquée en Row Level Security Postgres, pas que dans le
+// code applicatif, pour qu'une requête mal écrite ne puisse jamais faire fuiter ces
+// données (cahier des charges CCR, section 5).
 model SocialSupportRecord {
   id                  String          @id @default(cuid())
   memberId            String          @unique
@@ -171,9 +203,9 @@ model User {
   createdAt    DateTime  @default(now())
 }
 
-// Les actualites ne sont modifiees que par les administrateurs depuis l'intranet
-// (confirme le 25/11) : photo (coverImageUrl) et texte (body) vivent sur le meme
-// enregistrement, publies ensemble via le workflow de la section 6.
+// Les actualités ne sont modifiées que par les administrateurs depuis l'intranet
+// (confirmé le 25/11) : photo (coverImageUrl) et texte (body) vivent sur le même
+// enregistrement, publiées ensemble via le workflow de la section 6.
 model Content {
   id             String        @id @default(cuid())
   type           ContentType
