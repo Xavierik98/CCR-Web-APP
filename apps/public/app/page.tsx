@@ -2,8 +2,9 @@ import Link from "next/link";
 import { HeroSlideshow } from "./_components/hero-slideshow";
 import { Icon } from "./_components/icon";
 import { Reveal } from "./_components/reveal";
+import { RotatingWords } from "./_components/rotating-words";
+import { YoutubeBackground } from "./_components/youtube-background";
 import { ADRESSE } from "./_data/contact";
-import { DEPARTEMENTS } from "./_data/departements";
 import { PILIERS } from "./_data/piliers";
 import { buildWhatsAppLink } from "./_data/whatsapp";
 
@@ -23,8 +24,6 @@ const ACCENTS = {
   magenta: { text: "text-ccr-magenta", bg: "bg-ccr-magenta/10" },
   blue: { text: "text-ccr-blue", bg: "bg-ccr-blue/10" },
 };
-
-const DEPARTEMENTS_APERCU = DEPARTEMENTS.slice(0, 4);
 
 // Numero WhatsApp reel a fournir : tant que la variable n'est pas definie
 // (Vercel > Project Settings > Environment Variables), le bouton ne s'affiche
@@ -191,44 +190,28 @@ export default function HomePage() {
       </Reveal>
 
       <Reveal>
-        <section id="departements" className="bg-ccr-ink/5 py-16">
-          <div className="mx-auto max-w-6xl px-6">
-            <h2 className="font-display text-2xl font-bold">Nos departements</h2>
-            <p className="mt-2 max-w-xl text-sm text-ccr-ink/70">
-              Louange, communication, finance, coiffure, informatique,
-              infographie et bien d&rsquo;autres poles de competences.
+        <section
+          id="departements"
+          className="relative isolate flex min-h-[420px] items-center justify-center overflow-hidden text-center"
+        >
+          <YoutubeBackground videoId="0INBD8VtAX0" />
+          <div className="absolute inset-0 bg-ccr-ink/70" />
+          <div className="relative px-6">
+            <p className="text-xs font-semibold uppercase tracking-wide text-ccr-gold-light">
+              Un style de vie
             </p>
-
-            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {DEPARTEMENTS_APERCU.map((pole, index) => {
-                const accent =
-                  pole.categorie === "Ministere" ? "magenta" : ("blue" as const);
-                const style = ACCENTS[accent];
-                return (
-                  <Reveal key={pole.nom} delay={index * 80}>
-                    <div className="h-full rounded-xl border border-ccr-ink/10 bg-white p-5 transition-transform hover:-translate-y-1 hover:shadow-md">
-                      <div
-                        className={`flex h-9 w-9 items-center justify-center rounded-full ${style.bg} ${style.text}`}
-                      >
-                        <Icon
-                          name={pole.categorie === "Ministere" ? "heart" : "spark"}
-                          className="h-4 w-4"
-                        />
-                      </div>
-                      <p className="mt-3 font-display text-base font-bold">
-                        {pole.nom}
-                      </p>
-                    </div>
-                  </Reveal>
-                );
-              })}
-            </div>
-
+            <h2 className="mt-3 font-display text-4xl font-black text-ccr-cream md:text-5xl">
+              <RotatingWords words={["Adoration", "Louange", "Priere", "Intercession"]} />
+            </h2>
+            <p className="mx-auto mt-4 max-w-md text-ccr-cream/70">
+              Ce que nous vivons dans nos cultes et nos reunions, porte par
+              nos departements.
+            </p>
             <Link
               href="/departements"
-              className="mt-8 inline-block text-sm font-semibold text-ccr-magenta hover:underline"
+              className="mt-6 inline-block rounded-full border border-ccr-cream/40 px-6 py-3 text-sm font-semibold text-ccr-cream transition-colors hover:bg-ccr-cream/10"
             >
-              Decouvrir tous les departements &rarr;
+              Decouvrir nos departements &rarr;
             </Link>
           </div>
         </section>
