@@ -49,6 +49,24 @@ const PATHS: Record<string, ReactNode> = {
       <circle cx="12" cy="9" r="2.5" />
     </>
   ),
+  chat: (
+    <>
+      <path d="M4 5h16v11H9l-5 4V5Z" />
+      <path d="M8 9h8M8 12.5h5" />
+    </>
+  ),
+  camera: (
+    <>
+      <path d="M4 8h3l1.5-2h7L17 8h3v11H4Z" />
+      <circle cx="12" cy="13.5" r="3.2" />
+    </>
+  ),
+  video: (
+    <>
+      <rect x="3" y="7" width="12" height="10" rx="1.5" />
+      <path d="M15 10.5 21 7v10l-6-3.5Z" />
+    </>
+  ),
 };
 
 export function Icon({

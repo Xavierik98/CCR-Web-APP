@@ -24,6 +24,16 @@ const ACCENTS = {
 
 const DEPARTEMENTS_APERCU = DEPARTEMENTS.slice(0, 4);
 
+// Numero WhatsApp reel a fournir : tant que la variable n'est pas definie
+// (Vercel > Project Settings > Environment Variables), le bouton ne s'affiche
+// pas plutot que de pointer vers un faux numero.
+const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
+const WHATSAPP_URL = WHATSAPP_NUMBER
+  ? `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+      "Bonjour CCR Famille, j'aimerais avoir des informations.",
+    )}`
+  : null;
+
 export default function HomePage() {
   return (
     <main>
@@ -68,6 +78,17 @@ export default function HomePage() {
             >
               Participer a un culte
             </Link>
+            {WHATSAPP_URL ? (
+              <a
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full bg-[#25D366] px-6 py-3 text-sm font-semibold text-ccr-ink transition-transform hover:scale-105"
+              >
+                <Icon name="chat" className="h-4 w-4" />
+                Nous ecrire sur WhatsApp
+              </a>
+            ) : null}
           </div>
         </div>
       </section>
@@ -217,6 +238,32 @@ export default function HomePage() {
       </Reveal>
 
       <Reveal>
+        <section id="galerie" className="mx-auto max-w-6xl px-6 py-16">
+          <h2 className="font-display text-2xl font-bold">Galerie</h2>
+          <p className="mt-2 max-w-xl text-sm text-ccr-ink/70">
+            Quelques images et videos de la vie de l&rsquo;eglise.
+          </p>
+
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {["camera", "camera", "camera", "video"].map((icon, index) => (
+              <Reveal key={index} delay={index * 80}>
+                <div className="flex aspect-square items-center justify-center rounded-xl border border-dashed border-ccr-ink/15 bg-ccr-ink/5 text-ccr-ink/30">
+                  <Icon name={icon as "camera" | "video"} className="h-6 w-6" />
+                </div>
+              </Reveal>
+            ))}
+          </div>
+
+          <Link
+            href="/galerie"
+            className="mt-6 inline-block text-sm font-semibold text-ccr-magenta hover:underline"
+          >
+            En savoir plus &rarr;
+          </Link>
+        </section>
+      </Reveal>
+
+      <Reveal>
         <section id="actualites" className="mx-auto max-w-6xl px-6 py-16">
           <h2 className="font-display text-2xl font-bold">Actualites</h2>
           <div className="mt-6 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-ccr-ink/15 bg-ccr-ink/5 px-6 py-12 text-center">
@@ -225,20 +272,6 @@ export default function HomePage() {
             </span>
             <p className="text-sm text-ccr-ink/60">
               Aucune actualite publiee pour l&rsquo;instant. Revenez bientot.
-            </p>
-          </div>
-        </section>
-      </Reveal>
-
-      <Reveal>
-        <section id="temoignages" className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="font-display text-2xl font-bold">Temoignages</h2>
-          <div className="mt-6 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-ccr-ink/15 bg-ccr-ink/5 px-6 py-12 text-center">
-            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-ccr-magenta/10 text-ccr-magenta">
-              <Icon name="heart" className="h-6 w-6" />
-            </span>
-            <p className="text-sm text-ccr-ink/60">
-              Les temoignages de la famille CCR seront publies ici.
             </p>
           </div>
         </section>

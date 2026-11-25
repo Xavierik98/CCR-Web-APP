@@ -1,12 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 
+// Actualites et Galerie retires du menu (25/11) : deja presentes sur
+// l'accueil, les pages completes restent accessibles via "en savoir plus".
 const NAV_LINKS = [
   { href: "/a-propos", label: "A propos" },
   { href: "/cultes-et-programmes", label: "Cultes et programmes" },
   { href: "/departements", label: "Departements" },
-  { href: "/galerie", label: "Galerie" },
-  { href: "/actualites", label: "Actualites" },
   { href: "/contact", label: "Contact" },
 ];
 
