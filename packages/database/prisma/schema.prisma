@@ -1,0 +1,183 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum MembershipStatus {
+  ACTIVE
+  INACTIVE
+  DEPARTED
+}
+
+enum ProfessionalStatus {
+  EMPLOYEE
+  ENTREPRENEUR
+  STUDENT
+  UNEMPLOYED
+  OTHER
+}
+
+enum ResidencyStatus {
+  VALID
+  EXPIRED
+  NEVER_HAD
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  DEPARTMENT_LEADER
+  GROUP_LEADER
+  SECRETARY
+  SOCIAL_SUPPORT
+  ATTENDANCE_MANAGER
+  READ_ONLY
+}
+
+enum EventType {
+  SERVICE
+  MEETING
+  CONFERENCE
+  OTHER
+}
+
+enum ContentType {
+  NEWS
+  EVENT
+  PAGE
+}
+
+enum ContentStatus {
+  DRAFT
+  PENDING_REVIEW
+  APPROVED
+  PUBLISHED
+  ARCHIVED
+}
+
+model Member {
+  id                 String               @id @default(cuid())
+  firstName          String
+  lastName           String
+  phone              String?
+  email              String?
+  neighborhood       String?
+  membershipStatus   MembershipStatus     @default(ACTIVE)
+  departedAt         DateTime?
+  professionalStatus ProfessionalStatus?
+  departmentId       String?
+  department         Department?          @relation(fields: [departmentId], references: [id])
+  groupId            String?
+  group              Group?               @relation("GroupMembers", fields: [groupId], references: [id])
+  ledGroup           Group?               @relation("GroupLeader")
+  attendances        Attendance[]
+  pledges            Pledge[]
+  socialSupport      SocialSupportRecord?
+  user               User?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+}
+
+model Department {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  mission     String?
+  imageUrl    String?
+  isPublished Boolean  @default(false)
+  members     Member[]
+  groups      Group[]
+}
+
+model Group {
+  id             String      @id @default(cuid())
+  name           String
+  departmentId   String?
+  department     Department? @relation(fields: [departmentId], references: [id])
+  leaderMemberId String?     @unique
+  leader         Member?     @relation("GroupLeader", fields: [leaderMemberId], references: [id])
+  members        Member[]    @relation("GroupMembers")
+}
+
+model ServiceEvent {
+  id          String       @id @default(cuid())
+  title       String
+  type        EventType    @default(SERVICE)
+  startAt     DateTime
+  isPublic    Boolean      @default(false)
+  attendances Attendance[]
+}
+
+model Attendance {
+  id       String       @id @default(cuid())
+  memberId String
+  member   Member       @relation(fields: [memberId], references: [id])
+  eventId  String
+  event    ServiceEvent @relation(fields: [eventId], references: [id])
+  present  Boolean      @default(true)
+
+  @@unique([memberId, eventId])
+}
+
+model Campaign {
+  id        String   @id @default(cuid())
+  name      String
+  startDate DateTime
+  pledges   Pledge[]
+}
+
+model Pledge {
+  id             String   @id @default(cuid())
+  campaignId     String
+  campaign       Campaign @relation(fields: [campaignId], references: [id])
+  memberId       String
+  member         Member   @relation(fields: [memberId], references: [id])
+  amountPromised Decimal
+  followUpDone   Boolean  @default(false)
+  comment        String?
+}
+
+// Table physiquement separee de Member : la regle d'acces (role Accompagnement
+// social uniquement) est appliquee en Row Level Security Postgres, pas que dans le
+// code applicatif, pour qu'une requete mal ecrite ne puisse jamais faire fuiter ces
+// donnees (cahier des charges CCR, section 5).
+model SocialSupportRecord {
+  id                  String          @id @default(cuid())
+  memberId            String          @unique
+  member              Member          @relation(fields: [memberId], references: [id])
+  residencyStatus     ResidencyStatus
+  documentNumber      String?
+  hasRenewalDocuments Boolean?
+  renewalDifficulty   String?
+  updatedAt           DateTime        @updatedAt
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  role         Role
+  memberId     String?   @unique
+  member       Member?   @relation(fields: [memberId], references: [id])
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+}
+
+model Content {
+  id             String        @id @default(cuid())
+  type           ContentType
+  title          String
+  slug           String        @unique
+  body           String
+  seoTitle       String?
+  seoDescription String?
+  status         ContentStatus @default(DRAFT)
+  authorId       String
+  publishedAt    DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
