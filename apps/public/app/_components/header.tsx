@@ -1,17 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
 
-// Actualites et Galerie retires du menu (25/11) : deja presentes sur
-// l'accueil, les pages completes restent accessibles via "en savoir plus".
+// Actualités et Galerie retirées du menu (25/11) : déjà présentes sur
+// l'accueil, les pages complètes restent accessibles via "en savoir plus".
 const NAV_LINKS = [
-  { href: "/a-propos", label: "A propos" },
+  { href: "/a-propos", label: "À propos" },
   { href: "/cultes-et-programmes", label: "Cultes et programmes" },
-  { href: "/departements", label: "Departements" },
+  { href: "/departements", label: "Départements" },
   { href: "/contact", label: "Contact" },
 ];
 
-// A remplacer par le domaine definitif une fois reserve (section 10 du cahier
-// des charges) ; en attendant, pointe vers l'intranet reellement deploye.
+// À remplacer par le domaine définitif une fois réservé (section 10 du cahier
+// des charges) ; en attendant, pointe vers l'intranet réellement déployé.
 const INTRANET_URL =
   process.env.NEXT_PUBLIC_INTRANET_URL ??
   "https://ccr-famille-intranet.vercel.app";
@@ -54,7 +54,7 @@ export function Header() {
             href="/cultes-et-programmes"
             className="whitespace-nowrap rounded-full bg-ccr-gold px-5 py-2 text-sm font-semibold text-ccr-ink transition-colors hover:bg-ccr-gold-light"
           >
-            Participer a un culte
+            Participer à un culte
           </Link>
         </div>
 
@@ -73,7 +73,7 @@ export function Header() {
               href="/cultes-et-programmes"
               className="mt-2 rounded-full bg-ccr-gold px-5 py-2 text-center font-semibold text-ccr-ink"
             >
-              Participer a un culte
+              Participer à un culte
             </Link>
             <a
               href={INTRANET_URL}

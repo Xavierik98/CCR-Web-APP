@@ -4,20 +4,20 @@ import { useMemo, useState } from "react";
 import { Icon } from "../../_components/icon";
 import type { Departement } from "../../_data/departements";
 
-// Recherche + filtre par categorie, inspires de l'interface de
-// servir.egliseicc.com (guide des ministeres). Filtrage cote client : la
-// liste des departements est connue a la construction, pas besoin d'API.
+// Recherche + filtre par catégorie, inspirés de l'interface de
+// servir.egliseicc.com (guide des ministères). Filtrage côté client : la
+// liste des départements est connue à la construction, pas besoin d'API.
 const CATEGORIE_STYLE: Record<
   Departement["categorie"],
   { text: string; bg: string; border: string; icon: "heart" | "spark" }
 > = {
-  Ministere: {
+  Ministère: {
     text: "text-ccr-magenta",
     bg: "bg-ccr-magenta/10",
     border: "border-t-ccr-magenta",
     icon: "heart",
   },
-  "Formation et metier": {
+  "Formation et métier": {
     text: "text-ccr-blue",
     bg: "bg-ccr-blue/10",
     border: "border-t-ccr-blue",
@@ -50,9 +50,9 @@ export function DepartementsBrowser({
           type="search"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Rechercher un departement"
+          placeholder="Rechercher un département"
           className="flex-1 rounded-lg border border-ccr-ink/15 px-3 py-2 text-sm outline-none focus:border-ccr-gold focus:ring-2 focus:ring-ccr-gold/30"
-          aria-label="Rechercher un departement"
+          aria-label="Rechercher un département"
         />
         <select
           value={categorie}
@@ -60,17 +60,17 @@ export function DepartementsBrowser({
             setCategorie(event.target.value as typeof categorie)
           }
           className="rounded-lg border border-ccr-ink/15 px-3 py-2 text-sm outline-none focus:border-ccr-gold focus:ring-2 focus:ring-ccr-gold/30 sm:w-56"
-          aria-label="Filtrer par categorie"
+          aria-label="Filtrer par catégorie"
         >
-          <option value="Toutes">Toutes les categories</option>
-          <option value="Ministere">Ministere</option>
-          <option value="Formation et metier">Formation et metier</option>
+          <option value="Toutes">Toutes les catégories</option>
+          <option value="Ministère">Ministère</option>
+          <option value="Formation et métier">Formation et métier</option>
         </select>
       </div>
 
       {resultats.length === 0 ? (
         <p className="mt-10 text-sm text-ccr-ink/50">
-          Aucun departement ne correspond a votre recherche.
+          Aucun département ne correspond à votre recherche.
         </p>
       ) : (
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

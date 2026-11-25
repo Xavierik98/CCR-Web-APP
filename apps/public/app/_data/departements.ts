@@ -1,33 +1,33 @@
-// Liste mise a jour le 25/11 : Coiffure, Couture et stylisme et Patisserie
-// retires. Finance + Tresorerie fusionnes en "Finances". Communication +
-// Media + Infographie + Informatique fusionnes en "Communication & Digital".
+// Liste mise à jour le 25/11 : Coiffure, Couture et stylisme et Patisserie
+// retirés. Finance + Trésorerie fusionnés en "Finances". Communication +
+// Média + Infographie + Informatique fusionnés en "Communication & Digital".
 export type Departement = {
   nom: string;
   description: string;
-  categorie: "Ministere" | "Formation et metier";
+  categorie: "Ministère" | "Formation et métier";
 };
 
 export const DEPARTEMENTS: Departement[] = [
   {
     nom: "Louange",
     description: "Conduite de la louange et de l'adoration pendant les cultes.",
-    categorie: "Ministere",
+    categorie: "Ministère",
   },
   {
     nom: "Communication & Digital",
     description:
-      "Annonces, reseaux sociaux, conception graphique, son et image des cultes, informatique : tout ce qui fait rayonner et fonctionner techniquement l'eglise.",
-    categorie: "Ministere",
+      "Annonces, réseaux sociaux, conception graphique, son et image des cultes, informatique : tout ce qui fait rayonner et fonctionner techniquement l'église.",
+    categorie: "Ministère",
   },
   {
     nom: "Finances",
     description:
-      "Gestion financiere et suivi budgetaire de l'eglise, collecte et suivi des offrandes et engagements.",
-    categorie: "Ministere",
+      "Gestion financière et suivi budgétaire de l'église, collecte et suivi des offrandes et engagements.",
+    categorie: "Ministère",
   },
   {
     nom: "Social",
     description: "Accompagnement et soutien social des membres.",
-    categorie: "Ministere",
+    categorie: "Ministère",
   },
 ];

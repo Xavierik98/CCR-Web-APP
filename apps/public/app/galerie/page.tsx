@@ -4,18 +4,19 @@ import { PHOTOS } from "../_data/galerie";
 
 export const metadata: Metadata = {
   title: "Galerie",
-  description: "Photos et videos des cultes et evenements de CCR Famille Casablanca.",
+  description:
+    "Photos et vidéos des cultes et événements de CCR Famille Casablanca.",
 };
 
-// Section 1.F du cahier des charges. D'autres photos et videos seront
-// ajoutees depuis l'intranet une fois le stockage Supabase cable (section 7).
+// Section 1.F du cahier des charges. D'autres photos et vidéos seront
+// ajoutées depuis l'intranet une fois le stockage Supabase câblé (section 7).
 export default function GaleriePage() {
   return (
     <main className="mx-auto max-w-5xl px-6 py-16">
       <h1 className="font-display text-4xl font-black">Galerie</h1>
       <p className="mt-3 max-w-xl text-ccr-ink/70">
-        Quelques moments de la vie de l&rsquo;eglise. D&rsquo;autres photos et
-        videos seront ajoutees prochainement.
+        Quelques moments de la vie de l&rsquo;église. D&rsquo;autres photos et
+        vidéos seront ajoutées prochainement.
       </p>
 
       <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">

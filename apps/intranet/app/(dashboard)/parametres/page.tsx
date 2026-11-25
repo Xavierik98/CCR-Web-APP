@@ -1,10 +1,10 @@
-// Module Parametres (section 3) : horaires de culte, informations de contact
-// publiees, configuration generale.
+// Module Paramètres (section 3) : horaires de culte, informations de contact
+// publiées, configuration générale.
 
 export default function ParametresPage() {
   return (
     <main>
-      <h1>Parametres</h1>
+      <h1>Paramètres</h1>
     </main>
   );
 }

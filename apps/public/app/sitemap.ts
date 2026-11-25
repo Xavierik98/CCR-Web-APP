@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 
-// NEXT_PUBLIC_SITE_URL sera defini au deploiement, une fois le nom de domaine
-// choisi (section 10 du cahier des charges). Pas de domaine devine ici.
+// NEXT_PUBLIC_SITE_URL sera défini au déploiement, une fois le nom de domaine
+// choisi (section 10 du cahier des charges). Pas de domaine deviné ici.
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
 const routes = [

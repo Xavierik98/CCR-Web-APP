@@ -1,10 +1,10 @@
 // Version courte des trois piliers de la vision, pour la page d'accueil.
-// Le texte integral et verbatim (fourni par le client) vit sur /a-propos.
+// Le texte intégral et verbatim (fourni par le client) vit sur /a-propos.
 export const PILIERS = [
   {
     nom: "Rassembler",
     texte:
-      "Chacun est le bienvenu, quelle que soit son histoire : priere, Parole et communion fraternelle vecues ensemble.",
+      "Chacun est le bienvenu, quelle que soit son histoire : prière, Parole et communion fraternelle vécues ensemble.",
     verset: "Actes 2:42",
     icon: "users" as const,
     accent: "gold" as const,
@@ -12,15 +12,15 @@ export const PILIERS = [
   {
     nom: "Former",
     texte:
-      "Par l'enseignement, l'accompagnement et le service, nous aidons chaque croyant a devenir un disciple solide.",
-    verset: "Ephesiens 4:12-13",
+      "Par l'enseignement, l'accompagnement et le service, nous aidons chaque croyant à devenir un disciple solide.",
+    verset: "Éphésiens 4:12-13",
     icon: "book" as const,
     accent: "magenta" as const,
   },
   {
     nom: "Envoyer",
     texte:
-      "Une vie restauree est faite pour en restaurer d'autres : nous preparons chacun a porter l'Evangile la ou Dieu l'a place.",
+      "Une vie restaurée est faite pour en restaurer d'autres : nous préparons chacun à porter l'Évangile là où Dieu l'a placé.",
     verset: "Matthieu 28:19-20",
     icon: "spark" as const,
     accent: "blue" as const,

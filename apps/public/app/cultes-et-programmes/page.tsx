@@ -5,15 +5,15 @@ import { ProgrammeGrid } from "./_components/programme-grid";
 export const metadata: Metadata = {
   title: "Cultes et programmes",
   description:
-    "Horaires des cultes, prieres et reunions de la semaine a CCR Famille, Casablanca.",
+    "Horaires des cultes, prières et réunions de la semaine à CCR Famille, Casablanca.",
 };
 
 export default function CultesEtProgrammesPage() {
   return (
     <main>
-      {/* Hero sombre : met en valeur le programme de la semaine, inspire du
+      {/* Hero sombre : met en valeur le programme de la semaine, inspiré du
           genre de benjamindeleuzetrading.com (fond sombre, halos de couleur,
-          badge, grand titre centre). */}
+          badge, grand titre centré). */}
       <section className="relative overflow-hidden bg-ccr-ink py-20 text-center text-ccr-cream">
         <div className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-ccr-magenta/30 blur-3xl" />
         <div className="pointer-events-none absolute -right-24 top-10 h-80 w-80 rounded-full bg-ccr-gold/20 blur-3xl" />
@@ -28,8 +28,8 @@ export default function CultesEtProgrammesPage() {
             Toute la semaine, un temps pour grandir ensemble
           </h1>
           <p className="mt-4 text-ccr-cream/70">
-            Priere, enseignement, communion fraternelle : chaque jour a son
-            rendez-vous. Cliquez sur une carte pour nous ecrire a son sujet.
+            Prière, enseignement, communion fraternelle : chaque jour a son
+            rendez-vous. Cliquez sur une carte pour nous écrire à son sujet.
           </p>
         </div>
       </section>

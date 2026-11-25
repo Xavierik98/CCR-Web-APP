@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-// Effet machine a ecrire : tape un mot lettre par lettre, marque une pause,
+// Effet machine à écrire : tape un mot lettre par lettre, marque une pause,
 // l'efface, puis passe au mot suivant. Le curseur reste visible (il clignote)
 // y compris pendant les pauses. Respecte prefers-reduced-motion en affichant
 // simplement le premier mot, sans animation.

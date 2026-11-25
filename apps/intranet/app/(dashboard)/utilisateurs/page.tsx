@@ -1,10 +1,10 @@
-// Module Utilisateurs et roles (section 3) : creation des comptes, attribution
-// des roles, journal des connexions.
+// Module Utilisateurs et rôles (section 3) : création des comptes, attribution
+// des rôles, journal des connexions.
 
 export default function UtilisateursPage() {
   return (
     <main>
-      <h1>Utilisateurs et roles</h1>
+      <h1>Utilisateurs et rôles</h1>
     </main>
   );
 }

@@ -3,17 +3,18 @@ import { ImageSlot } from "../_components/image-slot";
 import { LEADERS } from "../_data/leaders";
 
 export const metadata: Metadata = {
-  title: "L'equipe",
-  description: "Le pasteur, les responsables et dirigeants de CCR Famille Casablanca.",
+  title: "L'équipe",
+  description:
+    "Le pasteur, les responsables et dirigeants de CCR Famille Casablanca.",
 };
 
-// Section 1.C du cahier des charges. Memes responsables que /a-propos
+// Section 1.C du cahier des charges. Mêmes responsables que /a-propos
 // (voir app/_data/leaders.ts) ; les autres fiches (responsables de
-// departement) seront ajoutees au fur et a mesure des informations fournies.
+// département) seront ajoutées au fur et à mesure des informations fournies.
 export default function EquipePage() {
   return (
     <main className="mx-auto max-w-4xl px-6 py-16">
-      <h1 className="font-display text-4xl font-black">L&rsquo;equipe</h1>
+      <h1 className="font-display text-4xl font-black">L&rsquo;équipe</h1>
       <p className="mt-3 text-ccr-ink/70">
         Le pasteur, les responsables spirituels et les dirigeants de CCR
         Famille.
@@ -35,8 +36,8 @@ export default function EquipePage() {
       </div>
 
       <p className="mt-10 text-sm text-ccr-ink/50">
-        Les fiches des responsables de departement seront ajoutees ici des
-        reception des informations et photos officielles.
+        Les fiches des responsables de département seront ajoutées ici dès
+        réception des informations et photos officielles.
       </p>
     </main>
   );

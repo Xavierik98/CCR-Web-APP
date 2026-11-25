@@ -1,5 +1,5 @@
 // Module CMS (section 6) : gestion du contenu du site public, avec le workflow
-// brouillon / en attente / valide / publie / archive.
+// brouillon / en attente / validé / publié / archivé.
 
 export default function CmsPage() {
   return (

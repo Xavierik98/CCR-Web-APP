@@ -1,6 +1,6 @@
-// Section 2.A du cahier des charges. Formulaire affiche seulement : la verification
-// des identifiants, la gestion de session et le verrouillage apres echecs repetes
-// restent a cabler avec Supabase Auth (decision du 25/11, section 7).
+// Section 2.A du cahier des charges. Formulaire affiché seulement : la vérification
+// des identifiants, la gestion de session et le verrouillage après échecs répétés
+// restent à câbler avec Supabase Auth (décision du 25/11, section 7).
 
 export default function LoginPage() {
   return (

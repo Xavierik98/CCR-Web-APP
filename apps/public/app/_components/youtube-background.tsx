@@ -1,7 +1,7 @@
-// Video YouTube en arriere-plan : muette, en boucle, sans controles. Le
-// conteneur parent doit etre position relative + overflow hidden + une
-// hauteur definie ; domaine youtube-nocookie.com pour limiter les cookies
-// tant que personne n'interagit avec la video.
+// Vidéo YouTube en arrière-plan : muette, en boucle, sans contrôles. Le
+// conteneur parent doit être position relative + overflow hidden + une
+// hauteur définie ; domaine youtube-nocookie.com pour limiter les cookies
+// tant que personne n'interagit avec la vidéo.
 export function YoutubeBackground({ videoId }: { videoId: string }) {
   const src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&modestbranding=1&playsinline=1&rel=0&disablekb=1&iv_load_policy=3`;
 

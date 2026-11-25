@@ -2,9 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 
-// Anime l'apparition d'un bloc au defilement (fondu + leger glissement vers le
+// Anime l'apparition d'un bloc au défilement (fondu + léger glissement vers le
 // haut) via IntersectionObserver : pas de librairie, juste assez pour que la
-// page ne paraisse plus figee. Respecte prefers-reduced-motion.
+// page ne paraisse plus figée. Respecte prefers-reduced-motion.
 export function Reveal({
   children,
   delay = 0,

@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 
-// Jeu d'icones minimal, dessinees a la main (pas de dependance externe),
-// utilisees pour donner un repere visuel rapide sur les cartes de programme
-// et de departements.
+// Jeu d'icônes minimal, dessinées à la main (pas de dépendance externe),
+// utilisées pour donner un repère visuel rapide sur les cartes de programme
+// et de départements.
 const PATHS: Record<string, ReactNode> = {
   clock: (
     <>
@@ -65,6 +65,37 @@ const PATHS: Record<string, ReactNode> = {
     <>
       <rect x="3" y="7" width="12" height="10" rx="1.5" />
       <path d="M15 10.5 21 7v10l-6-3.5Z" />
+    </>
+  ),
+  facebook: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M14 8.5h-1.5a1.5 1.5 0 0 0-1.5 1.5v2h3l-.4 2.5H11V21" />
+    </>
+  ),
+  instagram: (
+    <>
+      <rect x="3" y="3" width="18" height="18" rx="5" />
+      <circle cx="12" cy="12" r="4.2" />
+      <circle cx="17" cy="7" r="0.8" fill="currentColor" stroke="none" />
+    </>
+  ),
+  tiktok: (
+    <>
+      <path d="M15 4v10.5a3.5 3.5 0 1 1-3.5-3.5" />
+      <path d="M15 4c.4 2.2 2 3.9 4 4.3" />
+    </>
+  ),
+  youtube: (
+    <>
+      <rect x="3" y="6" width="18" height="12" rx="3" />
+      <path d="M11 9.5 15 12l-4 2.5v-5Z" />
+    </>
+  ),
+  whatsapp: (
+    <>
+      <path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.7-1.2A9 9 0 1 0 12 3Z" />
+      <path d="M8.5 9.5c0-.6.5-1 1-1h.6c.3 0 .5.2.6.4l.6 1.4c.1.2 0 .5-.1.6l-.6.7c.5 1 1.3 1.8 2.3 2.3l.7-.6c.2-.1.4-.2.6-.1l1.4.6c.2.1.4.3.4.6v.6c0 .5-.4 1-1 1-3.3 0-6-2.7-6-6Z" />
     </>
   ),
 };

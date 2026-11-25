@@ -5,8 +5,9 @@ import { DEPARTEMENTS } from "../_data/departements";
 import { DepartementsBrowser } from "./_components/browser";
 
 export const metadata: Metadata = {
-  title: "Departements",
-  description: "Les ministeres et poles de competences de CCR Famille Casablanca.",
+  title: "Départements",
+  description:
+    "Les ministères et pôles de compétences de CCR Famille Casablanca.",
 };
 
 export default function DepartementsPage() {
@@ -17,10 +18,10 @@ export default function DepartementsPage() {
         <div className="absolute inset-0 bg-ccr-ink/70" />
         <div className="relative mx-auto max-w-5xl px-6">
           <h1 className="font-display text-4xl font-black text-ccr-cream">
-            Nos departements
+            Nos départements
           </h1>
           <p className="mt-3 max-w-2xl text-ccr-cream/80">
-            Des ministeres et des poles de competences ou chacun peut servir,
+            Des ministères et des pôles de compétences où chacun peut servir,
             apprendre et mettre son savoir-faire au service des autres.
           </p>
         </div>
@@ -31,11 +32,11 @@ export default function DepartementsPage() {
 
         <div className="mt-16 rounded-2xl bg-ccr-ink px-8 py-10 text-center text-ccr-cream">
           <h2 className="font-display text-2xl font-bold">
-            L&rsquo;eglise a un besoin
+            L&rsquo;église a un besoin
           </h2>
           <p className="mx-auto mt-2 max-w-xl text-sm text-ccr-cream/70">
-            Un savoir-faire a proposer, une envie de servir ? Signalez-vous, un
-            responsable de departement vous recontactera.
+            Un savoir-faire à proposer, une envie de servir ? Signalez-vous, un
+            responsable de département vous recontactera.
           </p>
           <Link
             href="/mon-eglise-a-un-besoin"

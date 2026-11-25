@@ -1,11 +1,11 @@
 // Section 1.D du cahier des charges. Horaires fournis par le client (25/11) ;
-// editables depuis l'intranet une fois le CMS cable (section 6), sans toucher au code.
+// éditables depuis l'intranet une fois le CMS câblé (section 6), sans toucher au code.
 export const PROGRAMME = [
   {
-    jour: "Lundi a vendredi",
-    titre: "Priere de minuit",
+    jour: "Lundi à vendredi",
+    titre: "Prière de minuit",
     horaire: "00h00 - 00h30",
-    description: "30 minutes de priere chaque nuit.",
+    description: "30 minutes de prière chaque nuit.",
     icon: "clock",
     accent: "gold",
   },
@@ -25,26 +25,26 @@ export const PROGRAMME = [
   },
   {
     jour: "Mercredi",
-    titre: "Eglise de maison",
+    titre: "Église de maison",
     horaire: "19h30 - 21h00",
     description:
-      "Rassemblement dans vos quartiers respectifs, dans une maison choisie au prealable, en communion fraternelle autour de la Parole de Dieu.",
+      "Rassemblement dans vos quartiers respectifs, dans une maison choisie au préalable, en communion fraternelle autour de la Parole de Dieu.",
     icon: "home",
     accent: "gold",
     span: true,
   },
   {
     jour: "Vendredi",
-    titre: "Culte de delivrance",
+    titre: "Culte de délivrance",
     horaire: "19h30 - 21h30",
     icon: "bolt",
     accent: "magenta",
   },
   {
     jour: "Samedi",
-    titre: "Priere de la jeunesse",
+    titre: "Prière de la jeunesse",
     horaire: "21h00 - 21h30",
-    description: "30 minutes de priere.",
+    description: "30 minutes de prière.",
     icon: "star",
     accent: "blue",
   },

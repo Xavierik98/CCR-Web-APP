@@ -1,6 +1,6 @@
-// Module Accompagnement social (section 3 et 5) : dossiers de titre de sejour.
-// Acces reserve au role Accompagnement social et au super administrateur, journalise.
-// Le perimetre exact de ce role reste a confirmer avec le client.
+// Module Accompagnement social (section 3 et 5) : dossiers de titre de séjour.
+// Accès réservé au rôle Accompagnement social et au super administrateur, journalisé.
+// Le périmètre exact de ce rôle reste à confirmer avec le client.
 
 export default function AccompagnementSocialPage() {
   return (

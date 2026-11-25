@@ -4,9 +4,9 @@ import { Footer } from "./_components/footer";
 import { Header } from "./_components/header";
 import "./globals.css";
 
-// Appariement inspire du logo officiel : un serif a empattements marques pour les
-// grands titres (echo des lettres ornees du logo), un sans-serif net pour le reste
-// (meme famille que la reference etudiee, impactcentrechretien.com).
+// Appariement inspiré du logo officiel : un serif à empattements marqués pour les
+// grands titres (écho des lettres ornées du logo), un sans-serif net pour le reste
+// (même famille que la référence étudiée, impactcentrechretien.com).
 const playfair = Playfair_Display({
   subsets: ["latin"],
   weight: ["700", "900"],
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     default: "CCR Famille Casablanca",
     template: "%s | CCR Famille Casablanca",
   },
-  description: "Site officiel de l'eglise CCR Famille a Casablanca.",
+  description: "Site officiel de l'église CCR Famille à Casablanca.",
 };
 
 export default function RootLayout({

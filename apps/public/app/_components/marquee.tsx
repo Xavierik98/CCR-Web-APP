@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 
-// Defilement horizontal continu (droite vers gauche). La piste est dupliquee
+// Défilement horizontal continu (droite vers gauche). La piste est dupliquée
 // une fois pour boucler sans coupure ; l'animation est en CSS pur (globals.css),
-// donc ce composant n'a pas besoin d'etre cote client.
+// donc ce composant n'a pas besoin d'être côté client.
 export function Marquee({ children }: { children: ReactNode }) {
   return (
     <div className="group overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">

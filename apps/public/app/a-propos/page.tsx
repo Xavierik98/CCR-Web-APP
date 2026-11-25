@@ -1,22 +1,24 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { BlurredPhoto } from "../_components/blurred-photo";
 import { ImageSlot } from "../_components/image-slot";
+import { A_PROPOS_PHOTOS } from "../_data/a-propos-photos";
 import { LEADERS } from "../_data/leaders";
 
 export const metadata: Metadata = {
-  title: "A propos",
+  title: "À propos",
   description:
-    "Histoire, responsables et vision du Centre Chretien de Restauration (CCR), Casablanca.",
+    "Histoire, responsables et vision du Centre Chrétien de Restauration (CCR), Casablanca.",
 };
 
 const FRISE = [
   {
-    periode: "Fin des annees 1990",
-    texte: "Les premieres reunions de maison, par quartier.",
+    periode: "Fin des années 1990",
+    texte: "Les premières réunions de maison, par quartier.",
   },
   {
-    periode: "Les annees de croissance",
-    texte: "Location des premieres salles pour se reunir tous ensemble.",
+    periode: "Les années de croissance",
+    texte: "Location des premières salles pour se réunir tous ensemble.",
   },
   {
     periode: "Aujourd'hui",
@@ -28,19 +30,19 @@ const PILIERS = [
   {
     nom: "Rassembler",
     texte:
-      "Nous sommes nes dans des maisons, et nous gardons cet esprit. Chacun est le bienvenu, quelle que soit son histoire. Comme les premiers chretiens, nous voulons vivre ensemble la priere, la Parole et la communion fraternelle.",
+      "Nous sommes nés dans des maisons, et nous gardons cet esprit. Chacun est le bienvenu, quelle que soit son histoire. Comme les premiers chrétiens, nous voulons vivre ensemble la prière, la Parole et la communion fraternelle.",
     verset: "Actes 2:42",
   },
   {
     nom: "Former",
     texte:
-      "Venir ne suffit pas, il faut grandir. Par l'enseignement de la Parole, l'accompagnement et le service, nous aidons chaque croyant a devenir un disciple solide et mur dans sa foi.",
-    verset: "Ephesiens 4:12-13",
+      "Venir ne suffit pas, il faut grandir. Par l'enseignement de la Parole, l'accompagnement et le service, nous aidons chaque croyant à devenir un disciple solide et mûr dans sa foi.",
+    verset: "Éphésiens 4:12-13",
   },
   {
     nom: "Envoyer",
     texte:
-      "Une vie restauree est faite pour en restaurer d'autres. Nous preparons chacun a porter l'Evangile la ou Dieu l'a place : sa famille, son travail, sa ville et au-dela.",
+      "Une vie restaurée est faite pour en restaurer d'autres. Nous préparons chacun à porter l'Évangile là où Dieu l'a placé : sa famille, son travail, sa ville et au-delà.",
     verset: "Matthieu 28:19-20",
   },
 ];
@@ -51,18 +53,18 @@ export default function AProposPage() {
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="relative aspect-[16/7] w-full md:aspect-[21/7]">
-          <ImageSlot src="/images/about/hero.jpg" alt="Centre Chretien de Restauration" />
+          <ImageSlot src="/images/about/hero.jpg" alt="Centre Chrétien de Restauration" />
         </div>
         <div className="mx-auto max-w-4xl px-6 py-10 text-center">
           <h1 className="font-display text-4xl font-black md:text-5xl">
-            Centre Chretien de Restauration
+            Centre Chrétien de Restauration
           </h1>
           <p className="mt-3 font-display text-lg font-semibold tracking-wide text-ccr-magenta">
             Rassembler &middot; Former &middot; Envoyer
           </p>
           <p className="mx-auto mt-4 max-w-2xl text-ccr-ink/70">
-            Une famille d&rsquo;eglises ou chaque vie peut etre relevee,
-            affermie et envoyee.
+            Une famille d&rsquo;églises où chaque vie peut être relevée,
+            affermie et envoyée.
           </p>
         </div>
       </section>
@@ -72,26 +74,26 @@ export default function AProposPage() {
         <h2 className="font-display text-3xl font-bold">Notre histoire</h2>
         <div className="mt-6 space-y-4 text-ccr-ink/80">
           <p>
-            Le Centre Chretien de Restauration fait partie d&rsquo;une famille
-            d&rsquo;eglises nee de la vision de l&rsquo;apotre Gel EBA GATSE.
-            Au Maroc, l&rsquo;histoire commence a la fin des annees 1990, avec
+            Le Centre Chrétien de Restauration fait partie d&rsquo;une famille
+            d&rsquo;églises née de la vision de l&rsquo;apôtre Gel EBA GATSE.
+            Au Maroc, l&rsquo;histoire commence à la fin des années 1990, avec
             quelques croyants qui se retrouvaient chez eux pour prier, lire la
             Parole et partager leur foi. Dans chaque quartier, une &laquo;
-            famille d&rsquo;eglise &raquo; se formait autour d&rsquo;un salon,
+            famille d&rsquo;église &raquo; se formait autour d&rsquo;un salon,
             d&rsquo;une table, d&rsquo;une Bible ouverte.
           </p>
           <p>
-            Avec les annees, ces petites assemblees ont grandi. Les salons
-            sont devenus trop etroits, et le desir de se reunir comme un seul
-            corps est devenu une evidence. L&rsquo;eglise a alors loue ses
-            premieres salles pour rassembler tous les freres et soeurs,
-            pendant les reunions de la semaine comme au culte du dimanche.
+            Avec les années, ces petites assemblées ont grandi. Les salons
+            sont devenus trop étroits, et le désir de se réunir comme un seul
+            corps est devenu une évidence. L&rsquo;église a alors loué ses
+            premières salles pour rassembler tous les frères et sœurs,
+            pendant les réunions de la semaine comme au culte du dimanche.
           </p>
           <p>
-            Aujourd&rsquo;hui, l&rsquo;eglise est une association
-            officiellement reconnue. Plus de vingt-cinq ans apres les
-            premieres reunions de maison, l&rsquo;esprit reste le meme : etre
-            une famille avant d&rsquo;etre une institution.
+            Aujourd&rsquo;hui, l&rsquo;église est une association
+            officiellement reconnue. Plus de vingt-cinq ans après les
+            premières réunions de maison, l&rsquo;esprit reste le même : être
+            une famille avant d&rsquo;être une institution.
           </p>
         </div>
 
@@ -106,6 +108,24 @@ export default function AProposPage() {
             </li>
           ))}
         </ol>
+      </section>
+
+      {/* Quelques moments */}
+      <section className="mx-auto max-w-5xl px-6 pb-16">
+        <h2 className="font-display text-3xl font-bold">Quelques moments</h2>
+        <p className="mt-2 max-w-xl text-sm text-ccr-ink/70">
+          Un aperçu de la vie de notre famille d&rsquo;église.
+        </p>
+        <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+          {A_PROPOS_PHOTOS.map((photo) => (
+            <BlurredPhoto
+              key={photo.src}
+              src={photo.src}
+              alt={photo.alt}
+              className="aspect-[4/5]"
+            />
+          ))}
+        </div>
       </section>
 
       {/* Nos responsables */}
@@ -140,9 +160,9 @@ export default function AProposPage() {
       <section className="mx-auto max-w-5xl px-6 py-16">
         <h2 className="font-display text-3xl font-bold">Notre vision</h2>
         <p className="mt-4 max-w-2xl text-ccr-ink/80">
-          Nous croyons que Dieu releve ce qui est tombe et rebatit ce qui a
-          ete detruit (Esaie 61:4). Notre vision tient en trois mots, qui
-          decrivent le chemin de chaque personne qui franchit nos portes.
+          Nous croyons que Dieu relève ce qui est tombé et rebâtit ce qui a
+          été détruit (Ésaïe 61:4). Notre vision tient en trois mots, qui
+          décrivent le chemin de chaque personne qui franchit nos portes.
         </p>
 
         <div className="mt-10 grid gap-6 md:grid-cols-3">
@@ -168,8 +188,8 @@ export default function AProposPage() {
         <div className="mx-auto max-w-2xl px-6">
           <blockquote className="font-display text-2xl font-bold leading-snug md:text-3xl">
             &laquo; Rassembler ceux qui cherchent, former des disciples,
-            envoyer des temoins : c&rsquo;est l&rsquo;appel que nous avons
-            recu, et l&rsquo;invitation que nous vous faisons. &raquo;
+            envoyer des témoins : c&rsquo;est l&rsquo;appel que nous avons
+            reçu, et l&rsquo;invitation que nous vous faisons. &raquo;
           </blockquote>
           <Link
             href="/cultes-et-programmes"

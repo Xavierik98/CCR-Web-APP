@@ -1,5 +1,5 @@
-// Coquille du tableau de bord (section 3). La navigation reelle entre modules et
-// le filtrage par role arrivent avec l'authentification (section 7).
+// Coquille du tableau de bord (section 3). La navigation réelle entre modules et
+// le filtrage par rôle arrivent avec l'authentification (section 7).
 
 export default function DashboardLayout({
   children,

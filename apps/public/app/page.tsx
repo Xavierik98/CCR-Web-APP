@@ -12,11 +12,11 @@ import { PILIERS } from "./_data/piliers";
 import { buildWhatsAppLink } from "./_data/whatsapp";
 
 // Structure de la page d'accueil (section 1.A du cahier des charges). Les sections
-// sans donnee officielle (actualites, temoignages) restent honnetes : aucun
-// contenu generique ou invente n'est publie a leur place.
+// sans donnée officielle (actualités, témoignages) restent honnêtes : aucun
+// contenu générique ou inventé n'est publié à leur place.
 
 const LIENS_RAPIDES = [
-  { href: "/departements", label: "Nos departements", icon: "spark" as const },
+  { href: "/departements", label: "Nos départements", icon: "spark" as const },
   { href: "/cultes-et-programmes", label: "Cultes et programmes", icon: "clock" as const },
   { href: "/mon-eglise-a-un-besoin", label: "Servir", icon: "heart" as const },
   { href: "/contact", label: "Nous trouver", icon: "map" as const },
@@ -28,9 +28,9 @@ const ACCENTS = {
   blue: { text: "text-ccr-blue", bg: "bg-ccr-blue/10" },
 };
 
-// Numero WhatsApp reel a fournir : tant que la variable n'est pas definie
+// Numéro WhatsApp réel à fournir : tant que la variable n'est pas définie
 // (Vercel > Project Settings > Environment Variables), le bouton ne s'affiche
-// pas plutot que de pointer vers un faux numero.
+// pas plutôt que de pointer vers un faux numéro.
 const WHATSAPP_URL = buildWhatsAppLink(
   "Bonjour CCR Famille, j'aimerais avoir des informations.",
 );
@@ -54,13 +54,13 @@ export default function HomePage() {
             La famille
             <br />
             <span className="text-ccr-magenta">CCR</span>{" "}
-            <span className="text-ccr-gold-light">a Casablanca</span>
+            <span className="text-ccr-gold-light">à Casablanca</span>
           </h1>
           <p
             className="animate-fade-in-up mt-6 max-w-md text-lg text-ccr-cream/80"
             style={{ animationDelay: "150ms" }}
           >
-            Une eglise qui accueille, qui forme et qui envoie, en plein coeur
+            Une église qui accueille, qui forme et qui envoie, en plein cœur
             de Casablanca.
           </p>
           <div
@@ -71,13 +71,13 @@ export default function HomePage() {
               href="/a-propos"
               className="rounded-full border border-ccr-cream/50 px-6 py-3 text-sm font-semibold text-ccr-cream transition-colors hover:bg-ccr-cream/10"
             >
-              Decouvrir l&rsquo;eglise
+              Découvrir l&rsquo;église
             </Link>
             <Link
               href="/cultes-et-programmes"
               className="rounded-full bg-ccr-gold px-6 py-3 text-sm font-semibold text-ccr-ink transition-transform hover:scale-105 hover:bg-ccr-gold-light"
             >
-              Participer a un culte
+              Participer à un culte
             </Link>
             <a
               href={WHATSAPP_URL ?? "/contact"}
@@ -86,13 +86,13 @@ export default function HomePage() {
               className="inline-flex items-center gap-2 rounded-full bg-[#25D366] px-6 py-3 text-sm font-semibold text-ccr-ink transition-transform hover:scale-105"
             >
               <Icon name="chat" className="h-4 w-4" />
-              Nous ecrire sur WhatsApp
+              Nous écrire sur WhatsApp
             </a>
           </div>
         </div>
       </section>
 
-      {/* Bande de liens rapides, inspiree de la bande d'icones d'impactcentrechretien.com */}
+      {/* Bande de liens rapides, inspirée de la bande d'icônes d'impactcentrechretien.com */}
       <section className="relative bg-ccr-ink pb-16 pt-10 text-ccr-cream">
         <div className="mx-auto grid max-w-6xl gap-8 px-6 sm:grid-cols-2 lg:grid-cols-4">
           {LIENS_RAPIDES.map((lien, index) => (
@@ -129,7 +129,7 @@ export default function HomePage() {
           <h2 className="font-display text-3xl font-bold">Notre vision</h2>
           <p className="mx-auto mt-3 max-w-xl text-ccr-ink/70">
             Rassembler &middot; Former &middot; Envoyer, en trois mots qui
-            decrivent le chemin de chaque personne qui franchit nos portes.
+            décrivent le chemin de chaque personne qui franchit nos portes.
           </p>
 
           <div className="mt-10 grid gap-6 md:grid-cols-3">
@@ -167,7 +167,7 @@ export default function HomePage() {
 
       <Reveal>
         <section id="prochaines-activites" className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="font-display text-2xl font-bold">Prochaines activites</h2>
+          <h2 className="font-display text-2xl font-bold">Prochaines activités</h2>
           <div className="mt-6 flex flex-col gap-4 overflow-hidden rounded-2xl border border-ccr-ink/10 bg-white transition-shadow hover:shadow-md sm:flex-row">
             <div className="flex shrink-0 flex-col items-center justify-center bg-ccr-gold/10 px-8 py-6 text-center">
               <span className="text-xs font-semibold uppercase tracking-wide text-ccr-gold">
@@ -185,7 +185,7 @@ export default function HomePage() {
                 Sunday Service : rassemblement de famille
               </h3>
               <p className="mt-2 text-sm text-ccr-ink/70">
-                10h30 - 13h30 &middot; Salle de reunion CCR Casablanca
+                10h30 - 13h30 &middot; Salle de réunion CCR Casablanca
               </p>
             </div>
           </div>
@@ -204,17 +204,17 @@ export default function HomePage() {
               Un style de vie
             </p>
             <h2 className="mt-3 font-display text-4xl font-black text-ccr-cream md:text-5xl">
-              <TypewriterWords words={["Intercession", "Priere", "Adoration", "Louange"]} />
+              <TypewriterWords words={["Intercession", "Prière", "Adoration", "Louange"]} />
             </h2>
             <p className="mx-auto mt-4 max-w-md text-ccr-cream/70">
-              Ce que nous vivons dans nos cultes et nos reunions, porte par
-              nos departements.
+              Ce que nous vivons dans nos cultes et nos réunions, porté par
+              nos départements.
             </p>
             <Link
               href="/departements"
               className="mt-6 inline-block rounded-full border border-ccr-cream/40 px-6 py-3 text-sm font-semibold text-ccr-cream transition-colors hover:bg-ccr-cream/10"
             >
-              Decouvrir nos departements &rarr;
+              Découvrir nos départements &rarr;
             </Link>
           </div>
         </section>
@@ -225,7 +225,7 @@ export default function HomePage() {
           <div className="mx-auto max-w-6xl px-6">
             <h2 className="font-display text-2xl font-bold">Galerie</h2>
             <p className="mt-2 max-w-xl text-sm text-ccr-ink/70">
-              Quelques images et videos de la vie de l&rsquo;eglise.
+              Quelques images et vidéos de la vie de l&rsquo;église.
             </p>
           </div>
 
@@ -259,32 +259,32 @@ export default function HomePage() {
 
       <Reveal>
         <section id="actualites" className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="font-display text-2xl font-bold">Actualites</h2>
+          <h2 className="font-display text-2xl font-bold">Actualités</h2>
           <div className="mt-6 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-ccr-ink/15 bg-ccr-ink/5 px-6 py-12 text-center">
             <span className="flex h-12 w-12 items-center justify-center rounded-full bg-ccr-blue/10 text-ccr-blue">
               <Icon name="book" className="h-6 w-6" />
             </span>
             <p className="text-sm text-ccr-ink/60">
-              Aucune actualite publiee pour l&rsquo;instant. Revenez bientot.
+              Aucune actualité publiée pour l&rsquo;instant. Revenez bientôt.
             </p>
           </div>
         </section>
       </Reveal>
 
-      {/* Bloc d'appel a l'action avant le footer, juste avant de quitter la page. */}
+      {/* Bloc d'appel à l'action avant le footer, juste avant de quitter la page. */}
       <Reveal>
         <section id="contact" className="mx-auto max-w-6xl px-6 pb-20">
           <div className="rounded-3xl bg-ccr-ink px-8 py-12 text-ccr-cream md:flex md:items-center md:justify-between md:gap-10 md:px-12">
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-ccr-gold">
-                Premiere visite ?
+                Première visite ?
               </p>
               <h2 className="mt-2 font-display text-3xl font-black md:text-4xl">
-                Vous etes les bienvenus ce dimanche
+                Vous êtes les bienvenus ce dimanche
               </h2>
               <p className="mt-3 max-w-lg text-sm text-ccr-cream/70">
-                Retrouvez-nous au {ADRESSE}, ou ecrivez-nous pour preparer
-                votre venue ou proposer votre aide dans un departement.
+                Retrouvez-nous au {ADRESSE}, ou écrivez-nous pour préparer
+                votre venue ou proposer votre aide dans un département.
               </p>
             </div>
             <div className="mt-6 flex shrink-0 flex-wrap gap-3 md:mt-0">
@@ -298,7 +298,7 @@ export default function HomePage() {
                 href="/mon-eglise-a-un-besoin"
                 className="rounded-full border border-ccr-cream/40 px-6 py-3 text-sm font-semibold transition-colors hover:border-ccr-cream"
               >
-                Servir a l&rsquo;eglise
+                Servir à l&rsquo;église
               </Link>
             </div>
           </div>

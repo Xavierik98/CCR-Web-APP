@@ -7,7 +7,7 @@ import { ACCENTS, type ProgrammeItem } from "../../_data/programme";
 import { buildWhatsAppLink } from "../../_data/whatsapp";
 
 function whatsappLink(item: ProgrammeItem) {
-  const message = `Bonjour, je suis interesse(e) par "${item.titre}" (${item.jour}, ${item.horaire}). Pouvez-vous m'en dire plus ?`;
+  const message = `Bonjour, je suis intéressé(e) par "${item.titre}" (${item.jour}, ${item.horaire}). Pouvez-vous m'en dire plus ?`;
   return buildWhatsAppLink(message);
 }
 

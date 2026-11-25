@@ -1,5 +1,5 @@
-// Source unique pour les responsables, reutilisee par /a-propos et /equipe.
-// Textes fournis par le client (25/11), reproduits mot pour mot.
+// Source unique pour les responsables, réutilisée par /a-propos et /equipe.
+// Textes fournis par le client (25/11), orthographe et accents corrigés.
 export type Leader = {
   slug: string;
   nom: string;
@@ -11,18 +11,18 @@ export type Leader = {
 export const LEADERS: Leader[] = [
   {
     slug: "apotre-gel-eba-gatse",
-    nom: "Apotre Gel EBA GATSE",
-    titre: "Pere de la maison",
+    nom: "Apôtre Gel EBA GATSE",
+    titre: "Père de la maison",
     texte:
-      "Il porte la vision des eglises CCR. Sous sa conduite spirituelle, des petites assemblees de maison sont devenues une famille d'eglises unie autour d'un meme appel : rassembler, former et envoyer.",
+      "Il porte la vision des églises CCR. Sous sa conduite spirituelle, des petites assemblées de maison sont devenues une famille d'églises unie autour d'un même appel : rassembler, former et envoyer.",
     photo: "/images/about/apotre-gel-eba-gatse.jpg",
   },
   {
     slug: "pasteur-gliblas-tchounand",
     nom: "Pasteur Gliblas TCHOUNAND",
-    titre: "Pasteur principal des eglises CCR Maroc",
+    titre: "Pasteur principal des églises CCR Maroc",
     texte:
-      "Il conduit l'oeuvre au Maroc, veille sur les assemblees et accompagne les fideles dans leur marche avec Dieu, fidele a la vision recue.",
+      "Il conduit l'œuvre au Maroc, veille sur les assemblées et accompagne les fidèles dans leur marche avec Dieu, fidèle à la vision reçue.",
     photo: "/images/about/pasteur-gliblas-tchounand.jpg",
   },
 ];

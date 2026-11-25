@@ -1,10 +1,10 @@
-// Module Presences (section 3) : creation d'evenements et pointage, modele
-// evenement + presence detaille en section 4 du cahier des charges.
+// Module Présences (section 3) : création d'événements et pointage, modèle
+// événement + présence détaillé en section 4 du cahier des charges.
 
 export default function PresencesPage() {
   return (
     <main>
-      <h1>Presences</h1>
+      <h1>Présences</h1>
     </main>
   );
 }

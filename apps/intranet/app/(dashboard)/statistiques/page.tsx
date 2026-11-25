@@ -1,5 +1,5 @@
-// Module Statistiques et rapports (section 3) : taux de presence, evolution des
-// effectifs par departement, suivi des engagements.
+// Module Statistiques et rapports (section 3) : taux de présence, évolution des
+// effectifs par département, suivi des engagements.
 
 export default function StatistiquesPage() {
   return (

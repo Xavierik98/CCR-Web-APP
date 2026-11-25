@@ -2,9 +2,9 @@ import Image from "next/image";
 import fs from "node:fs";
 import path from "node:path";
 
-// Emplacement d'image nomme : affiche la photo si le fichier existe deja dans
-// /public (deposez-le au chemin indique dans `src`), sinon un repere visuel
-// clair avec le chemin attendu, jamais une image cassee.
+// Emplacement d'image nommé : affiche la photo si le fichier existe déjà dans
+// /public (déposez-le au chemin indiqué dans `src`), sinon un repère visuel
+// clair avec le chemin attendu, jamais une image cassée.
 export function ImageSlot({
   src,
   alt,
@@ -33,7 +33,7 @@ export function ImageSlot({
       className={`flex h-full w-full flex-col items-center justify-center gap-2 border border-dashed border-ccr-ink/15 bg-ccr-ink/5 p-4 text-center ${className ?? ""}`}
     >
       <span className="text-xs font-semibold uppercase tracking-wide text-ccr-ink/40">
-        Photo a venir
+        Photo à venir
       </span>
       <span className="font-mono text-[11px] text-ccr-ink/30">{src}</span>
     </div>

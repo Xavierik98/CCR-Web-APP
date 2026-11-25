@@ -11,7 +11,7 @@ export default function ContactPage() {
     <main className="mx-auto max-w-4xl px-6 py-16">
       <h1 className="font-display text-4xl font-black">Nous contacter</h1>
       <p className="mt-3 text-ccr-ink/70">
-        Une question, une demande de visite ? Ecrivez-nous ou venez nous
+        Une question, une demande de visite ? Écrivez-nous ou venez nous
         rencontrer.
       </p>
 
@@ -19,14 +19,14 @@ export default function ContactPage() {
         <div>
           <h2 className="font-display text-xl font-bold">Adresse</h2>
           <p className="mt-2 text-ccr-ink/80">
-            CCR - Centre Chretien de Restauration
+            CCR - Centre Chrétien de Restauration
             <br />
             {ADRESSE}
           </p>
 
           <h2 className="mt-8 font-display text-xl font-bold">Autres moyens</h2>
           <p className="mt-2 text-sm text-ccr-ink/60">
-            Telephone et e-mail a venir.
+            Téléphone et e-mail à venir.
           </p>
 
           <div className="mt-8 aspect-[4/3] w-full overflow-hidden rounded-2xl border border-ccr-ink/10">
@@ -76,7 +76,7 @@ export default function ContactPage() {
             >
               <option>Demande d&rsquo;information</option>
               <option>Demande de visite</option>
-              <option>Demande de priere</option>
+              <option>Demande de prière</option>
               <option>Autre</option>
             </select>
           </div>
@@ -92,8 +92,8 @@ export default function ContactPage() {
               className="mt-1 w-full rounded-lg border border-ccr-ink/20 bg-white px-3 py-2 text-sm"
             />
           </div>
-          {/* Envoi reel du formulaire a cabler une fois le canal de reception
-              (e-mail ou intranet) choisi : pas de traitement cote client pour l'instant. */}
+          {/* Envoi réel du formulaire à câbler une fois le canal de réception
+              (e-mail ou intranet) choisi : pas de traitement côté client pour l'instant. */}
           <button
             type="submit"
             className="mt-2 rounded-full bg-ccr-gold px-6 py-3 text-sm font-semibold text-ccr-ink transition-colors hover:bg-ccr-gold-light"

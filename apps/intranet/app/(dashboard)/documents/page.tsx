@@ -1,4 +1,4 @@
-// Module Documents (section 3) : stockage des pieces internes.
+// Module Documents (section 3) : stockage des pièces internes.
 
 export default function DocumentsPage() {
   return (

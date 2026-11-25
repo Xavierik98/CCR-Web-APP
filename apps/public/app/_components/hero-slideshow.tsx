@@ -3,9 +3,9 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
-// Fait alterner plusieurs photos de fond en fondu enchaine, pour un hero qui
-// bouge reellement au lieu d'une image unique figee. Respecte
-// prefers-reduced-motion en figeant sur la premiere photo.
+// Fait alterner plusieurs photos de fond en fondu enchaîné, pour un hero qui
+// bouge réellement au lieu d'une image unique figée. Respecte
+// prefers-reduced-motion en figeant sur la première photo.
 export function HeroSlideshow({
   images,
   intervalMs = 6000,
