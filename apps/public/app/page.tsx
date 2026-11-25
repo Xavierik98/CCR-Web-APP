@@ -1,24 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Icon } from "./_components/icon";
 
 // Structure de la page d'accueil (section 1.A du cahier des charges). Les sections
-// "a venir" attendent le contenu officiel (textes, photos, video) avant d'etre
-// remplies depuis le CMS : aucun contenu generique n'est publie a leur place.
+// sans donnee officielle (actualites, temoignages) restent honnetes : aucun
+// contenu generique ou invente n'est publie a leur place.
 
-function PlaceholderSection({
-  id,
-  title,
-}: {
-  id: string;
-  title: string;
-}) {
-  return (
-    <section id={id} className="mx-auto max-w-6xl px-6 py-16">
-      <h2 className="font-display text-2xl font-bold">{title}</h2>
-      <p className="mt-3 text-sm text-ccr-ink/60">Contenu a venir.</p>
-    </section>
-  );
-}
+const LIENS_RAPIDES = [
+  { href: "/departements", label: "Nos departements", icon: "spark" as const },
+  { href: "/cultes-et-programmes", label: "Cultes et programmes", icon: "clock" as const },
+  { href: "/mon-eglise-a-un-besoin", label: "Servir", icon: "heart" as const },
+  { href: "/contact", label: "Nous trouver", icon: "map" as const },
+];
 
 export default function HomePage() {
   return (
@@ -63,15 +56,80 @@ export default function HomePage() {
         </div>
       </section>
 
-      <PlaceholderSection id="prochaines-activites" title="Prochaines activites" />
-      <PlaceholderSection id="actualites" title="Actualites" />
-      <PlaceholderSection id="temoignages" title="Temoignages" />
+      {/* Bande de liens rapides, inspiree de la bande d'icones d'impactcentrechretien.com */}
+      <section className="bg-ccr-ink py-10 text-ccr-cream">
+        <div className="mx-auto grid max-w-6xl gap-8 px-6 sm:grid-cols-2 lg:grid-cols-4">
+          {LIENS_RAPIDES.map((lien) => (
+            <Link
+              key={lien.href}
+              href={lien.href}
+              className="group flex items-center gap-3"
+            >
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-ccr-cream/20 text-ccr-gold-light transition-colors group-hover:border-ccr-gold-light">
+                <Icon name={lien.icon} className="h-5 w-5" />
+              </span>
+              <span className="font-display text-base font-semibold">
+                {lien.label}
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section id="prochaines-activites" className="mx-auto max-w-6xl px-6 py-16">
+        <h2 className="font-display text-2xl font-bold">Prochaines activites</h2>
+        <div className="mt-6 flex flex-col gap-4 overflow-hidden rounded-2xl border border-ccr-ink/10 bg-white sm:flex-row">
+          <div className="flex shrink-0 flex-col items-center justify-center bg-ccr-gold/10 px-8 py-6 text-center">
+            <span className="text-xs font-semibold uppercase tracking-wide text-ccr-gold">
+              Dim
+            </span>
+            <span className="font-display text-4xl font-black text-ccr-ink">
+              01
+            </span>
+            <span className="text-xs font-semibold uppercase tracking-wide text-ccr-ink/60">
+              Nov 2026
+            </span>
+          </div>
+          <div className="flex-1 px-6 py-6">
+            <h3 className="font-display text-xl font-bold">
+              Sunday Service : rassemblement de famille
+            </h3>
+            <p className="mt-2 text-sm text-ccr-ink/70">
+              10h30 - 13h30 &middot; Salle de reunion CCR Casablanca
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="actualites" className="mx-auto max-w-6xl px-6 py-16">
+        <h2 className="font-display text-2xl font-bold">Actualites</h2>
+        <div className="mt-6 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-ccr-ink/15 bg-ccr-ink/5 px-6 py-12 text-center">
+          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-ccr-blue/10 text-ccr-blue">
+            <Icon name="book" className="h-6 w-6" />
+          </span>
+          <p className="text-sm text-ccr-ink/60">
+            Aucune actualite publiee pour l&rsquo;instant. Revenez bientot.
+          </p>
+        </div>
+      </section>
+
+      <section id="temoignages" className="mx-auto max-w-6xl px-6 py-16">
+        <h2 className="font-display text-2xl font-bold">Temoignages</h2>
+        <div className="mt-6 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-ccr-ink/15 bg-ccr-ink/5 px-6 py-12 text-center">
+          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-ccr-magenta/10 text-ccr-magenta">
+            <Icon name="heart" className="h-6 w-6" />
+          </span>
+          <p className="text-sm text-ccr-ink/60">
+            Les temoignages de la famille CCR seront publies ici.
+          </p>
+        </div>
+      </section>
 
       <section id="departements" className="mx-auto max-w-6xl px-6 py-16">
         <h2 className="font-display text-2xl font-bold">Nos departements</h2>
         <p className="mt-2 text-sm text-ccr-ink/70">
-          Coiffure, informatique, infographie, couture et bien d&rsquo;autres
-          poles de competences.
+          Louange, communication, finance, coiffure, informatique,
+          infographie et bien d&rsquo;autres poles de competences.
         </p>
         <Link
           href="/departements"
