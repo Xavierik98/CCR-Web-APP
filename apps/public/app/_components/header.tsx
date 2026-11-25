@@ -10,6 +10,12 @@ const NAV_LINKS = [
   { href: "/contact", label: "Contact" },
 ];
 
+// A remplacer par le domaine definitif une fois reserve (section 10 du cahier
+// des charges) ; en attendant, pointe vers l'intranet reellement deploye.
+const INTRANET_URL =
+  process.env.NEXT_PUBLIC_INTRANET_URL ??
+  "https://ccr-famille-intranet.vercel.app";
+
 export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-ccr-ink/10 bg-ccr-cream/90 backdrop-blur">
@@ -37,12 +43,20 @@ export function Header() {
           ))}
         </nav>
 
-        <Link
-          href="/cultes-et-programmes"
-          className="hidden whitespace-nowrap rounded-full bg-ccr-gold px-5 py-2 text-sm font-semibold text-ccr-ink transition-colors hover:bg-ccr-gold-light md:inline-block"
-        >
-          Participer a un culte
-        </Link>
+        <div className="hidden items-center gap-3 md:flex">
+          <a
+            href={INTRANET_URL}
+            className="whitespace-nowrap rounded-full border border-ccr-ink/20 px-5 py-2 text-sm font-semibold transition-colors hover:border-ccr-ink"
+          >
+            Espace membres
+          </a>
+          <Link
+            href="/cultes-et-programmes"
+            className="whitespace-nowrap rounded-full bg-ccr-gold px-5 py-2 text-sm font-semibold text-ccr-ink transition-colors hover:bg-ccr-gold-light"
+          >
+            Participer a un culte
+          </Link>
+        </div>
 
         {/* Menu sans JavaScript : <details> fait office de disclosure accessible sous md. */}
         <details className="md:hidden">
@@ -61,6 +75,12 @@ export function Header() {
             >
               Participer a un culte
             </Link>
+            <a
+              href={INTRANET_URL}
+              className="mt-2 rounded-full border border-ccr-ink/20 px-5 py-2 text-center font-semibold"
+            >
+              Espace membres
+            </a>
           </nav>
         </details>
       </div>

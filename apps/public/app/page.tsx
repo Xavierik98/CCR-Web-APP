@@ -66,8 +66,33 @@ export default function HomePage() {
       <PlaceholderSection id="prochaines-activites" title="Prochaines activites" />
       <PlaceholderSection id="actualites" title="Actualites" />
       <PlaceholderSection id="temoignages" title="Temoignages" />
-      <PlaceholderSection id="departements" title="Nos departements" />
-      <PlaceholderSection id="contact" title="Nous contacter" />
+
+      <section id="departements" className="mx-auto max-w-6xl px-6 py-16">
+        <h2 className="font-display text-2xl font-bold">Nos departements</h2>
+        <p className="mt-2 text-sm text-ccr-ink/70">
+          Coiffure, informatique, infographie, couture et bien d&rsquo;autres
+          poles de competences.
+        </p>
+        <Link
+          href="/departements"
+          className="mt-4 inline-block text-sm font-semibold text-ccr-magenta hover:underline"
+        >
+          Decouvrir tous les departements &rarr;
+        </Link>
+      </section>
+
+      <section id="contact" className="mx-auto max-w-6xl px-6 py-16">
+        <h2 className="font-display text-2xl font-bold">Nous contacter</h2>
+        <p className="mt-2 text-sm text-ccr-ink/70">
+          44 Rue de Bazas, Gironde, Casablanca.
+        </p>
+        <Link
+          href="/contact"
+          className="mt-4 inline-block text-sm font-semibold text-ccr-magenta hover:underline"
+        >
+          Voir la carte et nous ecrire &rarr;
+        </Link>
+      </section>
     </main>
   );
 }

@@ -171,11 +171,15 @@ model User {
   createdAt    DateTime  @default(now())
 }
 
+// Les actualites ne sont modifiees que par les administrateurs depuis l'intranet
+// (confirme le 25/11) : photo (coverImageUrl) et texte (body) vivent sur le meme
+// enregistrement, publies ensemble via le workflow de la section 6.
 model Content {
   id             String        @id @default(cuid())
   type           ContentType
   title          String
   slug           String        @unique
+  coverImageUrl  String?
   body           String
   seoTitle       String?
   seoDescription String?

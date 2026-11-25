@@ -1,7 +1,11 @@
 import Link from "next/link";
 
-// Coordonnees volontairement generiques : adresse, telephone et horaires reels
-// a fournir (section 10 du cahier des charges), pas d'information inventee ici.
+// Coordonnees volontairement generiques : telephone et e-mail reels a fournir
+// (section 10 du cahier des charges), pas d'information inventee ici.
+const INTRANET_URL =
+  process.env.NEXT_PUBLIC_INTRANET_URL ??
+  "https://ccr-famille-intranet.vercel.app";
+
 export function Footer() {
   return (
     <footer className="border-t border-ccr-ink/10 bg-ccr-ink text-ccr-cream">
@@ -36,8 +40,16 @@ export function Footer() {
             Nous contacter
           </p>
           <p className="mt-3 text-sm text-ccr-cream/80">
-            Coordonnees a venir.
+            44 Rue de Bazas, Gironde, Casablanca
+            <br />
+            Telephone et e-mail a venir
           </p>
+          <a
+            href={INTRANET_URL}
+            className="mt-4 inline-block text-sm font-semibold text-ccr-gold-light hover:underline"
+          >
+            Espace membres &rarr;
+          </a>
         </div>
       </div>
 
