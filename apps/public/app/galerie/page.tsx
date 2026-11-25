@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { PHOTOS } from "../_data/galerie";
+import { PHOTOS, shuffle } from "../_data/galerie";
 
 export const metadata: Metadata = {
   title: "Galerie",
@@ -11,7 +11,12 @@ export const metadata: Metadata = {
 
 // Section 1.F du cahier des charges. D'autres photos et vidéos seront
 // ajoutées depuis l'intranet une fois le stockage Supabase câblé (section 7).
+// Rendu dynamique pour mélanger l'ordre des photos à chaque visite.
+export const dynamic = "force-dynamic";
+
 export default function GaleriePage() {
+  const photos = shuffle(PHOTOS);
+
   return (
     <main className="mx-auto max-w-5xl px-6 py-16">
       <Link
@@ -28,7 +33,7 @@ export default function GaleriePage() {
       </p>
 
       <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
-        {PHOTOS.map((photo) => (
+        {photos.map((photo) => (
           <div
             key={photo.src}
             className="relative aspect-square overflow-hidden rounded-xl"

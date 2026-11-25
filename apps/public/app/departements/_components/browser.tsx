@@ -3,6 +3,15 @@
 import { useMemo, useState } from "react";
 import { Icon } from "../../_components/icon";
 import type { Departement } from "../../_data/departements";
+import { buildWhatsAppLink } from "../../_data/whatsapp";
+
+function joinLink(nom: string) {
+  const message = `Bonjour, je souhaite rejoindre le département "${nom}". Pouvez-vous me recontacter ?`;
+  return (
+    buildWhatsAppLink(message) ??
+    `/mon-eglise-a-un-besoin?departement=${encodeURIComponent(nom)}`
+  );
+}
 
 // Recherche + filtre par catégorie, inspirés de l'interface de
 // servir.egliseicc.com (guide des ministères). Filtrage côté client : la
@@ -76,10 +85,16 @@ export function DepartementsBrowser({
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {resultats.map((pole) => {
             const style = CATEGORIE_STYLE[pole.categorie];
+            const href = joinLink(pole.nom);
+            const external = href.startsWith("http");
             return (
-              <article
+              <a
                 key={pole.nom}
-                className={`rounded-2xl border border-t-4 border-ccr-ink/10 bg-white p-6 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md ${style.border}`}
+                href={href}
+                target={external ? "_blank" : undefined}
+                rel={external ? "noopener noreferrer" : undefined}
+                aria-label={`Rejoindre le département ${pole.nom}`}
+                className={`group block rounded-2xl border border-t-4 border-ccr-ink/10 bg-white p-6 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md ${style.border}`}
               >
                 <div
                   className={`flex h-10 w-10 items-center justify-center rounded-full ${style.bg} ${style.text}`}
@@ -93,7 +108,10 @@ export function DepartementsBrowser({
                 </span>
                 <h2 className="mt-3 font-display text-xl font-bold">{pole.nom}</h2>
                 <p className="mt-2 text-sm text-ccr-ink/70">{pole.description}</p>
-              </article>
+                <span className="mt-4 inline-block text-xs font-semibold text-ccr-magenta transition-colors group-hover:underline">
+                  Rejoindre ce département &rarr;
+                </span>
+              </a>
             );
           })}
         </div>

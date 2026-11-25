@@ -35,14 +35,15 @@ export default function DepartementsPage() {
             L&rsquo;église a un besoin
           </h2>
           <p className="mx-auto mt-2 max-w-xl text-sm text-ccr-cream/70">
-            Un savoir-faire à proposer, une envie de servir ? Signalez-vous, un
-            responsable de département vous recontactera.
+            Vous voyez un besoin et une solution à apporter, en dehors des
+            départements ci-dessus ? Proposez-la, un responsable vous
+            recontactera.
           </p>
           <Link
             href="/mon-eglise-a-un-besoin"
             className="mt-6 inline-block rounded-full bg-ccr-gold px-6 py-3 text-sm font-semibold text-ccr-ink transition-colors hover:bg-ccr-gold-light"
           >
-            Je me signale
+            Faire une proposition
           </Link>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Montserrat, Playfair_Display } from "next/font/google";
+import { BackToTop } from "./_components/back-to-top";
 import { Footer } from "./_components/footer";
 import { Header } from "./_components/header";
 import "./globals.css";
@@ -38,6 +39,7 @@ export default function RootLayout({
         <Header />
         {children}
         <Footer />
+        <BackToTop />
       </body>
     </html>
   );

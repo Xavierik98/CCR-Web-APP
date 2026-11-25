@@ -1,6 +1,7 @@
 // Liste mise à jour le 25/11 : Coiffure, Couture et stylisme et Patisserie
 // retirés. Finance + Trésorerie fusionnés en "Finances". Communication +
 // Média + Infographie + Informatique fusionnés en "Communication & Digital".
+// Ajout de "Service d'ordre" (accueil, protocole) le 26/11.
 export type Departement = {
   nom: string;
   description: string;
@@ -28,6 +29,12 @@ export const DEPARTEMENTS: Departement[] = [
   {
     nom: "Social",
     description: "Accompagnement et soutien social des membres.",
+    categorie: "Ministère",
+  },
+  {
+    nom: "Service d'ordre",
+    description:
+      "Accueil, orientation et protocole lors des cultes et événements, pour un déroulement serein.",
     categorie: "Ministère",
   },
 ];

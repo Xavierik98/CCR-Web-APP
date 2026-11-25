@@ -18,7 +18,7 @@ import { buildWhatsAppLink } from "./_data/whatsapp";
 const LIENS_RAPIDES = [
   { href: "/departements", label: "Nos départements", icon: "spark" as const },
   { href: "/cultes-et-programmes", label: "Cultes et programmes", icon: "clock" as const },
-  { href: "/mon-eglise-a-un-besoin", label: "Servir", icon: "heart" as const },
+  { href: "/departements", label: "Servir", icon: "heart" as const },
   { href: "/contact", label: "Nous trouver", icon: "map" as const },
 ];
 
@@ -230,7 +230,7 @@ export default function HomePage() {
           </div>
 
           <div className="mt-6">
-            <Marquee>
+            <Marquee shuffle>
               {PHOTOS.map((photo) => (
                 <div
                   key={photo.src}
@@ -295,7 +295,7 @@ export default function HomePage() {
                 Nous contacter
               </Link>
               <Link
-                href="/mon-eglise-a-un-besoin"
+                href="/departements"
                 className="rounded-full border border-ccr-cream/40 px-6 py-3 text-sm font-semibold transition-colors hover:border-ccr-cream"
               >
                 Servir à l&rsquo;église
