@@ -24,9 +24,9 @@ export function Header() {
           <Image
             src="/logo-ccr-famille.jpg"
             alt="CCR Famille"
-            width={90}
-            height={160}
-            className="h-12 w-auto object-contain"
+            width={120}
+            height={213}
+            className="h-20 w-auto object-contain"
             priority
           />
         </Link>
