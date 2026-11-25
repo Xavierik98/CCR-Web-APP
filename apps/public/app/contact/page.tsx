@@ -1,16 +1,10 @@
 import type { Metadata } from "next";
+import { ADRESSE, MAPS_EMBED_SRC } from "../_data/contact";
 
 export const metadata: Metadata = {
   title: "Contact",
   description: "Adresse, localisation et formulaire de contact de CCR Famille Casablanca.",
 };
-
-// Adresse fournie par le client (25/11). Telephone et e-mail officiels restent
-// a fournir (section 10 du cahier des charges) : aucune coordonnee inventee ici.
-const ADRESSE = "44 Rue de Bazas, Gironde, Casablanca, Maroc";
-const MAPS_EMBED_SRC = `https://www.google.com/maps?q=${encodeURIComponent(
-  ADRESSE,
-)}&output=embed`;
 
 export default function ContactPage() {
   return (

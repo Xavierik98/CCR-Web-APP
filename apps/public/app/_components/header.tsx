@@ -19,10 +19,10 @@ const INTRANET_URL =
 export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-ccr-ink/10 bg-ccr-cream/90 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-6 py-3">
+      <div className="mx-auto grid max-w-6xl grid-cols-[auto_1fr_auto] items-center gap-6 px-6 py-2">
         <Link href="/" className="flex items-center gap-3">
           <Image
-            src="/logo-ccr-famille.jpg"
+            src="/logo-ccr-famille.png"
             alt="CCR Famille"
             width={120}
             height={213}
@@ -31,7 +31,7 @@ export function Header() {
           />
         </Link>
 
-        <nav className="hidden items-center gap-6 text-sm font-medium md:flex">
+        <nav className="hidden items-center justify-center gap-6 text-sm font-medium md:flex">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
@@ -43,7 +43,7 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="hidden items-center justify-end gap-3 md:flex">
           <a
             href={INTRANET_URL}
             className="whitespace-nowrap rounded-full border border-ccr-ink/20 px-5 py-2 text-sm font-semibold transition-colors hover:border-ccr-ink"
@@ -59,7 +59,7 @@ export function Header() {
         </div>
 
         {/* Menu sans JavaScript : <details> fait office de disclosure accessible sous md. */}
-        <details className="md:hidden">
+        <details className="justify-self-end md:hidden">
           <summary className="list-none rounded-full border border-ccr-ink/20 px-3 py-2 text-sm font-medium">
             Menu
           </summary>

@@ -4,6 +4,7 @@ import { Icon } from "./_components/icon";
 import { Reveal } from "./_components/reveal";
 import { DEPARTEMENTS } from "./_data/departements";
 import { PILIERS } from "./_data/piliers";
+import { buildWhatsAppLink } from "./_data/whatsapp";
 
 // Structure de la page d'accueil (section 1.A du cahier des charges). Les sections
 // sans donnee officielle (actualites, temoignages) restent honnetes : aucun
@@ -27,12 +28,9 @@ const DEPARTEMENTS_APERCU = DEPARTEMENTS.slice(0, 4);
 // Numero WhatsApp reel a fournir : tant que la variable n'est pas definie
 // (Vercel > Project Settings > Environment Variables), le bouton ne s'affiche
 // pas plutot que de pointer vers un faux numero.
-const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
-const WHATSAPP_URL = WHATSAPP_NUMBER
-  ? `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-      "Bonjour CCR Famille, j'aimerais avoir des informations.",
-    )}`
-  : null;
+const WHATSAPP_URL = buildWhatsAppLink(
+  "Bonjour CCR Famille, j'aimerais avoir des informations.",
+);
 
 export default function HomePage() {
   return (

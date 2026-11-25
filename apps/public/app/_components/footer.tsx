@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ADRESSE, MAPS_EMBED_SRC } from "../_data/contact";
 
 // Coordonnees volontairement generiques : telephone et e-mail reels a fournir
 // (section 10 du cahier des charges), pas d'information inventee ici.
@@ -40,10 +41,19 @@ export function Footer() {
             Nous contacter
           </p>
           <p className="mt-3 text-sm text-ccr-cream/80">
-            44 Rue de Bazas, Gironde, Casablanca
+            {ADRESSE}
             <br />
             Telephone et e-mail a venir
           </p>
+          <div className="mt-4 aspect-[16/10] w-full max-w-xs overflow-hidden rounded-xl border border-ccr-cream/10 grayscale transition-all hover:grayscale-0">
+            <iframe
+              title={`Localisation CCR Famille - ${ADRESSE}`}
+              src={MAPS_EMBED_SRC}
+              className="h-full w-full"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </div>
           <a
             href={INTRANET_URL}
             className="mt-4 inline-block text-sm font-semibold text-ccr-gold-light hover:underline"
