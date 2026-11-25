@@ -2,6 +2,7 @@ import Link from "next/link";
 import { HeroSlideshow } from "./_components/hero-slideshow";
 import { Icon } from "./_components/icon";
 import { Reveal } from "./_components/reveal";
+import { ADRESSE } from "./_data/contact";
 import { DEPARTEMENTS } from "./_data/departements";
 import { PILIERS } from "./_data/piliers";
 import { buildWhatsAppLink } from "./_data/whatsapp";
@@ -76,17 +77,15 @@ export default function HomePage() {
             >
               Participer a un culte
             </Link>
-            {WHATSAPP_URL ? (
-              <a
-                href={WHATSAPP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full bg-[#25D366] px-6 py-3 text-sm font-semibold text-ccr-ink transition-transform hover:scale-105"
-              >
-                <Icon name="chat" className="h-4 w-4" />
-                Nous ecrire sur WhatsApp
-              </a>
-            ) : null}
+            <a
+              href={WHATSAPP_URL ?? "/contact"}
+              target={WHATSAPP_URL ? "_blank" : undefined}
+              rel={WHATSAPP_URL ? "noopener noreferrer" : undefined}
+              className="inline-flex items-center gap-2 rounded-full bg-[#25D366] px-6 py-3 text-sm font-semibold text-ccr-ink transition-transform hover:scale-105"
+            >
+              <Icon name="chat" className="h-4 w-4" />
+              Nous ecrire sur WhatsApp
+            </a>
           </div>
         </div>
       </section>
@@ -275,18 +274,37 @@ export default function HomePage() {
         </section>
       </Reveal>
 
+      {/* Bloc d'appel a l'action avant le footer, juste avant de quitter la page. */}
       <Reveal>
-        <section id="contact" className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="font-display text-2xl font-bold">Nous contacter</h2>
-          <p className="mt-2 text-sm text-ccr-ink/70">
-            44 Rue de Bazas, Gironde, Casablanca.
-          </p>
-          <Link
-            href="/contact"
-            className="mt-4 inline-block text-sm font-semibold text-ccr-magenta hover:underline"
-          >
-            Voir la carte et nous ecrire &rarr;
-          </Link>
+        <section id="contact" className="mx-auto max-w-6xl px-6 pb-20">
+          <div className="rounded-3xl bg-ccr-ink px-8 py-12 text-ccr-cream md:flex md:items-center md:justify-between md:gap-10 md:px-12">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-ccr-gold">
+                Premiere visite ?
+              </p>
+              <h2 className="mt-2 font-display text-3xl font-black md:text-4xl">
+                Vous etes les bienvenus ce dimanche
+              </h2>
+              <p className="mt-3 max-w-lg text-sm text-ccr-cream/70">
+                Retrouvez-nous au {ADRESSE}, ou ecrivez-nous pour preparer
+                votre venue ou proposer votre aide dans un departement.
+              </p>
+            </div>
+            <div className="mt-6 flex shrink-0 flex-wrap gap-3 md:mt-0">
+              <Link
+                href="/contact"
+                className="rounded-full bg-ccr-gold px-6 py-3 text-sm font-semibold text-ccr-ink transition-colors hover:bg-ccr-gold-light"
+              >
+                Nous contacter
+              </Link>
+              <Link
+                href="/mon-eglise-a-un-besoin"
+                className="rounded-full border border-ccr-cream/40 px-6 py-3 text-sm font-semibold transition-colors hover:border-ccr-cream"
+              >
+                Servir a l&rsquo;eglise
+              </Link>
+            </div>
+          </div>
         </section>
       </Reveal>
     </main>

@@ -13,7 +13,13 @@ export function Footer() {
       <div className="mx-auto grid max-w-6xl gap-10 px-6 py-12 md:grid-cols-3">
         <div>
           <p className="font-display text-xl font-bold">CCR Famille</p>
-          <p className="mt-2 text-sm text-ccr-cream/70">Casablanca, Maroc</p>
+          <p className="mt-1 text-sm text-ccr-cream/70">
+            Centre Chretien de Restauration
+          </p>
+          <p className="text-sm text-ccr-cream/70">Casablanca, Maroc</p>
+          <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-ccr-gold-light">
+            Rassembler &middot; Former &middot; Envoyer
+          </p>
         </div>
 
         <div>

@@ -111,24 +111,15 @@ export function ProgrammeGrid({ items }: { items: readonly ProgrammeItem[] }) {
             ) : null}
 
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-              {whatsappLink(selected) ? (
-                <a
-                  href={whatsappLink(selected)!}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 py-3 text-sm font-semibold text-ccr-ink transition-transform hover:scale-105"
-                >
-                  <Icon name="chat" className="h-4 w-4" />
-                  Contacter sur WhatsApp
-                </a>
-              ) : (
-                <a
-                  href="/contact"
-                  className="inline-flex flex-1 items-center justify-center rounded-full bg-ccr-gold px-5 py-3 text-sm font-semibold text-ccr-ink transition-colors hover:bg-ccr-gold-light"
-                >
-                  Nous ecrire
-                </a>
-              )}
+              <a
+                href={whatsappLink(selected) ?? "/contact"}
+                target={whatsappLink(selected) ? "_blank" : undefined}
+                rel={whatsappLink(selected) ? "noopener noreferrer" : undefined}
+                className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 py-3 text-sm font-semibold text-ccr-ink transition-transform hover:scale-105"
+              >
+                <Icon name="chat" className="h-4 w-4" />
+                Contacter sur WhatsApp
+              </a>
               <button
                 type="button"
                 onClick={() => setSelected(null)}

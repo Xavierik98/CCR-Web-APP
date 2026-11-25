@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { YoutubeBackground } from "../_components/youtube-background";
 import { DEPARTEMENTS } from "../_data/departements";
 import { DepartementsBrowser } from "./_components/browser";
 
@@ -11,10 +12,14 @@ export const metadata: Metadata = {
 export default function DepartementsPage() {
   return (
     <main>
-      <section className="relative overflow-hidden bg-gradient-to-br from-ccr-magenta/10 via-ccr-cream to-ccr-blue/10 py-16">
-        <div className="mx-auto max-w-5xl px-6">
-          <h1 className="font-display text-4xl font-black">Nos departements</h1>
-          <p className="mt-3 max-w-2xl text-ccr-ink/70">
+      <section className="relative isolate min-h-[380px] overflow-hidden bg-ccr-ink py-16">
+        <YoutubeBackground videoId="_8GzXCXd1GI" />
+        <div className="absolute inset-0 bg-ccr-ink/70" />
+        <div className="relative mx-auto max-w-5xl px-6">
+          <h1 className="font-display text-4xl font-black text-ccr-cream">
+            Nos departements
+          </h1>
+          <p className="mt-3 max-w-2xl text-ccr-cream/80">
             Des ministeres et des poles de competences ou chacun peut servir,
             apprendre et mettre son savoir-faire au service des autres.
           </p>
