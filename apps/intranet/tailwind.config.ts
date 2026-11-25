@@ -18,6 +18,7 @@ const config: Config = {
       },
       fontFamily: {
         body: ["var(--font-body)"],
+        display: ["var(--font-display)"],
       },
     },
   },

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BlurredPhoto } from "../_components/blurred-photo";
+import { HeroSlideshow } from "../_components/hero-slideshow";
 import { ImageSlot } from "../_components/image-slot";
 import { A_PROPOS_PHOTOS } from "../_data/a-propos-photos";
 import { LEADERS } from "../_data/leaders";
@@ -53,7 +53,10 @@ export default function AProposPage() {
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="relative aspect-[16/7] w-full md:aspect-[21/7]">
-          <ImageSlot src="/images/about/hero.jpg" alt="Centre Chrétien de Restauration" />
+          <HeroSlideshow
+            images={A_PROPOS_PHOTOS.map((photo) => ({ src: photo.src }))}
+            imageClassName="scale-105 blur-[1.5px]"
+          />
         </div>
         <div className="mx-auto max-w-4xl px-6 py-10 text-center">
           <h1 className="font-display text-4xl font-black md:text-5xl">
@@ -108,24 +111,6 @@ export default function AProposPage() {
             </li>
           ))}
         </ol>
-      </section>
-
-      {/* Quelques moments */}
-      <section className="mx-auto max-w-5xl px-6 pb-16">
-        <h2 className="font-display text-3xl font-bold">Quelques moments</h2>
-        <p className="mt-2 max-w-xl text-sm text-ccr-ink/70">
-          Un aperçu de la vie de notre famille d&rsquo;église.
-        </p>
-        <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-          {A_PROPOS_PHOTOS.map((photo) => (
-            <BlurredPhoto
-              key={photo.src}
-              src={photo.src}
-              alt={photo.alt}
-              className="aspect-[4/5]"
-            />
-          ))}
-        </div>
       </section>
 
       {/* Nos responsables */}

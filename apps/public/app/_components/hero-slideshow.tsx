@@ -9,9 +9,11 @@ import { useEffect, useState } from "react";
 export function HeroSlideshow({
   images,
   intervalMs = 6000,
+  imageClassName,
 }: {
   images: { src: string; position?: string }[];
   intervalMs?: number;
+  imageClassName?: string;
 }) {
   const [index, setIndex] = useState(0);
 
@@ -34,7 +36,7 @@ export function HeroSlideshow({
           alt=""
           fill
           priority={i === 0}
-          className="animate-slow-zoom object-cover transition-opacity duration-[1500ms] ease-in-out"
+          className={`animate-slow-zoom object-cover transition-opacity duration-[1500ms] ease-in-out ${imageClassName ?? ""}`}
           style={{
             objectPosition: image.position ?? "center",
             opacity: i === index ? 1 : 0,
