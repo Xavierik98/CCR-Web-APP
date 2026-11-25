@@ -2,8 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { HeroSlideshow } from "./_components/hero-slideshow";
 import { Icon } from "./_components/icon";
+import { Marquee } from "./_components/marquee";
 import { Reveal } from "./_components/reveal";
-import { RotatingWords } from "./_components/rotating-words";
+import { TypewriterWords } from "./_components/typewriter-words";
 import { YoutubeBackground } from "./_components/youtube-background";
 import { ADRESSE } from "./_data/contact";
 import { PHOTOS } from "./_data/galerie";
@@ -203,7 +204,7 @@ export default function HomePage() {
               Un style de vie
             </p>
             <h2 className="mt-3 font-display text-4xl font-black text-ccr-cream md:text-5xl">
-              <RotatingWords words={["Adoration", "Louange", "Priere", "Intercession"]} />
+              <TypewriterWords words={["Intercession", "Priere", "Adoration", "Louange"]} />
             </h2>
             <p className="mx-auto mt-4 max-w-md text-ccr-cream/70">
               Ce que nous vivons dans nos cultes et nos reunions, porte par
@@ -220,31 +221,36 @@ export default function HomePage() {
       </Reveal>
 
       <Reveal>
-        <section id="galerie" className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="font-display text-2xl font-bold">Galerie</h2>
-          <p className="mt-2 max-w-xl text-sm text-ccr-ink/70">
-            Quelques images et videos de la vie de l&rsquo;eglise.
-          </p>
+        <section id="galerie" className="py-16">
+          <div className="mx-auto max-w-6xl px-6">
+            <h2 className="font-display text-2xl font-bold">Galerie</h2>
+            <p className="mt-2 max-w-xl text-sm text-ccr-ink/70">
+              Quelques images et videos de la vie de l&rsquo;eglise.
+            </p>
+          </div>
 
-          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            {PHOTOS.map((photo, index) => (
-              <Reveal key={photo.src} delay={index * 80}>
-                <div className="relative aspect-square overflow-hidden rounded-xl transition-transform hover:scale-[1.03]">
+          <div className="mt-6">
+            <Marquee>
+              {PHOTOS.map((photo) => (
+                <div
+                  key={photo.src}
+                  className="relative h-48 w-48 shrink-0 overflow-hidden rounded-xl sm:h-56 sm:w-56"
+                >
                   <Image
                     src={photo.src}
                     alt={photo.alt}
                     fill
-                    sizes="(min-width: 768px) 25vw, 50vw"
+                    sizes="224px"
                     className="object-cover"
                   />
                 </div>
-              </Reveal>
-            ))}
+              ))}
+            </Marquee>
           </div>
 
           <Link
             href="/galerie"
-            className="mt-6 inline-block text-sm font-semibold text-ccr-magenta hover:underline"
+            className="mt-6 inline-block px-6 text-sm font-semibold text-ccr-magenta hover:underline"
           >
             En savoir plus &rarr;
           </Link>

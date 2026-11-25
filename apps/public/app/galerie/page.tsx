@@ -33,7 +33,7 @@ export default function GaleriePage() {
             />
           </div>
         ))}
-        {Array.from({ length: 4 }).map((_, index) => (
+        {Array.from({ length: 3 }).map((_, index) => (
           <div
             key={`placeholder-${index}`}
             className="aspect-square rounded-xl border border-dashed border-ccr-ink/15 bg-ccr-ink/5"
