@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import { HeroSlideshow } from "./_components/hero-slideshow";
 import { Icon } from "./_components/icon";
 import { Reveal } from "./_components/reveal";
 import { DEPARTEMENTS } from "./_data/departements";
@@ -29,12 +29,11 @@ export default function HomePage() {
     <main>
       <section className="relative isolate flex min-h-[520px] items-center overflow-hidden md:min-h-[640px]">
         <div className="absolute inset-0 -z-10">
-          <Image
-            src="/images/hero-culte.jpg"
-            alt=""
-            fill
-            priority
-            className="animate-slow-zoom object-cover"
+          <HeroSlideshow
+            images={[
+              { src: "/images/hero-1.jpg", position: "center 65%" },
+              { src: "/images/hero-2.jpg", position: "center 35%" },
+            ]}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-ccr-ink via-ccr-ink/75 to-ccr-ink/40" />
         </div>
