@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 const NAV_LINKS = [
-  { href: "/qui-sommes-nous", label: "Qui sommes-nous" },
+  { href: "/a-propos", label: "A propos" },
   { href: "/cultes-et-programmes", label: "Cultes et programmes" },
   { href: "/departements", label: "Departements" },
   { href: "/galerie", label: "Galerie" },

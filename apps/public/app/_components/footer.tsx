@@ -21,7 +21,7 @@ export function Footer() {
           </p>
           <ul className="mt-3 space-y-2 text-sm text-ccr-cream/80">
             <li>
-              <Link href="/qui-sommes-nous">Qui sommes-nous</Link>
+              <Link href="/a-propos">A propos</Link>
             </li>
             <li>
               <Link href="/cultes-et-programmes">Cultes et programmes</Link>

@@ -23,22 +23,33 @@ function PlaceholderSection({
 export default function HomePage() {
   return (
     <main>
-      <section className="mx-auto grid max-w-6xl items-center gap-10 px-6 py-16 md:grid-cols-2 md:py-24">
-        <div>
-          <h1 className="font-display text-5xl font-black leading-[1.05] tracking-tight md:text-6xl">
+      <section className="relative isolate flex min-h-[520px] items-center overflow-hidden md:min-h-[640px]">
+        <div className="absolute inset-0 -z-10">
+          <Image
+            src="/images/hero-culte.jpg"
+            alt=""
+            fill
+            priority
+            className="animate-slow-zoom object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-ccr-ink via-ccr-ink/75 to-ccr-ink/40" />
+        </div>
+
+        <div className="mx-auto max-w-6xl px-6 py-16">
+          <h1 className="font-display text-5xl font-black leading-[1.05] tracking-tight text-ccr-cream md:text-6xl">
             La famille
             <br />
             <span className="text-ccr-magenta">CCR</span>{" "}
-            <span className="text-ccr-blue">a Casablanca</span>
+            <span className="text-ccr-gold-light">a Casablanca</span>
           </h1>
-          <p className="mt-6 max-w-md text-lg text-ccr-ink/70">
+          <p className="mt-6 max-w-md text-lg text-ccr-cream/80">
             Une eglise qui accueille, qui forme et qui envoie, en plein coeur
             de Casablanca.
           </p>
           <div className="mt-8 flex flex-wrap gap-4">
             <Link
-              href="/qui-sommes-nous"
-              className="rounded-full bg-ccr-ink px-6 py-3 text-sm font-semibold text-ccr-cream transition-colors hover:bg-ccr-ink/80"
+              href="/a-propos"
+              className="rounded-full border border-ccr-cream/50 px-6 py-3 text-sm font-semibold text-ccr-cream transition-colors hover:bg-ccr-cream/10"
             >
               Decouvrir l&rsquo;eglise
             </Link>
@@ -49,17 +60,6 @@ export default function HomePage() {
               Participer a un culte
             </Link>
           </div>
-        </div>
-
-        <div className="flex justify-center">
-          <Image
-            src="/logo-ccr-famille.jpg"
-            alt="CCR Famille"
-            width={280}
-            height={498}
-            className="h-auto w-full max-w-[200px] md:max-w-[240px]"
-            priority
-          />
         </div>
       </section>
 

@@ -6,10 +6,11 @@ const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
 const routes = [
   "",
-  "/qui-sommes-nous",
+  "/a-propos",
   "/equipe",
   "/cultes-et-programmes",
   "/departements",
+  "/mon-eglise-a-un-besoin",
   "/galerie",
   "/actualites",
   "/contact",

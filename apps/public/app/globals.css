@@ -1,3 +1,24 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Effet "Ken Burns" discret pour les photos de hero : un zoom tres lent qui
+   evite que la page ne paraisse figee, sans dependre de JavaScript. */
+@keyframes slow-zoom {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.08);
+  }
+}
+
+.animate-slow-zoom {
+  animation: slow-zoom 20s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-slow-zoom {
+    animation: none;
+  }
+}
