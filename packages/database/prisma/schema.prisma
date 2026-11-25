@@ -2,9 +2,13 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// Base hebergee sur Supabase (decision du 25/11). DATABASE_URL passe par le pooler
+// Supavisor (port 6543, pgbouncer=true) pour l'application ; DIRECT_URL (port 5432)
+// sert uniquement aux migrations Prisma, qui ne passent pas par un pooler de transactions.
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 enum MembershipStatus {
