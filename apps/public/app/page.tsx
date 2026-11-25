@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { HeroSlideshow } from "./_components/hero-slideshow";
 import { Icon } from "./_components/icon";
@@ -5,6 +6,7 @@ import { Reveal } from "./_components/reveal";
 import { RotatingWords } from "./_components/rotating-words";
 import { YoutubeBackground } from "./_components/youtube-background";
 import { ADRESSE } from "./_data/contact";
+import { PHOTOS } from "./_data/galerie";
 import { PILIERS } from "./_data/piliers";
 import { buildWhatsAppLink } from "./_data/whatsapp";
 
@@ -225,10 +227,16 @@ export default function HomePage() {
           </p>
 
           <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            {["camera", "camera", "camera", "video"].map((icon, index) => (
-              <Reveal key={index} delay={index * 80}>
-                <div className="flex aspect-square items-center justify-center rounded-xl border border-dashed border-ccr-ink/15 bg-ccr-ink/5 text-ccr-ink/30">
-                  <Icon name={icon as "camera" | "video"} className="h-6 w-6" />
+            {PHOTOS.map((photo, index) => (
+              <Reveal key={photo.src} delay={index * 80}>
+                <div className="relative aspect-square overflow-hidden rounded-xl transition-transform hover:scale-[1.03]">
+                  <Image
+                    src={photo.src}
+                    alt={photo.alt}
+                    fill
+                    sizes="(min-width: 768px) 25vw, 50vw"
+                    className="object-cover"
+                  />
                 </div>
               </Reveal>
             ))}
