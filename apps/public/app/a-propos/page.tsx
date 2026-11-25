@@ -55,7 +55,6 @@ export default function AProposPage() {
         <div className="relative aspect-[16/7] w-full md:aspect-[21/7]">
           <HeroSlideshow
             images={A_PROPOS_PHOTOS.map((photo) => ({ src: photo.src }))}
-            imageClassName="scale-105 blur-[1.5px]"
           />
         </div>
         <div className="mx-auto max-w-4xl px-6 py-10 text-center">

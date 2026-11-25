@@ -6,6 +6,7 @@ import { Marquee } from "./_components/marquee";
 import { Reveal } from "./_components/reveal";
 import { TypewriterWords } from "./_components/typewriter-words";
 import { YoutubeBackground } from "./_components/youtube-background";
+import { ACTUALITES } from "./_data/actualites";
 import { ADRESSE } from "./_data/contact";
 import { PHOTOS } from "./_data/galerie";
 import { PILIERS } from "./_data/piliers";
@@ -260,14 +261,52 @@ export default function HomePage() {
       <Reveal>
         <section id="actualites" className="mx-auto max-w-6xl px-6 py-16">
           <h2 className="font-display text-2xl font-bold">Actualités</h2>
-          <div className="mt-6 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-ccr-ink/15 bg-ccr-ink/5 px-6 py-12 text-center">
-            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-ccr-blue/10 text-ccr-blue">
-              <Icon name="book" className="h-6 w-6" />
-            </span>
-            <p className="text-sm text-ccr-ink/60">
-              Aucune actualité publiée pour l&rsquo;instant. Revenez bientôt.
-            </p>
-          </div>
+
+          {ACTUALITES.length === 0 ? (
+            <div className="mt-6 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-ccr-ink/15 bg-ccr-ink/5 px-6 py-12 text-center">
+              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-ccr-blue/10 text-ccr-blue">
+                <Icon name="book" className="h-6 w-6" />
+              </span>
+              <p className="text-sm text-ccr-ink/60">
+                Aucune actualité publiée pour l&rsquo;instant. Revenez bientôt.
+              </p>
+            </div>
+          ) : (
+            <>
+              <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {ACTUALITES.slice(0, 3).map((article) => (
+                  <article
+                    key={article.slug}
+                    className="overflow-hidden rounded-2xl border border-ccr-ink/10 bg-white transition-transform hover:-translate-y-1 hover:shadow-md"
+                  >
+                    <div className="relative aspect-[16/9]">
+                      <Image
+                        src={article.image}
+                        alt={article.titre}
+                        fill
+                        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                        className="object-cover"
+                      />
+                    </div>
+                    <div className="p-5">
+                      <h3 className="font-display text-lg font-bold">
+                        {article.titre}
+                      </h3>
+                      <p className="mt-1 text-sm text-ccr-ink/70">
+                        {article.texte}
+                      </p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+              <Link
+                href="/actualites"
+                className="mt-6 inline-block text-sm font-semibold text-ccr-magenta hover:underline"
+              >
+                En savoir plus &rarr;
+              </Link>
+            </>
+          )}
         </section>
       </Reveal>
 
