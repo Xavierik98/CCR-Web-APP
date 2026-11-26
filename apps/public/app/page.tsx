@@ -3,13 +3,17 @@ import Link from "next/link";
 import { HeroSlideshow } from "./_components/hero-slideshow";
 import { Icon } from "./_components/icon";
 import { Marquee } from "./_components/marquee";
+import { ActualiteMedia } from "./_components/actualite-media";
 import { NextActivity } from "./_components/next-activity";
 import { Reveal } from "./_components/reveal";
+import { RevealText } from "./_components/reveal-text";
 import { TypeOnce } from "./_components/type-once";
 import { TypewriterWords } from "./_components/typewriter-words";
+import { VisionIcon } from "./_components/vision-icons";
 import { YoutubeBackground } from "./_components/youtube-background";
-import { ACTUALITES } from "./_data/actualites";
+import { ACTUALITES, formatDateActualite } from "./_data/actualites";
 import { ADRESSE } from "./_data/contact";
+import { RIB, RIB_DISPONIBLE } from "./_data/dons";
 import { PHOTOS } from "./_data/galerie";
 import { PILIERS } from "./_data/piliers";
 import { buildWhatsAppLink } from "./_data/whatsapp";
@@ -18,17 +22,11 @@ import { buildWhatsAppLink } from "./_data/whatsapp";
 // sans donnée officielle (actualités, témoignages) restent honnêtes : aucun
 // contenu générique ou inventé n'est publié à leur place.
 
-const LIENS_RAPIDES = [
-  { href: "/departements", label: "Nos départements", icon: "spark" as const },
-  { href: "/cultes-et-programmes", label: "Cultes et programmes", icon: "clock" as const },
-  { href: "/departements", label: "Servir", icon: "heart" as const },
-  { href: "/contact", label: "Nous trouver", icon: "map" as const },
-];
-
-const ACCENTS = {
-  gold: { text: "text-ccr-gold", bg: "bg-ccr-gold/10" },
-  magenta: { text: "text-ccr-magenta", bg: "bg-ccr-magenta/10" },
-  blue: { text: "text-ccr-blue", bg: "bg-ccr-blue/10" },
+// Couleur du trait de chaque icône de la vision, reprise du logo.
+const VISION_COLORS = {
+  gold: "text-ccr-gold-light",
+  magenta: "text-ccr-magenta",
+  blue: "text-[#6f9fe0]",
 };
 
 // Numéro WhatsApp réel à fournir : tant que la variable n'est pas définie
@@ -36,6 +34,10 @@ const ACCENTS = {
 // pas plutôt que de pointer vers un faux numéro.
 const WHATSAPP_URL = buildWhatsAppLink(
   "Bonjour CCR Famille, j'aimerais avoir des informations.",
+);
+
+const RIB_WHATSAPP_URL = buildWhatsAppLink(
+  "Bonjour, je souhaite participer à la collecte par virement. Pouvez-vous m'envoyer le RIB de l'église ?",
 );
 
 export default function HomePage() {
@@ -57,6 +59,7 @@ export default function HomePage() {
             La famille
             <br />
             <TypeOnce
+              loop
               segments={[
                 { text: "CCR", className: "text-ccr-magenta" },
                 { text: " à Casablanca", className: "text-ccr-gold-light" },
@@ -99,21 +102,50 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Bande de liens rapides, inspirée de la bande d'icônes d'impactcentrechretien.com */}
-      <section className="relative bg-ccr-ink pb-16 pt-10 text-ccr-cream">
-        <div className="mx-auto grid max-w-6xl gap-8 px-6 sm:grid-cols-2 lg:grid-cols-4">
-          {LIENS_RAPIDES.map((lien, index) => (
-            <Reveal key={lien.href} delay={index * 80}>
-              <Link href={lien.href} className="group flex items-center gap-3">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-ccr-cream/20 text-ccr-gold-light transition-all group-hover:scale-110 group-hover:border-ccr-gold-light">
-                  <Icon name={lien.icon} className="h-5 w-5" />
-                </span>
-                <span className="font-display text-base font-semibold">
-                  {lien.label}
-                </span>
-              </Link>
-            </Reveal>
-          ))}
+      {/* Notre vision, juste après le hero : bande sombre, grandes icônes au
+          trait qui se dessinent, titres en capitales (inspiration
+          impactcentrechretien.com, aux couleurs CCR). */}
+      <section className="relative bg-ccr-ink pb-24 pt-16 text-center text-ccr-cream">
+        <div className="mx-auto max-w-6xl px-6">
+          <RevealText
+            as="p"
+            text="Notre vision"
+            className="text-xs font-semibold uppercase tracking-[0.3em] text-ccr-gold-light"
+          />
+          <RevealText
+            as="h2"
+            text="Le chemin de chaque personne qui franchit nos portes"
+            className="mx-auto mt-3 max-w-2xl font-display text-3xl font-black md:text-4xl"
+          />
+
+          <div className="mt-14 grid gap-14 md:grid-cols-3 md:gap-10">
+            {PILIERS.map((pilier, index) => (
+              <Reveal key={pilier.nom} delay={index * 200}>
+                <article className="group flex flex-col items-center">
+                  <VisionIcon
+                    name={pilier.nom as "Rassembler" | "Former" | "Envoyer"}
+                    className={`h-24 w-24 transition-transform duration-500 group-hover:-translate-y-1 group-hover:scale-105 ${VISION_COLORS[pilier.accent]}`}
+                  />
+                  <h3 className="mt-6 text-xl font-bold uppercase tracking-[0.15em]">
+                    {pilier.nom}
+                  </h3>
+                  <p className="mt-3 max-w-xs text-sm leading-relaxed text-ccr-cream/75">
+                    {pilier.texte}
+                  </p>
+                  <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-ccr-cream/40">
+                    {pilier.verset}
+                  </p>
+                </article>
+              </Reveal>
+            ))}
+          </div>
+
+          <Link
+            href="/a-propos"
+            className="mt-14 inline-block rounded-full border border-ccr-cream/30 px-6 py-3 text-sm font-semibold transition-colors hover:border-ccr-gold-light hover:text-ccr-gold-light"
+          >
+            En savoir plus sur notre vision &rarr;
+          </Link>
         </div>
 
         {/* Vague de transition vers le contenu clair, dans l'esprit des bandes
@@ -125,56 +157,15 @@ export default function HomePage() {
           className="absolute bottom-0 left-0 h-10 w-full translate-y-full text-ccr-ink"
         >
           <path
-            d="M0,0 C360,60 1080,-30 1440,20 L1440,60 L0,60 Z"
+            d="M0,0 C360,60 1080,-30 1440,20 L1440,0 L0,0 Z"
             fill="currentColor"
           />
         </svg>
       </section>
 
       <Reveal>
-        <section className="mx-auto max-w-5xl px-6 py-20 text-center">
-          <h2 className="font-display text-3xl font-bold">Notre vision</h2>
-          <p className="mx-auto mt-3 max-w-xl text-ccr-ink/70">
-            Rassembler &middot; Former &middot; Envoyer, en trois mots qui
-            décrivent le chemin de chaque personne qui franchit nos portes.
-          </p>
-
-          <div className="mt-10 grid gap-6 md:grid-cols-3">
-            {PILIERS.map((pilier, index) => {
-              const accent = ACCENTS[pilier.accent];
-              return (
-                <Reveal key={pilier.nom} delay={index * 120}>
-                  <article className="h-full rounded-2xl border border-ccr-ink/10 bg-white p-6 text-left transition-transform hover:-translate-y-1 hover:shadow-md">
-                    <div
-                      className={`flex h-11 w-11 items-center justify-center rounded-full ${accent.bg} ${accent.text}`}
-                    >
-                      <Icon name={pilier.icon} className="h-5 w-5" />
-                    </div>
-                    <h3 className={`mt-4 font-display text-xl font-bold ${accent.text}`}>
-                      {pilier.nom}
-                    </h3>
-                    <p className="mt-2 text-sm text-ccr-ink/70">{pilier.texte}</p>
-                    <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-ccr-ink/40">
-                      {pilier.verset}
-                    </p>
-                  </article>
-                </Reveal>
-              );
-            })}
-          </div>
-
-          <Link
-            href="/a-propos"
-            className="mt-10 inline-block text-sm font-semibold text-ccr-magenta hover:underline"
-          >
-            En savoir plus sur notre vision &rarr;
-          </Link>
-        </section>
-      </Reveal>
-
-      <Reveal>
-        <section id="prochaines-activites" className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="font-display text-2xl font-bold">Prochaines activités</h2>
+        <section id="prochaines-activites" className="mx-auto max-w-6xl px-6 pb-16 pt-24">
+          <RevealText as="h2" text="Prochaines activités" className="font-display text-2xl font-bold" />
           <NextActivity />
         </section>
       </Reveal>
@@ -210,10 +201,19 @@ export default function HomePage() {
       <Reveal>
         <section id="galerie" className="py-16">
           <div className="mx-auto max-w-6xl px-6">
-            <h2 className="font-display text-2xl font-bold">Galerie</h2>
-            <p className="mt-2 max-w-xl text-sm text-ccr-ink/70">
-              Quelques images et vidéos de la vie de l&rsquo;église.
-            </p>
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-ccr-magenta">Galerie</p>
+            <RevealText
+              as="h2"
+              text="Une jeunesse qui vit sa foi"
+              className="mt-2 font-display text-3xl font-black md:text-4xl"
+            />
+            <Reveal delay={200}>
+              <p className="mt-3 max-w-2xl text-ccr-ink/70">
+                Avec la JCCR, nos jeunes louent, servent, se forment et
+                partagent de vrais moments de famille. Ils portent
+                l&rsquo;église d&rsquo;aujourd&rsquo;hui et celle de demain.
+              </p>
+            </Reveal>
           </div>
 
           <div className="mt-6">
@@ -246,7 +246,7 @@ export default function HomePage() {
 
       <Reveal>
         <section id="actualites" className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="font-display text-2xl font-bold">Actualités</h2>
+          <RevealText as="h2" text="Actualités" className="font-display text-2xl font-bold" />
 
           {ACTUALITES.length === 0 ? (
             <div className="mt-6 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-ccr-ink/15 bg-ccr-ink/5 px-6 py-12 text-center">
@@ -266,16 +266,16 @@ export default function HomePage() {
                     className="overflow-hidden rounded-2xl border border-ccr-ink/10 bg-white transition-transform hover:-translate-y-1 hover:shadow-md"
                   >
                     <div className="relative aspect-[16/9]">
-                      <Image
-                        src={article.image}
-                        alt={article.titre}
-                        fill
+                      <ActualiteMedia
+                        article={article}
                         sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                        className="object-cover"
                       />
                     </div>
                     <div className="p-5">
-                      <h3 className="font-display text-lg font-bold">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-ccr-magenta">
+                        {formatDateActualite(article.date)}
+                      </p>
+                      <h3 className="mt-1 font-display text-lg font-bold">
                         {article.titre}
                       </h3>
                       <p className="mt-1 text-sm text-ccr-ink/70">
@@ -296,6 +296,65 @@ export default function HomePage() {
         </section>
       </Reveal>
 
+      {/* Dons et collectes par virement : le RIB n'est affiché que s'il a été
+          fourni (voir _data/dons.ts), sinon on invite à le demander. */}
+      <Reveal>
+        <section id="soutenir" className="mx-auto max-w-6xl px-6 pb-16">
+          <div className="relative overflow-hidden rounded-3xl border border-ccr-gold/30 bg-gradient-to-br from-ccr-gold/15 via-ccr-cream to-ccr-magenta/10 px-8 py-10 md:px-12">
+            <div className="grid gap-8 md:grid-cols-[1.4fr_1fr] md:items-center">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.3em] text-ccr-gold">Soutenir l&rsquo;œuvre</p>
+                <RevealText
+                  as="h2"
+                  text="Participer aux collectes, aussi par virement"
+                  className="mt-2 font-display text-3xl font-black"
+                />
+                <p className="mt-3 max-w-lg text-ccr-ink/70">
+                  Dîmes, offrandes et collectes peuvent se faire sur place
+                  pendant le culte ou par virement bancaire.
+                </p>
+              </div>
+              <div className="rounded-2xl bg-white/80 p-6 shadow-sm backdrop-blur">
+                {RIB_DISPONIBLE ? (
+                  <dl className="space-y-2 text-sm">
+                    <div>
+                      <dt className="text-xs font-semibold uppercase tracking-wide text-ccr-ink/50">Titulaire</dt>
+                      <dd className="font-semibold">{RIB.titulaire}</dd>
+                    </div>
+                    {RIB.banque ? (
+                      <div>
+                        <dt className="text-xs font-semibold uppercase tracking-wide text-ccr-ink/50">Banque</dt>
+                        <dd className="font-semibold">{RIB.banque}</dd>
+                      </div>
+                    ) : null}
+                    <div>
+                      <dt className="text-xs font-semibold uppercase tracking-wide text-ccr-ink/50">RIB</dt>
+                      <dd className="break-all font-mono font-semibold">{RIB.numero}</dd>
+                    </div>
+                  </dl>
+                ) : (
+                  <>
+                    <p className="text-sm text-ccr-ink/70">
+                      Pour recevoir les coordonnées bancaires (RIB) de
+                      l&rsquo;église, écrivez-nous.
+                    </p>
+                    <a
+                      href={RIB_WHATSAPP_URL ?? "/contact"}
+                      target={RIB_WHATSAPP_URL ? "_blank" : undefined}
+                      rel={RIB_WHATSAPP_URL ? "noopener noreferrer" : undefined}
+                      className="mt-4 inline-flex items-center gap-2 rounded-full bg-ccr-gold px-5 py-3 text-sm font-semibold text-ccr-ink transition-colors hover:bg-ccr-gold-light"
+                    >
+                      <Icon name="whatsapp" className="h-4 w-4" />
+                      Demander le RIB
+                    </a>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+      </Reveal>
+
       {/* Bloc d'appel à l'action avant le footer, juste avant de quitter la page. */}
       <Reveal>
         <section id="contact" className="mx-auto max-w-6xl px-6 pb-20">
@@ -304,9 +363,11 @@ export default function HomePage() {
               <p className="text-xs font-semibold uppercase tracking-wide text-ccr-gold">
                 Première visite ?
               </p>
-              <h2 className="mt-2 font-display text-3xl font-black md:text-4xl">
-                Vous êtes les bienvenus ce dimanche
-              </h2>
+              <RevealText
+                as="h2"
+                text="Vous êtes les bienvenus ce dimanche"
+                className="mt-2 font-display text-3xl font-black md:text-4xl"
+              />
               <p className="mt-3 max-w-lg text-sm text-ccr-cream/70">
                 Retrouvez-nous au {ADRESSE}, ou écrivez-nous pour préparer
                 votre venue ou proposer votre aide dans un département.

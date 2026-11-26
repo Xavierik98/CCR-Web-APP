@@ -1,17 +1,15 @@
 import type { Metadata } from "next";
-import Image from "next/image";
-import { ACTUALITES } from "../_data/actualites";
+import { ActualiteMedia } from "../_components/actualite-media";
+import { ACTUALITES, formatDateActualite } from "../_data/actualites";
 
 export const metadata: Metadata = {
   title: "Actualités",
   description: "Annonces et actualités de CCR Famille Casablanca.",
 };
 
-// Section 1.G du cahier des charges. A terme, les articles seront rédigés et
-// publiés depuis l'intranet (photo + texte, confirmé le 25/11), via le
-// workflow de statuts de la section 6 ; en attendant ce module, les annonces
-// viennent de _data/actualites.ts. Rien n'est inventé : l'état vide reste
-// honnête tant que la liste est effectivement vide.
+// Section 1.G du cahier des charges. A terme, les articles viendront de
+// l'intranet (module Actualités) ; en attendant, ils viennent de
+// _data/actualites.ts, de la plus récente à la plus ancienne.
 export default function ActualitesPage() {
   return (
     <main className="mx-auto max-w-3xl px-6 py-16">
@@ -31,16 +29,13 @@ export default function ActualitesPage() {
               className="overflow-hidden rounded-2xl border border-ccr-ink/10 bg-white"
             >
               <div className="relative aspect-[16/9]">
-                <Image
-                  src={article.image}
-                  alt={article.titre}
-                  fill
-                  sizes="(min-width: 768px) 672px, 100vw"
-                  className="object-cover"
-                />
+                <ActualiteMedia article={article} sizes="(min-width: 768px) 672px, 100vw" />
               </div>
               <div className="p-6">
-                <h2 className="font-display text-xl font-bold">
+                <p className="text-xs font-semibold uppercase tracking-wide text-ccr-magenta">
+                  {formatDateActualite(article.date)}
+                </p>
+                <h2 className="mt-1 font-display text-xl font-bold">
                   {article.titre}
                 </h2>
                 <p className="mt-2 text-sm text-ccr-ink/70">{article.texte}</p>

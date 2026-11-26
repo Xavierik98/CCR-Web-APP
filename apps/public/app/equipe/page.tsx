@@ -20,7 +20,7 @@ export default function EquipePage() {
         Famille.
       </p>
 
-      <div className="mt-10 grid gap-8 sm:grid-cols-2">
+      <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
         {LEADERS.map((leader) => (
           <article key={leader.slug} className="overflow-hidden rounded-2xl border border-ccr-ink/10">
             <div className="relative aspect-[4/3]">
@@ -29,7 +29,7 @@ export default function EquipePage() {
             <div className="p-6">
               <h2 className="font-display text-xl font-bold">{leader.nom}</h2>
               <p className="text-sm font-semibold text-ccr-magenta">{leader.titre}</p>
-              <p className="mt-3 text-sm text-ccr-ink/70">{leader.texte}</p>
+              {leader.texte ? <p className="mt-3 text-sm text-ccr-ink/70">{leader.texte}</p> : null}
             </div>
           </article>
         ))}

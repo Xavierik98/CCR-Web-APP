@@ -28,8 +28,9 @@ export default function GaleriePage() {
 
       <h1 className="mt-6 font-display text-4xl font-black">Galerie</h1>
       <p className="mt-3 max-w-xl text-ccr-ink/70">
-        Quelques moments de la vie de l&rsquo;église. D&rsquo;autres photos et
-        vidéos seront ajoutées prochainement.
+        La vie de l&rsquo;église, portée par une jeunesse qui loue, sert et
+        grandit dans la foi. D&rsquo;autres photos et vidéos seront ajoutées
+        prochainement.
       </p>
 
       <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">

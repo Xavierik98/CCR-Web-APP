@@ -18,7 +18,7 @@ const INTRANET_URL =
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-50 border-b border-ccr-ink/10 bg-ccr-cream/90 backdrop-blur">
+    <header className="sticky top-0 z-50 bg-ccr-cream/90 shadow-[0_8px_30px_-12px_rgba(32,28,22,0.35)] backdrop-blur after:absolute after:inset-x-0 after:bottom-0 after:h-[2px] after:bg-gradient-to-r after:from-ccr-magenta after:via-ccr-gold-light after:to-ccr-blue after:content-['']">
       <div className="mx-auto grid max-w-6xl grid-cols-[auto_1fr_auto] items-center gap-6 px-6 py-2">
         <Link href="/" className="flex items-center gap-3">
           <Image

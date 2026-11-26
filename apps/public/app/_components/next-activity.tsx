@@ -55,9 +55,8 @@ export function NextActivity() {
       </div>
       <div className="flex-1 px-6 py-6">
         <h3 className="font-display text-xl font-bold">{item.titre}</h3>
-        <p className="mt-2 text-sm text-ccr-ink/70">
-          {item.horaire} &middot; Salle de réunion CCR Casablanca
-        </p>
+        <p className="mt-2 text-sm font-semibold text-ccr-ink/80">{item.horaire}</p>
+        <p className="text-sm text-ccr-ink/60">Salle de réunion CCR Casablanca</p>
       </div>
     </div>
   );

@@ -107,3 +107,67 @@
     animation: none;
   }
 }
+
+/* Icônes au trait qui se dessinent quand leur bloc Reveal devient visible. */
+.draw-path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1.8s ease-out 0.2s;
+}
+
+.reveal-visible .draw-path {
+  stroke-dashoffset: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .draw-path {
+    stroke-dashoffset: 0;
+    transition: none;
+  }
+}
+
+/* Grille de fond qui défile en continu (page Cultes et programmes). */
+@keyframes grid-pan {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 72px 72px;
+  }
+}
+
+.animate-grid-pan {
+  animation: grid-pan 6s linear infinite;
+}
+
+/* Particules lumineuses qui montent lentement. */
+@keyframes rise {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(-110vh) scale(0.6);
+    opacity: 0;
+  }
+}
+
+.animate-rise {
+  animation: rise linear infinite;
+}
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-grid-pan,
+  .animate-rise {
+    animation: none;
+  }
+}

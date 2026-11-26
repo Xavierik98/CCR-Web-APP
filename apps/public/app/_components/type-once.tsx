@@ -5,20 +5,28 @@ import { useEffect, useState } from "react";
 type Segment = { text: string; className?: string };
 
 // Tape une suite de segments (chacun avec son propre style) lettre par
-// lettre, une seule fois au montage, curseur clignotant pendant la frappe
-// puis retiré une fois le texte complet affiché. Respecte
-// prefers-reduced-motion en affichant tout de suite le texte complet.
+// lettre. Avec `loop`, le texte complet reste affiché un moment, s'efface puis
+// se retape indéfiniment ; sans `loop`, il est tapé une seule fois. Le
+// curseur clignote pendant la frappe. Respecte prefers-reduced-motion en
+// affichant tout de suite le texte complet.
 export function TypeOnce({
   segments,
-  speedMs = 70,
+  speedMs = 80,
+  deleteSpeedMs = 40,
   startDelayMs = 400,
+  holdMs = 2600,
+  loop = false,
 }: {
   segments: Segment[];
   speedMs?: number;
+  deleteSpeedMs?: number;
   startDelayMs?: number;
+  holdMs?: number;
+  loop?: boolean;
 }) {
   const fullLength = segments.reduce((total, s) => total + s.text.length, 0);
   const [count, setCount] = useState(0);
+  const [deleting, setDeleting] = useState(false);
   const [reduced, setReduced] = useState(false);
 
   useEffect(() => {
@@ -30,13 +38,25 @@ export function TypeOnce({
       setCount(fullLength);
       return;
     }
-    if (count >= fullLength) return;
-    const id = setTimeout(
-      () => setCount((c) => c + 1),
-      count === 0 ? startDelayMs : speedMs,
-    );
+    let delay: number;
+    let next: () => void;
+    if (!deleting && count < fullLength) {
+      delay = count === 0 ? startDelayMs : speedMs;
+      next = () => setCount((c) => c + 1);
+    } else if (!deleting) {
+      if (!loop) return;
+      delay = holdMs;
+      next = () => setDeleting(true);
+    } else if (count > 0) {
+      delay = deleteSpeedMs;
+      next = () => setCount((c) => c - 1);
+    } else {
+      delay = 0;
+      next = () => setDeleting(false);
+    }
+    const id = setTimeout(next, delay);
     return () => clearTimeout(id);
-  }, [count, fullLength, reduced, speedMs, startDelayMs]);
+  }, [count, deleting, fullLength, reduced, speedMs, deleteSpeedMs, startDelayMs, holdMs, loop]);
 
   let remaining = count;
   const rendered = segments.map((segment, i) => {
@@ -52,14 +72,13 @@ export function TypeOnce({
     );
   });
 
+  const typing = loop || count < fullLength;
   return (
-    <>
-      {rendered}
-      {count < fullLength ? (
-        <span className="animate-pulse" aria-hidden="true">
-          |
-        </span>
-      ) : null}
-    </>
+    <span aria-label={segments.map((s) => s.text).join("")}>
+      <span aria-hidden="true">
+        {rendered}
+        {typing && !reduced ? <span className="animate-pulse font-light">|</span> : null}
+      </span>
+    </span>
   );
 }

@@ -4,6 +4,7 @@ export const PROGRAMME = [
   {
     jour: "Lundi à vendredi",
     titre: "Prière de minuit",
+    image: "/images/about/photo-5.jpg",
     horaire: "00h00 - 00h30",
     description: "30 minutes de prière chaque nuit.",
     icon: "clock",
@@ -12,6 +13,7 @@ export const PROGRAMME = [
   {
     jour: "Lundi",
     titre: "Cours d'affermissement",
+    image: "/images/about/photo-3.jpg",
     horaire: "20h30 - 21h30",
     icon: "book",
     accent: "blue",
@@ -19,6 +21,7 @@ export const PROGRAMME = [
   {
     jour: "Mardi",
     titre: "Intercession",
+    image: "/images/galerie/photo-4.jpg",
     horaire: "19h30 - 21h30",
     icon: "spark",
     accent: "magenta",
@@ -26,6 +29,7 @@ export const PROGRAMME = [
   {
     jour: "Mercredi",
     titre: "Église de maison",
+    image: "/images/galerie/photo-1.jpg",
     horaire: "19h30 - 21h00",
     description:
       "Rassemblement dans vos quartiers respectifs, dans une maison choisie au préalable, en communion fraternelle autour de la Parole de Dieu.",
@@ -36,6 +40,7 @@ export const PROGRAMME = [
   {
     jour: "Vendredi",
     titre: "Culte de délivrance",
+    image: "/images/hero-1.jpg",
     horaire: "19h30 - 21h30",
     icon: "bolt",
     accent: "magenta",
@@ -43,6 +48,7 @@ export const PROGRAMME = [
   {
     jour: "Samedi",
     titre: "Prière de la jeunesse",
+    image: "/images/galerie/photo-3.jpg",
     horaire: "21h00 - 21h30",
     description: "30 minutes de prière.",
     icon: "star",
@@ -51,6 +57,7 @@ export const PROGRAMME = [
   {
     jour: "Dimanche",
     titre: "Rassemblement dominical",
+    image: "/images/about/photo-2.jpg",
     horaire: "10h30 - 13h30",
     icon: "users",
     accent: "gold",
