@@ -1,5 +1,6 @@
 "use client";
 
+import { CheckedField } from "@ccr/ui/src/checked-field";
 import { useSearchParams } from "next/navigation";
 import type { Departement } from "../../_data/departements";
 
@@ -10,58 +11,10 @@ export function BesoinForm({ departements }: { departements: Departement[] }) {
   return (
     <form className="mt-10 flex flex-col gap-4">
       <div className="grid gap-4 sm:grid-cols-2">
-        <div>
-          <label htmlFor="nom" className="text-sm font-semibold">
-            Nom(s) *
-          </label>
-          <input
-            id="nom"
-            name="nom"
-            type="text"
-            required
-            autoComplete="family-name"
-            className="mt-1 w-full rounded-lg border border-ccr-ink/20 bg-white px-3 py-2 text-sm"
-          />
-        </div>
-        <div>
-          <label htmlFor="prenom" className="text-sm font-semibold">
-            Prénom(s) *
-          </label>
-          <input
-            id="prenom"
-            name="prenom"
-            type="text"
-            required
-            autoComplete="given-name"
-            className="mt-1 w-full rounded-lg border border-ccr-ink/20 bg-white px-3 py-2 text-sm"
-          />
-        </div>
-        <div>
-          <label htmlFor="telephone" className="text-sm font-semibold">
-            Téléphone *
-          </label>
-          <input
-            id="telephone"
-            name="telephone"
-            type="tel"
-            required
-            autoComplete="tel"
-            className="mt-1 w-full rounded-lg border border-ccr-ink/20 bg-white px-3 py-2 text-sm"
-          />
-        </div>
-        <div>
-          <label htmlFor="email" className="text-sm font-semibold">
-            E-mail *
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            required
-            autoComplete="email"
-            className="mt-1 w-full rounded-lg border border-ccr-ink/20 bg-white px-3 py-2 text-sm"
-          />
-        </div>
+        <CheckedField kind="name" label="Nom(s)" name="nom" id="nom" autoComplete="family-name" hint="Exemple : KIFILA" inputClassName="mt-1 w-full rounded-lg border border-ccr-ink/20 bg-white px-3 py-2 text-sm" />
+        <CheckedField kind="name" label="Prénom(s)" name="prenom" id="prenom" autoComplete="given-name" hint="Exemple : Arsène" inputClassName="mt-1 w-full rounded-lg border border-ccr-ink/20 bg-white px-3 py-2 text-sm" />
+        <CheckedField kind="phone" label="Téléphone" name="telephone" id="telephone" autoComplete="tel" inputClassName="mt-1 w-full rounded-lg border border-ccr-ink/20 bg-white px-3 py-2 text-sm" />
+        <CheckedField kind="email" label="E-mail" name="email" id="email" autoComplete="email" inputClassName="mt-1 w-full rounded-lg border border-ccr-ink/20 bg-white px-3 py-2 text-sm" />
       </div>
       <div>
         <label htmlFor="departement" className="text-sm font-semibold">

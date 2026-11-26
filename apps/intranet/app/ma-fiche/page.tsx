@@ -1,5 +1,6 @@
 import { prisma } from "@ccr/database";
 import type { Metadata } from "next";
+import { CheckedField } from "@ccr/ui/src/checked-field";
 import Image from "next/image";
 import { CATEGORY_LABELS, PROFESSIONAL_LABELS } from "@/lib/labels";
 import { CHURCH_FUNCTIONS } from "@/lib/members";
@@ -13,8 +14,9 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 const ERREURS: Record<string, string> = {
-  nom: "Merci d'indiquer votre nom et votre prénom.",
-  contact: "Merci d'indiquer un numéro de téléphone et une adresse e-mail valides.",
+  nom: "Le nom ou le prénom n'est pas conforme : au moins 2 lettres, sans chiffres ni symboles.",
+  telephone: "Le numéro de téléphone n'est pas conforme. Format attendu : +212 6XX XX XX XX ou 06 XX XX XX XX.",
+  email: "L'adresse e-mail n'est pas conforme. Exemple : prenom.nom@gmail.com",
   consentement: "Merci de cocher la case d'accord pour envoyer votre fiche.",
 };
 
@@ -66,22 +68,10 @@ export default async function MaFichePage({
                 <input type="text" name="site_web" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
 
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <label className="block">
-                    <span className="text-sm font-semibold">Nom(s) *</span>
-                    <input name="lastName" required autoComplete="family-name" className={field} />
-                  </label>
-                  <label className="block">
-                    <span className="text-sm font-semibold">Prénom(s) *</span>
-                    <input name="firstName" required autoComplete="given-name" className={field} />
-                  </label>
-                  <label className="block">
-                    <span className="text-sm font-semibold">Téléphone (WhatsApp) *</span>
-                    <input name="phone" type="tel" required autoComplete="tel" placeholder="06 00 00 00 00" className={field} />
-                  </label>
-                  <label className="block">
-                    <span className="text-sm font-semibold">E-mail *</span>
-                    <input name="email" type="email" required autoComplete="email" className={field} />
-                  </label>
+                  <CheckedField kind="name" label="Nom(s)" name="lastName" autoComplete="family-name" hint="Exemple : KIFILA" inputClassName={field} />
+                  <CheckedField kind="name" label="Prénom(s)" name="firstName" autoComplete="given-name" hint="Exemple : Arsène" inputClassName={field} />
+                  <CheckedField kind="phone" label="Téléphone (WhatsApp)" name="phone" autoComplete="tel" inputClassName={field} />
+                  <CheckedField kind="email" label="E-mail" name="email" autoComplete="email" inputClassName={field} />
                   <label className="block">
                     <span className="text-sm font-semibold">Date de naissance</span>
                     <input name="birthDate" type="date" className={field} />

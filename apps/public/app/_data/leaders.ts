@@ -32,12 +32,15 @@ export const LEADERS: Leader[] = [
     texte:
       "Il conduit l'œuvre au Maroc, veille sur les assemblées et accompagne les fidèles dans leur marche avec Dieu, fidèle à la vision reçue.",
     photo: "/images/about/pasteur-gliblas-tchounand.jpg",
+    cadrage: "object-[40%_72%]",
     local: true,
   },
   {
     slug: "arsene-kifila",
     nom: "Arsène KIFILA",
-    titre: "Assistant pasteur, responsable de CCR Casablanca",
+    titre: "Assistant pasteur",
+    texte:
+      "Responsable de CCR Casablanca, il seconde le pasteur principal dans la conduite de l'église et veille au quotidien sur la vie de l'assemblée et de ses membres.",
     photo: "/images/about/arsene-kifila.jpg",
     cadrage: "object-[50%_22%]",
     local: true,

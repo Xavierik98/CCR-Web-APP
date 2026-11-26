@@ -9,6 +9,7 @@ import {
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAccess } from "@/lib/auth";
+import { checkField } from "@ccr/ui/src/validation";
 import { mergeMembers } from "@/lib/members";
 
 // Cases cochées + fonctions libres séparées par des virgules.
@@ -61,9 +62,10 @@ export async function saveMember(formData: FormData) {
     notes: text(formData, "notes"),
     functions: readFunctions(formData),
   };
-  if (!data.lastName || !data.firstName || !data.phone || !data.email) {
-    redirect(`/membres/${id ?? "nouveau"}?erreur=nom`);
-  }
+  const back = `/membres/${id ?? "nouveau"}?erreur=`;
+  if (checkField("name", data.lastName) || checkField("name", data.firstName)) redirect(`${back}nom`);
+  if (checkField("phone", data.phone)) redirect(`${back}telephone`);
+  if (checkField("email", data.email)) redirect(`${back}email`);
 
   const member = id
     ? await prisma.member.update({ where: { id }, data })

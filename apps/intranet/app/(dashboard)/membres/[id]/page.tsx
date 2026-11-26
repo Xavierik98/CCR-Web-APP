@@ -1,7 +1,14 @@
 import { prisma } from "@ccr/database";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Badge, Button, Card, Field, Input, Notice, PageHeader, Select, Textarea } from "@/components/ui";
+import { CheckedField } from "@ccr/ui/src/checked-field";
+import { Badge, Button, Card, Field, Input, Notice, PageHeader, Select, Textarea, fieldClass } from "@/components/ui";
+
+const ERREURS: Record<string, string> = {
+  nom: "Le nom ou le prénom n'est pas conforme : au moins 2 lettres, sans chiffres ni symboles.",
+  telephone: "Le numéro de téléphone n'est pas conforme. Format attendu : +212 6XX XX XX XX ou 06 XX XX XX XX.",
+  email: "L'adresse e-mail n'est pas conforme. Exemple : prenom.nom@gmail.com",
+};
 import { canEdit, requireAccess, ROLE_LABELS } from "@/lib/auth";
 import {
   CATEGORY_LABELS,
@@ -68,9 +75,7 @@ export default async function MembrePage({
       {enregistre ? <Notice>Modifications enregistrées.</Notice> : null}
       {fusionne ? <Notice>Fiches fusionnées : présences, départements et engagements regroupés ici.</Notice> : null}
       {revoque ? <Notice>Accès à l&rsquo;intranet révoqué.</Notice> : null}
-      {erreur === "nom" ? (
-        <Notice tone="magenta">Le nom, le prénom, le téléphone et l&rsquo;e-mail sont obligatoires.</Notice>
-      ) : null}
+      {erreur && ERREURS[erreur] ? <Notice tone="magenta">{ERREURS[erreur]}</Notice> : null}
       {!editable ? <Notice>Consultation seule : votre rôle ne permet pas de modifier les fiches.</Notice> : null}
 
       <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
@@ -78,19 +83,10 @@ export default async function MembrePage({
           <form action={saveMember}>
             <fieldset disabled={!editable} className="grid gap-4 sm:grid-cols-2">
               {member ? <input type="hidden" name="id" value={member.id} /> : null}
-              <Field label="Nom(s) *">
-                <Input name="lastName" defaultValue={member?.lastName} required />
-              </Field>
-              <Field label="Prénom(s) *">
-                <Input name="firstName" defaultValue={member?.firstName} required />
-              </Field>
-              <Field label="Téléphone *">
-                <Input name="phone" type="tel" defaultValue={member?.phone ?? ""} required />
-              </Field>
-              <Field label="E-mail *">
-                {/* Pas de type="email" : des adresses importées mal formées bloqueraient l'enregistrement. */}
-                <Input name="email" inputMode="email" defaultValue={member?.email ?? ""} required />
-              </Field>
+              <CheckedField kind="name" label="Nom(s)" name="lastName" defaultValue={member?.lastName} inputClassName={fieldClass} />
+              <CheckedField kind="name" label="Prénom(s)" name="firstName" defaultValue={member?.firstName} inputClassName={fieldClass} />
+              <CheckedField kind="phone" label="Téléphone" name="phone" defaultValue={member?.phone} inputClassName={fieldClass} />
+              <CheckedField kind="email" label="E-mail" name="email" defaultValue={member?.email} inputClassName={fieldClass} />
               <Field label="Catégorie">
                 <Select name="category" defaultValue={member?.category ?? ""} empty="À compléter" options={CATEGORY_LABELS} />
               </Field>

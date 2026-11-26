@@ -53,7 +53,7 @@ export function Stat({ label, value, hint }: { label: string; value: ReactNode; 
   );
 }
 
-const fieldClass =
+export const fieldClass =
   "mt-1 w-full rounded-lg border border-ccr-ink/15 bg-white px-3 py-2 text-sm outline-none focus:border-ccr-gold focus:ring-2 focus:ring-ccr-gold/30";
 
 export function Field({ label, children, hint }: { label: string; children: ReactNode; hint?: string }) {

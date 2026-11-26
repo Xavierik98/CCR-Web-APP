@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { CheckedField } from "@ccr/ui/src/checked-field";
 import Link from "next/link";
 import { Icon } from "../_components/icon";
 import { Reveal } from "../_components/reveal";
@@ -137,22 +138,10 @@ export default function ContactPage() {
             {/* Envoi réel du formulaire à câbler une fois le canal de réception
                 (e-mail ou intranet) choisi : pas de traitement côté client pour l'instant. */}
             <form className="mt-6 grid gap-4 sm:grid-cols-2">
-              <label className="block">
-                <span className="text-sm font-semibold">Nom(s) *</span>
-                <input name="nom" required autoComplete="family-name" className={fieldClass} />
-              </label>
-              <label className="block">
-                <span className="text-sm font-semibold">Prénom(s) *</span>
-                <input name="prenom" required autoComplete="given-name" className={fieldClass} />
-              </label>
-              <label className="block">
-                <span className="text-sm font-semibold">Téléphone *</span>
-                <input name="telephone" type="tel" required autoComplete="tel" placeholder="06 00 00 00 00" className={fieldClass} />
-              </label>
-              <label className="block">
-                <span className="text-sm font-semibold">Adresse e-mail *</span>
-                <input name="email" type="email" required autoComplete="email" placeholder="vous@exemple.com" className={fieldClass} />
-              </label>
+              <CheckedField kind="name" label="Nom(s)" name="nom" autoComplete="family-name" hint="Exemple : KIFILA" inputClassName={fieldClass} />
+              <CheckedField kind="name" label="Prénom(s)" name="prenom" autoComplete="given-name" hint="Exemple : Arsène" inputClassName={fieldClass} />
+              <CheckedField kind="phone" label="Téléphone" name="telephone" autoComplete="tel" inputClassName={fieldClass} />
+              <CheckedField kind="email" label="Adresse e-mail" name="email" autoComplete="email" inputClassName={fieldClass} />
               <label className="block sm:col-span-2">
                 <span className="text-sm font-semibold">Sujet</span>
                 <select name="sujet" className={fieldClass}>

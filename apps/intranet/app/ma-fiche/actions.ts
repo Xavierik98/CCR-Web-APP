@@ -2,6 +2,7 @@
 
 import { prisma, type MemberCategory, type ProfessionalStatus } from "@ccr/database";
 import { redirect } from "next/navigation";
+import { checkField } from "@ccr/ui/src/validation";
 import { normalizePhone } from "@/lib/members";
 
 function text(formData: FormData, key: string, max = 200) {
@@ -21,12 +22,11 @@ export async function submitFiche(formData: FormData) {
 
   const firstName = text(formData, "firstName", 80);
   const lastName = text(formData, "lastName", 80);
-  if (!firstName || !lastName) redirect("/ma-fiche?erreur=nom");
   const rawPhone = text(formData, "phone", 30);
   const email = text(formData, "email", 120)?.toLowerCase() ?? null;
-  if (!rawPhone || (normalizePhone(rawPhone)?.length ?? 0) < 8 || !email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    redirect("/ma-fiche?erreur=contact");
-  }
+  if (!firstName || !lastName || checkField("name", lastName) || checkField("name", firstName)) redirect("/ma-fiche?erreur=nom");
+  if (!rawPhone || checkField("phone", rawPhone)) redirect("/ma-fiche?erreur=telephone");
+  if (!email || checkField("email", email)) redirect("/ma-fiche?erreur=email");
 
   const category = text(formData, "category");
   const pro = text(formData, "professionalStatus");

@@ -23,6 +23,8 @@ export const CHURCH_FUNCTIONS = [
 export function normalizePhone(raw: string | null | undefined) {
   const digits = (raw ?? "").replace(/\D/g, "");
   if (!digits) return null;
+  if (digits.startsWith("2120") && digits.length === 13) return digits.slice(4);
+  if (digits.startsWith("00212") && digits.length === 14) return digits.slice(5);
   if (digits.startsWith("212") && digits.length === 12) return digits.slice(3);
   if (digits.length === 10 && digits.startsWith("0")) return digits.slice(1);
   return digits;
