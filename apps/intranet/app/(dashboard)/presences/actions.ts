@@ -4,7 +4,7 @@ import { prisma, type EventType } from "@ccr/database";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAccess } from "@/lib/auth";
-import { isSunday } from "@/lib/programme";
+import { casablancaToUtc, isSunday } from "@/lib/programme";
 
 // Date (AAAA-MM-JJ) d'un culte à Casablanca.
 function dayOf(d: Date) {
@@ -29,7 +29,7 @@ export async function openSunday(formData: FormData) {
   const event =
     existing ??
     (await prisma.serviceEvent.create({
-      data: { title: "Rassemblement dominical", type: "SERVICE", startAt: new Date(`${day}T10:30:00+01:00`) },
+      data: { title: "Rassemblement dominical", type: "SERVICE", startAt: casablancaToUtc(day, "10:30") },
     }));
   revalidatePath("/presences");
   redirect(`/presences/${event.id}`);
@@ -43,7 +43,7 @@ export async function createEvent(formData: FormData) {
   const time = String(formData.get("time") ?? "19:30");
   if (!day) redirect("/presences?erreur=date");
   const event = await prisma.serviceEvent.create({
-    data: { title, startAt: new Date(`${day}T${time}:00+01:00`), type: (String(formData.get("type")) || "OTHER") as EventType },
+    data: { title, startAt: casablancaToUtc(day, time), type: (String(formData.get("type")) || "OTHER") as EventType },
   });
   revalidatePath("/presences");
   redirect(`/presences/${event.id}`);

@@ -4,6 +4,8 @@ import { Badge, Card, Notice, PageHeader, Table } from "@/components/ui";
 import { requireAccess } from "@/lib/auth";
 import { formatDate, fullName } from "@/lib/labels";
 import { findDuplicates } from "@/lib/members";
+import { siteOrigin } from "@/lib/tasks";
+import QRCode from "qrcode";
 
 const STATUS: Record<SubmissionStatus, { label: string; tone: "gold" | "blue" | "magenta" | "neutral" }> = {
   PENDING: { label: "À valider", tone: "gold" },
@@ -37,6 +39,12 @@ export default async function FichesPage({
     ? []
     : await Promise.all(fiches.map(async (f) => (await findDuplicates(f, undefined, 1))[0] ?? null));
 
+  const formUrl = `${await siteOrigin()}/ma-fiche`;
+  const qrOptions = { margin: 1, color: { dark: "#201C16", light: "#FFFFFF" } };
+  const [qrSvg, qrPng] = await Promise.all([
+    QRCode.toString(formUrl, { ...qrOptions, type: "svg" }),
+    QRCode.toDataURL(formUrl, { ...qrOptions, width: 1024 }),
+  ]);
   const tab = (active: boolean) =>
     `rounded-full px-4 py-1.5 text-sm font-semibold ${active ? "bg-ccr-ink text-ccr-cream" : "text-ccr-ink/60 hover:text-ccr-ink"}`;
 
@@ -49,11 +57,32 @@ export default async function FichesPage({
       {traite && TRAITE[traite] ? <Notice>{TRAITE[traite]}</Notice> : null}
 
       <Card className="mb-6">
-        <p className="text-sm">
-          Lien à partager aux membres (WhatsApp, annonce au culte) :{" "}
-          <span className="font-semibold">/ma-fiche</span> sur l&rsquo;adresse de l&rsquo;intranet. Aucune connexion
-          n&rsquo;est demandée.
-        </p>
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
+          <div
+            className="w-40 shrink-0 rounded-xl border border-ccr-ink/10 bg-white p-2"
+            // SVG généré côté serveur par la bibliothèque qrcode (aucun contenu saisi par un tiers).
+            dangerouslySetInnerHTML={{ __html: qrSvg }}
+          />
+          <div className="min-w-0">
+            <h2 className="font-display text-lg font-bold">Formulaire à partager aux membres</h2>
+            <p className="mt-1 text-sm text-ccr-ink/70">
+              À scanner avec l&rsquo;appareil photo du téléphone, ou à envoyer par WhatsApp. Aucune connexion n&rsquo;est demandée.
+            </p>
+            <p className="mt-3 break-all rounded-lg bg-ccr-cream px-3 py-2 font-mono text-sm">{formUrl}</p>
+            <div className="mt-3 flex flex-wrap gap-3 text-sm font-semibold">
+              <a href={formUrl} target="_blank" rel="noreferrer" className="text-ccr-magenta hover:underline">Ouvrir le formulaire</a>
+              <a href={qrPng} download="qr-ma-fiche-ccr.png" className="text-ccr-magenta hover:underline">Télécharger le QR code (affiche, annonce)</a>
+              <a
+                href={`https://wa.me/?text=${encodeURIComponent(`Bonjour, merci de remplir ta fiche membre CCR Famille : ${formUrl}`)}`}
+                target="_blank"
+                rel="noreferrer"
+                className="text-ccr-magenta hover:underline"
+              >
+                Partager sur WhatsApp
+              </a>
+            </div>
+          </div>
+        </div>
       </Card>
 
       <div className="mb-4 flex gap-2">

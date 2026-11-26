@@ -6,6 +6,7 @@ import { Notice } from "@/components/ui";
 import { canEdit, canView, requireUser } from "@/lib/auth";
 import { CONTENT_STATUS_LABELS, formatDate, fullName } from "@/lib/labels";
 import { formatOccurrence, nextCulte, upcoming } from "@/lib/programme";
+import { formatDue } from "@/lib/tasks";
 
 const TONES = {
   gold: "bg-ccr-gold/15 text-[#b07a12]",
@@ -102,6 +103,11 @@ export default async function TableauDeBordPage({
       ? prisma.content.findMany({ orderBy: { updatedAt: "desc" }, take: 3, select: { id: true, title: true, status: true, updatedAt: true } })
       : [],
   ]);
+  const rappels = await prisma.task.findMany({
+    where: { assigneeId: user.id, doneAt: null },
+    orderBy: { dueAt: "asc" },
+    take: 3,
+  });
   const compte = (c: string | null) => parCategorie.find((g) => g.category === c)?._count ?? 0;
 
   const resumes = await Promise.all(cultes.map(async (e) => ({ event: e, summary: await getAttendanceSummary(e.id) })));
@@ -156,6 +162,25 @@ export default async function TableauDeBordPage({
       </div>
 
       {erreur === "role" ? <Notice tone="magenta">Votre rôle ne donne pas accès à cette rubrique.</Notice> : null}
+
+      {rappels.length > 0 ? (
+        <section className="mb-6 rounded-2xl border border-ccr-gold/40 bg-ccr-gold/10 p-5">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h2 className="flex items-center gap-2 font-display text-lg font-bold">
+              <Icon name="calendar" className="h-5 w-5" /> Mes rappels
+            </h2>
+            <MoreLink href="/mes-taches">Toutes mes tâches &rarr;</MoreLink>
+          </div>
+          <ul className="mt-3 grid gap-2 md:grid-cols-3">
+            {rappels.map((t) => (
+              <li key={t.id} className="rounded-xl bg-white px-4 py-3">
+                <p className="truncate text-sm font-semibold">{t.title}</p>
+                <p className={`text-xs ${t.dueAt < new Date() ? "font-semibold text-ccr-magenta" : "text-ccr-ink/60"}`}>{formatDue(t.dueAt)}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard

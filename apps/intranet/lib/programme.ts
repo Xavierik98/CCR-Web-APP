@@ -92,3 +92,21 @@ export function formatDay(day: string) {
     timeZone: "UTC",
   });
 }
+
+// Décalage (en minutes) de Casablanca par rapport à UTC à un instant donné :
+// il change selon la saison et le ramadan, on le lit donc dans la base des
+// fuseaux horaires au lieu de le fixer à la main.
+function casablancaOffsetMinutes(at: Date) {
+  const local = casablancaNow(at);
+  return Math.round((local.getTime() - Math.floor(at.getTime() / 60000) * 60000) / 60000);
+}
+
+// Date et heure saisies à Casablanca (AAAA-MM-JJ, HH:MM) vers l'instant UTC.
+export function casablancaToUtc(day: string, time: string) {
+  const [y, mo, d] = day.split("-").map(Number);
+  const [h, mi] = time.split(":").map(Number);
+  const wall = Date.UTC(y, mo - 1, d, h, mi);
+  let utc = wall - casablancaOffsetMinutes(new Date(wall)) * 60000;
+  utc = wall - casablancaOffsetMinutes(new Date(utc)) * 60000;
+  return new Date(utc);
+}

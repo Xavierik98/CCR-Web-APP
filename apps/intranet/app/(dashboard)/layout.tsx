@@ -10,12 +10,14 @@ export const dynamic = "force-dynamic";
 
 const NAV: (Omit<NavItem, "count"> & { module?: Module })[] = [
   { href: "/tableau-de-bord", label: "Tableau de bord", icon: "home" },
+  { href: "/mes-taches", label: "Mes tâches", icon: "calendar" },
   { href: "/membres", label: "Membres", icon: "users", module: "membres" },
   { href: "/presences", label: "Présences", icon: "check", module: "presences" },
   { href: "/departements", label: "Départements", icon: "layers", module: "departements" },
   { href: "/collecte", label: "Collecte", icon: "coins", module: "collecte" },
   { href: "/cms", label: "Actualités", icon: "megaphone", module: "actualites" },
   { href: "/fiches", label: "Fiches à valider", icon: "inbox", module: "fiches" },
+  { href: "/taches", label: "Tâches des responsables", icon: "list", module: "taches" },
   { href: "/accompagnement-social", label: "Accompagnement social", icon: "heart", module: "social" },
   { href: "/utilisateurs", label: "Accès et rôles", icon: "key", module: "utilisateurs" },
 ];
@@ -24,18 +26,22 @@ const NAV: (Omit<NavItem, "count"> & { module?: Module })[] = [
 // rôle de la personne connectée peut ouvrir.
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const user = await requireUser();
-  const pendingFiches = canView(user.role, "fiches")
-    ? await prisma.memberSubmission.count({ where: { status: "PENDING" } })
-    : 0;
+  const [pendingFiches, myTasks] = await Promise.all([
+    canView(user.role, "fiches") ? prisma.memberSubmission.count({ where: { status: "PENDING" } }) : 0,
+    prisma.task.count({ where: { assigneeId: user.id, doneAt: null } }),
+  ]);
 
   const items: NavItem[] = NAV.filter((n) => !n.module || canView(user.role, n.module)).map(
-    ({ module, ...n }) => ({ ...n, count: module === "fiches" ? pendingFiches : undefined }),
+    ({ module, ...n }) => ({
+      ...n,
+      count: module === "fiches" ? pendingFiches : n.href === "/mes-taches" ? myTasks : undefined,
+    }),
   );
   const initials = user.email.slice(0, 2).toUpperCase();
 
   return (
-    <div className="min-h-screen bg-ccr-cream md:flex">
-      <aside className="bg-ccr-ink text-ccr-cream md:sticky md:top-0 md:flex md:h-screen md:w-[260px] md:shrink-0 md:flex-col">
+    <div className="min-h-screen bg-ccr-cream md:flex print:bg-white">
+      <aside className="bg-ccr-ink text-ccr-cream print:hidden md:sticky md:top-0 md:flex md:h-screen md:w-[260px] md:shrink-0 md:flex-col">
         <div className="flex items-center gap-3 px-6 pb-6 pt-6">
           <Image src="/logo-ccr-famille.png" alt="" width={32} height={56} className="h-11 w-auto" />
           <div>
@@ -62,7 +68,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           </div>
         </div>
       </aside>
-      <main className="min-w-0 flex-1 px-5 py-8 md:px-10 md:py-10">{children}</main>
+      <main className="min-w-0 flex-1 px-5 py-8 md:px-10 md:py-10 print:p-0">{children}</main>
     </div>
   );
 }

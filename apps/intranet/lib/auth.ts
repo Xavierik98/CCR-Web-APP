@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { cache } from "react";
 import { createSupabaseServerClient } from "./supabase";
 
-export type CurrentUser = { email: string; role: Role };
+export type CurrentUser = { id: string; email: string; role: Role };
 
 // Le compte Supabase prouve l'identité (lien de connexion par e-mail) ; la
 // table User de l'intranet décide des droits. Un e-mail absent de cette table
@@ -15,7 +15,7 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
   const email = data.user?.email?.toLowerCase();
   if (!email) return null;
   const user = await prisma.user.findUnique({ where: { email } });
-  return user ? { email, role: user.role } : null;
+  return user ? { id: user.id, email, role: user.role } : null;
 });
 
 export type Module =
@@ -26,10 +26,11 @@ export type Module =
   | "social"
   | "actualites"
   | "fiches"
+  | "taches"
   | "utilisateurs";
 
 type Level = "view" | "edit";
-const ALL: Module[] = ["membres", "presences", "departements", "collecte", "social", "actualites", "fiches", "utilisateurs"];
+const ALL: Module[] = ["membres", "presences", "departements", "collecte", "social", "actualites", "fiches", "taches", "utilisateurs"];
 
 function grant(edit: Module[], view: Module[] = []): Partial<Record<Module, Level>> {
   const out: Partial<Record<Module, Level>> = {};
@@ -41,12 +42,14 @@ function grant(edit: Module[], view: Module[] = []): Partial<Record<Module, Leve
 // Qui peut consulter ou modifier quoi (décisions du 26/11) :
 // - le pasteur voit tout et peut tout modifier, sauf les accès ;
 // - seuls trésoriers, pasteur et super administrateur voient les finances ;
-// - la communication ne fait que valider présences et absences.
+// - la communication ne fait que valider présences et absences ;
+// - chacun voit les tâches qui lui sont assignées (Mes tâches), seuls les
+//   rôles avec "taches" en écriture en attribuent.
 const MATRIX: Record<Role, Partial<Record<Module, Level>>> = {
   SUPER_ADMIN: grant(ALL),
   PASTOR: grant(ALL.filter((m) => m !== "utilisateurs")),
-  ADMIN: grant(["membres", "presences", "departements", "actualites", "fiches"]),
-  SECRETARY: grant(["membres", "presences", "departements", "actualites", "fiches"]),
+  ADMIN: grant(["membres", "presences", "departements", "actualites", "fiches", "taches"]),
+  SECRETARY: grant(["membres", "presences", "departements", "actualites", "fiches", "taches"]),
   TREASURER: grant(["collecte"], ["membres"]),
   COMMUNICATION: grant(["presences"]),
   ATTENDANCE_MANAGER: grant(["presences"]),
@@ -98,8 +101,8 @@ export const ROLE_DESCRIPTIONS: Record<Role, string> = {
   PASTOR: "Voit et modifie tout, sauf les accès.",
   TREASURER: "Collecte et engagements ; consulte les membres.",
   COMMUNICATION: "Valide les présences et absences, rien d'autre.",
-  ADMIN: "Membres, présences, départements, actualités, fiches.",
-  SECRETARY: "Membres, présences, départements, actualités, fiches.",
+  ADMIN: "Membres, présences, départements, actualités, fiches, tâches.",
+  SECRETARY: "Membres, présences, départements, actualités, fiches, tâches.",
   DEPARTMENT_LEADER: "Consultation des membres, présences et départements.",
   GROUP_LEADER: "Consultation des membres, présences et départements.",
   SOCIAL_SUPPORT: "Dossiers de titre de séjour ; consulte les membres.",

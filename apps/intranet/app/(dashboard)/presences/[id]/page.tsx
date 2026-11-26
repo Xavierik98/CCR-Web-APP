@@ -2,7 +2,7 @@ import { prisma } from "@ccr/database";
 import { notFound } from "next/navigation";
 import { Button, PageHeader } from "@/components/ui";
 import { canEdit, requireAccess } from "@/lib/auth";
-import { formatDate, fullName } from "@/lib/labels";
+import { formatDate } from "@/lib/labels";
 import { deleteEvent } from "../actions";
 import { Checklist } from "./checklist";
 
@@ -26,10 +26,13 @@ export default async function PointagePage({ params }: { params: Promise<{ id: s
   });
   const rows = members.map((m) => ({
     id: m.id,
-    name: [m.lastName, m.firstName].filter(Boolean).join(" ") || fullName(m),
+    lastName: m.lastName,
+    firstName: m.firstName,
     present: presentIds.has(m.id),
     category: m.category ?? ("UNKNOWN" as const),
   }));
+  // Tri par nom (ou par prénom quand le nom manque), sans tenir compte des accents.
+  rows.sort((a, b) => (a.lastName || a.firstName).localeCompare(b.lastName || b.firstName, "fr", { sensitivity: "base" }));
 
   return (
     <>
