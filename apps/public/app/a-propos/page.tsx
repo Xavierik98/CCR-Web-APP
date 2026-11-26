@@ -153,8 +153,8 @@ export default function AProposPage() {
             {responsables.map((leader, i) => (
               <Reveal key={leader.slug} delay={i * 150}>
                 <article className="h-full overflow-hidden rounded-2xl bg-white transition-transform hover:-translate-y-1 hover:shadow-md">
-                  <div className="relative aspect-[4/3]">
-                    <ImageSlot src={leader.photo} alt={leader.nom} />
+                  <div className="relative aspect-[4/5]">
+                    <ImageSlot src={leader.photo} alt={leader.nom} className={leader.cadrage} />
                   </div>
                   <div className="p-6">
                     <p className="text-xs font-semibold uppercase tracking-[0.2em] text-ccr-magenta">

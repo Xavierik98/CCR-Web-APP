@@ -24,7 +24,7 @@ export default function EquipePage() {
         {LEADERS.map((leader) => (
           <article key={leader.slug} className="overflow-hidden rounded-2xl border border-ccr-ink/10">
             <div className="relative aspect-[4/3]">
-              <ImageSlot src={leader.photo} alt={leader.nom} />
+              <ImageSlot src={leader.photo} alt={leader.nom} className={leader.cadrage} />
             </div>
             <div className="p-6">
               <h2 className="font-display text-xl font-bold">{leader.nom}</h2>

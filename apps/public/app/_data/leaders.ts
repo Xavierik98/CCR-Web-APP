@@ -8,6 +8,8 @@ export type Leader = {
   titre: string;
   texte?: string;
   photo: string;
+  // Cadrage de la photo dans sa carte (portrait : on garde le visage visible).
+  cadrage?: string;
   // Responsable de l'église locale, affiché dans "Nos responsables" sur
   // /a-propos (l'apôtre y est déjà présenté dans "Notre histoire").
   local: boolean;
@@ -35,8 +37,9 @@ export const LEADERS: Leader[] = [
   {
     slug: "arsene-kifila",
     nom: "Arsène KIFILA",
-    titre: "Assistant pasteur",
+    titre: "Assistant pasteur, responsable de CCR Casablanca",
     photo: "/images/about/arsene-kifila.jpg",
+    cadrage: "object-[50%_22%]",
     local: true,
   },
 ];
