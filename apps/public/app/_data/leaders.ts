@@ -31,8 +31,7 @@ export const LEADERS: Leader[] = [
     titre: "Pasteur principal",
     texte:
       "Il conduit l'œuvre au Maroc, veille sur les assemblées et accompagne les fidèles dans leur marche avec Dieu, fidèle à la vision reçue.",
-    photo: "/images/about/pasteur-gliblas-tchounand.jpg",
-    cadrage: "object-[40%_72%]",
+    photo: "/images/about/pasteur-gliblas-tchounand-portrait.jpg",
     local: true,
   },
   {

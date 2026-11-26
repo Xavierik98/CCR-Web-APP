@@ -8,9 +8,21 @@ export type Actualite = {
   date: string; // AAAA-MM-JJ, date de l'événement
   image: string;
   video?: string;
+  // Affiche verticale : montrée en entier dans le cadre, sur un fond flouté
+  // tiré de l'affiche elle-même, au lieu d'être rognée.
+  portrait?: boolean;
 };
 
 const LISTE: Actualite[] = [
+  {
+    slug: "nuit-de-priere-traversee-2026-2027",
+    titre: "Nuit de prière Traversée",
+    texte:
+      "Banquet de la nouvelle saison 2026-2027. Jeudi 31 décembre 2026, de 20h à 02h, au 44 Rue de Bazas, Quartier Gironde, Casablanca. « Passons à l'autre bord. » (Marc 4:35)",
+    date: "2026-12-31",
+    image: "/images/actualites/traversee-2026-2027.webp",
+    portrait: true,
+  },
   {
     slug: "21-jours-de-jeune-et-prieres",
     titre: "21 jours de jeûnes et prières",

@@ -1,14 +1,15 @@
 import { prisma } from "@ccr/database";
 import Link from "next/link";
 import { Button, Card, Input, PageHeader, Table } from "@/components/ui";
-import { requireAccess } from "@/lib/auth";
+import { canEdit, requireAccess } from "@/lib/auth";
 import { fullName } from "@/lib/labels";
 import { saveDepartment, saveGroup } from "./actions";
 
 // Module Départements et groupes (section 3) : départements avec la fonction
 // de chacun, et groupes de suivi avec leur responsable.
 export default async function DepartementsPage() {
-  await requireAccess("departements");
+  const user = await requireAccess("departements");
+  const editable = canEdit(user.role, "departements");
   const [departments, groups] = await Promise.all([
     prisma.department.findMany({
       orderBy: { name: "asc" },
@@ -39,12 +40,14 @@ export default async function DepartementsPage() {
               </tr>
             ))}
           </Table>
-          <Card className="mt-4">
-            <form action={saveDepartment} className="flex flex-wrap gap-3">
-              <Input name="name" placeholder="Nom du nouveau département" required className="mt-0 flex-1" />
-              <Button type="submit">Ajouter</Button>
-            </form>
-          </Card>
+          {editable ? (
+            <Card className="mt-4">
+              <form action={saveDepartment} className="flex flex-wrap gap-3">
+                <Input name="name" placeholder="Nom du nouveau département" required className="mt-0 flex-1" />
+                <Button type="submit">Ajouter</Button>
+              </form>
+            </Card>
+          ) : null}
         </section>
 
         <section>
@@ -62,12 +65,14 @@ export default async function DepartementsPage() {
               </tr>
             ))}
           </Table>
-          <Card className="mt-4">
-            <form action={saveGroup} className="flex flex-wrap gap-3">
-              <Input name="name" placeholder="Nom du nouveau groupe" required className="mt-0 flex-1" />
-              <Button type="submit">Ajouter</Button>
-            </form>
-          </Card>
+          {editable ? (
+            <Card className="mt-4">
+              <form action={saveGroup} className="flex flex-wrap gap-3">
+                <Input name="name" placeholder="Nom du nouveau groupe" required className="mt-0 flex-1" />
+                <Button type="submit">Ajouter</Button>
+              </form>
+            </Card>
+          ) : null}
         </section>
       </div>
     </>

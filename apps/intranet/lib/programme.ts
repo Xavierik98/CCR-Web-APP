@@ -14,7 +14,7 @@ export type Occurrence = { titre: string; horaire: string; date: Date; culte: bo
 
 // Heure murale de Casablanca représentée comme une date UTC : les calculs et
 // l'affichage se font ensuite en UTC, quel que soit le fuseau du serveur.
-function casablancaNow(now = new Date()) {
+export function casablancaNow(now = new Date()) {
   const parts = Object.fromEntries(
     new Intl.DateTimeFormat("en-GB", {
       timeZone: "Africa/Casablanca",
@@ -56,6 +56,39 @@ export function formatOccurrence(d: Date, withDay = true) {
     weekday: withDay ? "long" : undefined,
     day: "numeric",
     month: "long",
+    timeZone: "UTC",
+  });
+}
+
+const iso = (d: Date) => d.toISOString().slice(0, 10);
+
+// Dimanches à pointer (dates AAAA-MM-JJ, heure de Casablanca) : le dimanche du
+// jour ou le prochain, puis les `weeks` dimanches précédents.
+export function recentSundays(weeks = 4) {
+  const now = casablancaNow();
+  const next = new Date(now);
+  next.setUTCDate(now.getUTCDate() + ((7 - now.getUTCDay()) % 7));
+  return Array.from({ length: weeks + 1 }, (_, i) => {
+    const d = new Date(next);
+    d.setUTCDate(next.getUTCDate() - 7 * i);
+    return iso(d);
+  });
+}
+
+export function casablancaToday() {
+  return iso(casablancaNow());
+}
+
+export function isSunday(day: string) {
+  return /^\d{4}-\d{2}-\d{2}$/.test(day) && new Date(`${day}T12:00:00Z`).getUTCDay() === 0;
+}
+
+export function formatDay(day: string) {
+  return new Date(`${day}T12:00:00Z`).toLocaleDateString("fr-FR", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
     timeZone: "UTC",
   });
 }

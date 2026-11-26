@@ -1,13 +1,14 @@
 import { prisma } from "@ccr/database";
 import Link from "next/link";
 import { Badge, ButtonLink, PageHeader, Table } from "@/components/ui";
-import { requireAccess } from "@/lib/auth";
+import { canEdit, requireAccess } from "@/lib/auth";
 import { CONTENT_STATUS_LABELS, formatDate } from "@/lib/labels";
 
 // Module Actualités (section 6) : seuls les administrateurs ajoutent, modifient
 // ou suppriment les actualités, avec le workflow brouillon / publié / archivé.
 export default async function CmsPage() {
-  await requireAccess("actualites");
+  const user = await requireAccess("actualites");
+  const editable = canEdit(user.role, "actualites");
   const items = await prisma.content.findMany({
     where: { type: "NEWS" },
     orderBy: { updatedAt: "desc" },
@@ -18,7 +19,7 @@ export default async function CmsPage() {
       <PageHeader
         title="Actualités"
         subtitle="Rédaction, publication et archivage des actualités."
-        action={<ButtonLink href="/cms/nouveau">Nouvelle actualité</ButtonLink>}
+        action={editable ? <ButtonLink href="/cms/nouveau">Nouvelle actualité</ButtonLink> : undefined}
       />
       <Table head={["Titre", "Statut", "Modifiée le"]}>
         {items.map((n) => (

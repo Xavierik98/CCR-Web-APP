@@ -2,7 +2,7 @@ import { prisma } from "@ccr/database";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Button, Card, Field, Input, Notice, PageHeader, Select, Textarea } from "@/components/ui";
-import { requireAccess } from "@/lib/auth";
+import { canEdit, requireAccess } from "@/lib/auth";
 import { fullName } from "@/lib/labels";
 import {
   addDepartmentMember,
@@ -19,7 +19,8 @@ export default async function DepartementPage({
   params: Promise<{ id: string }>;
   searchParams: Promise<{ enregistre?: string }>;
 }) {
-  await requireAccess("departements");
+  const user = await requireAccess("departements");
+  const editable = canEdit(user.role, "departements");
   const { id } = await params;
   const { enregistre } = await searchParams;
 
@@ -47,7 +48,7 @@ export default async function DepartementPage({
       />
       {enregistre ? <Notice>Modifications enregistrées.</Notice> : null}
 
-      <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
+      <div className={`grid gap-6 ${editable ? "lg:grid-cols-[2fr_1fr]" : ""}`}>
         <Card>
           <h2 className="font-display text-lg font-bold">Membres et fonctions</h2>
           <ul className="mt-4 divide-y divide-ccr-ink/5">
@@ -56,50 +57,58 @@ export default async function DepartementPage({
                 <Link href={`/membres/${ms.memberId}`} className="w-48 font-semibold hover:text-ccr-magenta">
                   {fullName(ms.member)}
                 </Link>
-                <form action={updateMembershipRole} className="flex flex-1 gap-2">
-                  <input type="hidden" name="id" value={ms.id} />
-                  <Input name="role" defaultValue={ms.role ?? ""} placeholder="Fonction" className="mt-0" />
-                  <Button type="submit" variant="secondary">OK</Button>
-                </form>
-                <form action={removeDepartmentMember}>
-                  <input type="hidden" name="id" value={ms.id} />
-                  <button type="submit" className="text-xs font-semibold text-ccr-magenta hover:underline">
-                    Retirer
-                  </button>
-                </form>
+                {editable ? (
+                  <form action={updateMembershipRole} className="flex flex-1 gap-2">
+                    <input type="hidden" name="id" value={ms.id} />
+                    <Input name="role" defaultValue={ms.role ?? ""} placeholder="Fonction" className="mt-0" />
+                    <Button type="submit" variant="secondary">OK</Button>
+                  </form>
+                ) : <span className="flex-1 text-sm text-ccr-ink/60">{ms.role ?? ""}</span>}
+                {editable ? (
+                  <form action={removeDepartmentMember}>
+                    <input type="hidden" name="id" value={ms.id} />
+                    <button type="submit" className="text-xs font-semibold text-ccr-magenta hover:underline">
+                      Retirer
+                    </button>
+                  </form>
+                ) : null}
               </li>
             ))}
           </ul>
-          <form action={addDepartmentMember} className="mt-6 grid gap-3 border-t border-ccr-ink/10 pt-4 sm:grid-cols-[1fr_1fr_auto]">
-            <input type="hidden" name="departmentId" value={dept.id} />
-            <Select name="memberId" empty="Ajouter un membre…" options={members.map((m) => [m.id, fullName(m)])} className="mt-0" />
-            <Input name="role" placeholder="Fonction (facultatif)" className="mt-0" />
-            <Button type="submit">Ajouter</Button>
-          </form>
+          {editable ? (
+            <form action={addDepartmentMember} className="mt-6 grid gap-3 border-t border-ccr-ink/10 pt-4 sm:grid-cols-[1fr_1fr_auto]">
+              <input type="hidden" name="departmentId" value={dept.id} />
+              <Select name="memberId" empty="Ajouter un membre…" options={members.map((m) => [m.id, fullName(m)])} className="mt-0" />
+              <Input name="role" placeholder="Fonction (facultatif)" className="mt-0" />
+              <Button type="submit">Ajouter</Button>
+            </form>
+          ) : null}
         </Card>
 
-        <div className="space-y-6">
-          <Card>
-            <form action={saveDepartment} className="space-y-4">
+        {editable ? (
+          <div className="space-y-6">
+            <Card>
+              <form action={saveDepartment} className="space-y-4">
+                <input type="hidden" name="id" value={dept.id} />
+                <Field label="Nom">
+                  <Input name="name" defaultValue={dept.name} required />
+                </Field>
+                <Field label="Description">
+                  <Textarea name="description" rows={4} defaultValue={dept.description ?? ""} />
+                </Field>
+                <Button type="submit">Enregistrer</Button>
+              </form>
+            </Card>
+            <form action={deleteDepartment} className="space-y-2">
               <input type="hidden" name="id" value={dept.id} />
-              <Field label="Nom">
-                <Input name="name" defaultValue={dept.name} required />
-              </Field>
-              <Field label="Description">
-                <Textarea name="description" rows={4} defaultValue={dept.description ?? ""} />
-              </Field>
-              <Button type="submit">Enregistrer</Button>
+              <label className="flex items-center gap-2 text-xs text-ccr-ink/60">
+                <input type="checkbox" name="confirm" required />
+                Je confirme la suppression (les membres ne sont pas supprimés)
+              </label>
+              <Button type="submit" variant="danger">Supprimer le département</Button>
             </form>
-          </Card>
-          <form action={deleteDepartment} className="space-y-2">
-            <input type="hidden" name="id" value={dept.id} />
-            <label className="flex items-center gap-2 text-xs text-ccr-ink/60">
-              <input type="checkbox" name="confirm" required />
-              Je confirme la suppression (les membres ne sont pas supprimés)
-            </label>
-            <Button type="submit" variant="danger">Supprimer le département</Button>
-          </form>
-        </div>
+          </div>
+        ) : null}
       </div>
     </>
   );
