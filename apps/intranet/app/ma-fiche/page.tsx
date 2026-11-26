@@ -13,7 +13,8 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 const ERREURS: Record<string, string> = {
-  nom: "Merci d'indiquer votre prénom et votre nom.",
+  nom: "Merci d'indiquer votre nom et votre prénom.",
+  contact: "Merci d'indiquer un numéro de téléphone et une adresse e-mail valides.",
   consentement: "Merci de cocher la case d'accord pour envoyer votre fiche.",
 };
 
@@ -66,20 +67,20 @@ export default async function MaFichePage({
 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <label className="block">
+                    <span className="text-sm font-semibold">Nom(s) *</span>
+                    <input name="lastName" required autoComplete="family-name" className={field} />
+                  </label>
+                  <label className="block">
                     <span className="text-sm font-semibold">Prénom(s) *</span>
-                    <input name="firstName" required className={field} />
+                    <input name="firstName" required autoComplete="given-name" className={field} />
                   </label>
                   <label className="block">
-                    <span className="text-sm font-semibold">Nom *</span>
-                    <input name="lastName" required className={field} />
+                    <span className="text-sm font-semibold">Téléphone (WhatsApp) *</span>
+                    <input name="phone" type="tel" required autoComplete="tel" placeholder="06 00 00 00 00" className={field} />
                   </label>
                   <label className="block">
-                    <span className="text-sm font-semibold">Téléphone (WhatsApp)</span>
-                    <input name="phone" inputMode="tel" placeholder="06 00 00 00 00" className={field} />
-                  </label>
-                  <label className="block">
-                    <span className="text-sm font-semibold">E-mail</span>
-                    <input name="email" type="email" className={field} />
+                    <span className="text-sm font-semibold">E-mail *</span>
+                    <input name="email" type="email" required autoComplete="email" className={field} />
                   </label>
                   <label className="block">
                     <span className="text-sm font-semibold">Date de naissance</span>

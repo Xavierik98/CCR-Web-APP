@@ -22,6 +22,11 @@ export async function submitFiche(formData: FormData) {
   const firstName = text(formData, "firstName", 80);
   const lastName = text(formData, "lastName", 80);
   if (!firstName || !lastName) redirect("/ma-fiche?erreur=nom");
+  const rawPhone = text(formData, "phone", 30);
+  const email = text(formData, "email", 120)?.toLowerCase() ?? null;
+  if (!rawPhone || (normalizePhone(rawPhone)?.length ?? 0) < 8 || !email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    redirect("/ma-fiche?erreur=contact");
+  }
 
   const category = text(formData, "category");
   const pro = text(formData, "professionalStatus");
@@ -46,12 +51,11 @@ export async function submitFiche(formData: FormData) {
       firstName,
       lastName,
       phone: (() => {
-        const raw = text(formData, "phone", 30);
-        const n = normalizePhone(raw);
+        const n = normalizePhone(rawPhone);
         // Numéro marocain : enregistré au format local 06/07…, comme le fichier existant.
-        return n && n.length === 9 ? `0${n}` : raw;
+        return n && n.length === 9 ? `0${n}` : rawPhone;
       })(),
-      email: text(formData, "email", 120)?.toLowerCase() ?? null,
+      email,
       birthDate: birth && /^\d{4}-\d{2}-\d{2}$/.test(birth) ? new Date(`${birth}T00:00:00Z`) : null,
       neighborhood: text(formData, "neighborhood", 80),
       category: category && CATEGORIES.includes(category) ? (category as MemberCategory) : null,

@@ -68,7 +68,9 @@ export default async function MembrePage({
       {enregistre ? <Notice>Modifications enregistrées.</Notice> : null}
       {fusionne ? <Notice>Fiches fusionnées : présences, départements et engagements regroupés ici.</Notice> : null}
       {revoque ? <Notice>Accès à l&rsquo;intranet révoqué.</Notice> : null}
-      {erreur === "nom" ? <Notice tone="magenta">Le prénom est obligatoire.</Notice> : null}
+      {erreur === "nom" ? (
+        <Notice tone="magenta">Le nom, le prénom, le téléphone et l&rsquo;e-mail sont obligatoires.</Notice>
+      ) : null}
       {!editable ? <Notice>Consultation seule : votre rôle ne permet pas de modifier les fiches.</Notice> : null}
 
       <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
@@ -76,18 +78,18 @@ export default async function MembrePage({
           <form action={saveMember}>
             <fieldset disabled={!editable} className="grid gap-4 sm:grid-cols-2">
               {member ? <input type="hidden" name="id" value={member.id} /> : null}
-              <Field label="Prénom(s)">
+              <Field label="Nom(s) *">
+                <Input name="lastName" defaultValue={member?.lastName} required />
+              </Field>
+              <Field label="Prénom(s) *">
                 <Input name="firstName" defaultValue={member?.firstName} required />
               </Field>
-              <Field label="Nom">
-                <Input name="lastName" defaultValue={member?.lastName} />
+              <Field label="Téléphone *">
+                <Input name="phone" type="tel" defaultValue={member?.phone ?? ""} required />
               </Field>
-              <Field label="Téléphone">
-                <Input name="phone" defaultValue={member?.phone ?? ""} />
-              </Field>
-              <Field label="E-mail">
+              <Field label="E-mail *">
                 {/* Pas de type="email" : des adresses importées mal formées bloqueraient l'enregistrement. */}
-                <Input name="email" inputMode="email" defaultValue={member?.email ?? ""} />
+                <Input name="email" inputMode="email" defaultValue={member?.email ?? ""} required />
               </Field>
               <Field label="Catégorie">
                 <Select name="category" defaultValue={member?.category ?? ""} empty="À compléter" options={CATEGORY_LABELS} />

@@ -138,12 +138,20 @@ export default function ContactPage() {
                 (e-mail ou intranet) choisi : pas de traitement côté client pour l'instant. */}
             <form className="mt-6 grid gap-4 sm:grid-cols-2">
               <label className="block">
-                <span className="text-sm font-semibold">Nom complet</span>
-                <input name="nom" required placeholder="Votre nom" className={fieldClass} />
+                <span className="text-sm font-semibold">Nom(s) *</span>
+                <input name="nom" required autoComplete="family-name" className={fieldClass} />
               </label>
               <label className="block">
-                <span className="text-sm font-semibold">Adresse e-mail</span>
-                <input name="email" type="email" required placeholder="vous@exemple.com" className={fieldClass} />
+                <span className="text-sm font-semibold">Prénom(s) *</span>
+                <input name="prenom" required autoComplete="given-name" className={fieldClass} />
+              </label>
+              <label className="block">
+                <span className="text-sm font-semibold">Téléphone *</span>
+                <input name="telephone" type="tel" required autoComplete="tel" placeholder="06 00 00 00 00" className={fieldClass} />
+              </label>
+              <label className="block">
+                <span className="text-sm font-semibold">Adresse e-mail *</span>
+                <input name="email" type="email" required autoComplete="email" placeholder="vous@exemple.com" className={fieldClass} />
               </label>
               <label className="block sm:col-span-2">
                 <span className="text-sm font-semibold">Sujet</span>

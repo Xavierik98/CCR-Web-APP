@@ -61,7 +61,9 @@ export async function saveMember(formData: FormData) {
     notes: text(formData, "notes"),
     functions: readFunctions(formData),
   };
-  if (!data.firstName) redirect(`/membres/${id ?? "nouveau"}?erreur=nom`);
+  if (!data.lastName || !data.firstName || !data.phone || !data.email) {
+    redirect(`/membres/${id ?? "nouveau"}?erreur=nom`);
+  }
 
   const member = id
     ? await prisma.member.update({ where: { id }, data })

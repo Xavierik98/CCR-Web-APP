@@ -8,8 +8,8 @@ import { findDuplicates } from "@/lib/members";
 import { createFromSubmission, mergeSubmission, rejectSubmission } from "../actions";
 
 const LABELS: Record<string, string> = {
+  lastName: "Nom(s)",
   firstName: "Prénom(s)",
-  lastName: "Nom",
   phone: "Téléphone",
   email: "E-mail",
   birthDate: "Date de naissance",
