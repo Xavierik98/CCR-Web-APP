@@ -27,12 +27,12 @@ export const LEADERS: Leader[] = [
     local: false,
   },
   {
-    slug: "pasteur-gliblas-tchounand",
-    nom: "Pasteur Gliblas TCHOUNAND",
+    slug: "pasteur-gilblas-tchounand",
+    nom: "Pasteur Gilblas TCHOUNAND",
     titre: "Pasteur principal",
     texte:
       "Il conduit l'œuvre au Maroc, veille sur les assemblées et accompagne les fidèles dans leur marche avec Dieu, fidèle à la vision reçue.",
-    photo: "/images/about/pasteur-gliblas-tchounand-portrait.jpg",
+    photo: "/images/about/pasteur-gilblas-tchounand-portrait.jpg",
     local: true,
   },
   {
