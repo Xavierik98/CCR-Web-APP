@@ -11,7 +11,8 @@ export function FlipPhotos({
   intervalMs = 5000,
 }: {
   front: ReactNode;
-  back: ReactNode;
+  // Sans verso (photo pas encore fournie) : carte simple, sans bascule.
+  back?: ReactNode | null;
   intervalMs?: number;
 }) {
   const [flipped, setFlipped] = useState(false);
@@ -22,10 +23,10 @@ export function FlipPhotos({
     reduced.current = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-    if (reduced.current) return;
+    if (reduced.current || !back) return;
     const id = setInterval(() => setFlipped((current) => !current), intervalMs);
     return () => clearInterval(id);
-  }, [intervalMs]);
+  }, [intervalMs, back]);
 
   return (
     <div
@@ -38,10 +39,10 @@ export function FlipPhotos({
         setTilt({ x: -y * 12, y: x * 16 });
       }}
       onMouseLeave={() => setTilt({ x: 0, y: 0 })}
-      onClick={() => setFlipped((current) => !current)}
+      onClick={() => back && setFlipped((current) => !current)}
     >
       <div
-        className="relative aspect-[4/5] w-full cursor-pointer transition-transform duration-700 ease-out [transform-style:preserve-3d]"
+        className={`relative aspect-[4/5] w-full ${back ? "cursor-pointer" : ""} transition-transform duration-700 ease-out [transform-style:preserve-3d]`}
         style={{
           transform: `rotateX(${tilt.x}deg) rotateY(${(flipped ? 180 : 0) + tilt.y}deg)`,
         }}
@@ -49,9 +50,11 @@ export function FlipPhotos({
         <div className="absolute inset-0 overflow-hidden rounded-3xl bg-white shadow-2xl [backface-visibility:hidden]">
           {front}
         </div>
-        <div className="absolute inset-0 overflow-hidden rounded-3xl bg-white shadow-2xl [backface-visibility:hidden] [transform:rotateY(180deg)]">
-          {back}
-        </div>
+        {back ? (
+          <div className="absolute inset-0 overflow-hidden rounded-3xl bg-white shadow-2xl [backface-visibility:hidden] [transform:rotateY(180deg)]">
+            {back}
+          </div>
+        ) : null}
       </div>
     </div>
   );

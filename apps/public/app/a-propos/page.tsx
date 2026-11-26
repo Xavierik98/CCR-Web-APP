@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import fs from "node:fs";
+import path from "node:path";
 import { FlipPhotos } from "../_components/flip-photos";
 import { HeroSlideshow } from "../_components/hero-slideshow";
 import { ImageSlot } from "../_components/image-slot";
@@ -60,8 +62,13 @@ const HISTOIRE = [
   "Aujourd’hui, l’église est une association officiellement reconnue. Plus de vingt-cinq ans après les premières réunions de maison, l’esprit reste le même : être une famille avant d’être une institution.",
 ];
 
+// Photo de l'apôtre (recto) ; la photo avec son épouse s'ajoute au verso dès
+// que le fichier est déposé, sans emplacement vide entre-temps.
+const PHOTO_COUPLE = "/images/about/apotre-et-epouse-1.jpg";
+
 export default function AProposPage() {
   const responsables = LEADERS.filter((leader) => leader.local);
+  const avecCouple = fs.existsSync(path.join(process.cwd(), "public", PHOTO_COUPLE));
 
   return (
     <main>
@@ -126,20 +133,20 @@ export default function AProposPage() {
               <FlipPhotos
                 front={
                   <ImageSlot
-                    src="/images/about/apotre-et-epouse-1.jpg"
-                    alt="L'apôtre Gel EBA GATSE et son épouse"
+                    src="/images/about/apotre-gel-eba-gatse.jpg"
+                    alt="L'apôtre Gel EBA GATSE"
+                    className="object-[50%_12%]"
                   />
                 }
                 back={
-                  <ImageSlot
-                    src="/images/about/apotre-et-epouse-2.jpg"
-                    alt="L'apôtre Gel EBA GATSE et son épouse"
-                  />
+                  avecCouple ? (
+                    <ImageSlot src={PHOTO_COUPLE} alt="L'apôtre Gel EBA GATSE et son épouse" />
+                  ) : null
                 }
               />
             </div>
             <figcaption className="relative mt-5 text-center text-sm text-ccr-ink/60">
-              L&rsquo;apôtre Gel EBA GATSE et son épouse
+              {avecCouple ? "L’apôtre Gel EBA GATSE et son épouse" : "L’apôtre Gel EBA GATSE, père de la maison"}
             </figcaption>
           </figure>
         </Reveal>

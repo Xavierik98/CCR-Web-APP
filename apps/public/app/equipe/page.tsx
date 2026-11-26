@@ -23,7 +23,7 @@ export default function EquipePage() {
       <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
         {LEADERS.map((leader) => (
           <article key={leader.slug} className="overflow-hidden rounded-2xl border border-ccr-ink/10">
-            <div className="relative aspect-[4/3]">
+            <div className="relative aspect-[4/5]">
               <ImageSlot src={leader.photo} alt={leader.nom} className={leader.cadrage} />
             </div>
             <div className="p-6">

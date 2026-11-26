@@ -23,6 +23,7 @@ export const LEADERS: Leader[] = [
     texte:
       "Il porte la vision des églises CCR. Sous sa conduite spirituelle, des petites assemblées de maison sont devenues une famille d'églises unie autour d'un même appel : rassembler, former et envoyer.",
     photo: "/images/about/apotre-gel-eba-gatse.jpg",
+    cadrage: "object-[50%_12%]",
     local: false,
   },
   {
