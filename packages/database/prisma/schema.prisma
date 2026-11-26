@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 // Base hébergée sur Supabase (décision du 25/11). DATABASE_URL passe par le pooler
@@ -78,24 +79,25 @@ enum ContentStatus {
 }
 
 model Member {
-  id                 String               @id @default(cuid())
+  id                 String                 @id @default(cuid())
   firstName          String
   lastName           String
   phone              String?
   email              String?
   neighborhood       String?
-  category           MemberCategory       @default(MAN)
+  // Null quand la personne n'apparaît dans aucune des listes Hommes / Femmes /
+  // Enfants du fichier importé : l'administrateur la renseigne ensuite.
+  category           MemberCategory?
   birthDate          DateTime?
-  membershipStatus   MembershipStatus     @default(ACTIVE)
+  notes              String?
+  membershipStatus   MembershipStatus       @default(ACTIVE)
   departedAt         DateTime?
   departureReason    String?
   professionalStatus ProfessionalStatus?
-  departmentId       String?
-  department         Department?          @relation(fields: [departmentId], references: [id])
-  departmentRole     String?
+  memberships        DepartmentMembership[]
   groupId            String?
-  group              Group?               @relation("GroupMembers", fields: [groupId], references: [id])
-  ledGroup           Group?               @relation("GroupLeader")
+  group              Group?                 @relation("GroupMembers", fields: [groupId], references: [id], onDelete: SetNull)
+  ledGroup           Group?                 @relation("GroupLeader")
   attendances        Attendance[]
   pledges            Pledge[]
   socialSupport      SocialSupportRecord?
@@ -103,29 +105,43 @@ model Member {
   // Jeton stable encodé dans le QR code personnel du membre (section "calcul
   // automatique des présences", décision du 26/11) : scanné à l'entrée, il
   // identifie le membre sans exposer son identifiant de base de données.
-  qrToken            String?              @unique
-  createdAt          DateTime             @default(now())
-  updatedAt          DateTime             @updatedAt
+  qrToken            String?                @unique
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
 }
 
 model Department {
-  id          String   @id @default(cuid())
+  id          String                 @id @default(cuid())
   name        String
   description String?
   mission     String?
   imageUrl    String?
-  isPublished Boolean  @default(false)
-  members     Member[]
+  isPublished Boolean                @default(false)
+  memberships DepartmentMembership[]
   groups      Group[]
+}
+
+// Une personne peut servir dans plusieurs départements, avec une fonction
+// propre à chacun (liste des ouvriers du fichier de suivi).
+model DepartmentMembership {
+  id           String     @id @default(cuid())
+  memberId     String
+  member       Member     @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  departmentId String
+  department   Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  role         String?
+
+  @@unique([memberId, departmentId])
 }
 
 model Group {
   id             String      @id @default(cuid())
   name           String
+  neighborhood   String?
   departmentId   String?
-  department     Department? @relation(fields: [departmentId], references: [id])
+  department     Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
   leaderMemberId String?     @unique
-  leader         Member?     @relation("GroupLeader", fields: [leaderMemberId], references: [id])
+  leader         Member?     @relation("GroupLeader", fields: [leaderMemberId], references: [id], onDelete: SetNull)
   members        Member[]    @relation("GroupMembers")
 }
 
@@ -149,9 +165,9 @@ model ServiceEvent {
 model Attendance {
   id            String        @id @default(cuid())
   memberId      String
-  member        Member        @relation(fields: [memberId], references: [id])
+  member        Member        @relation(fields: [memberId], references: [id], onDelete: Cascade)
   eventId       String
-  event         ServiceEvent  @relation(fields: [eventId], references: [id])
+  event         ServiceEvent  @relation(fields: [eventId], references: [id], onDelete: Cascade)
   present       Boolean       @default(true)
   checkedInAt   DateTime      @default(now())
   checkInMethod CheckInMethod @default(MANUAL)
@@ -166,13 +182,17 @@ model Campaign {
   pledges   Pledge[]
 }
 
+// Les engagements sont souvent pris par un foyer ("Couple KIFILA") plutôt que
+// par un membre seul : donorName porte le nom tel qu'écrit, memberId reste
+// optionnel. Montant vide = "à confirmer".
 model Pledge {
   id             String   @id @default(cuid())
   campaignId     String
-  campaign       Campaign @relation(fields: [campaignId], references: [id])
-  memberId       String
-  member         Member   @relation(fields: [memberId], references: [id])
-  amountPromised Decimal
+  campaign       Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  memberId       String?
+  member         Member?  @relation(fields: [memberId], references: [id], onDelete: SetNull)
+  donorName      String
+  amountPromised Decimal?
   followUpDone   Boolean  @default(false)
   comment        String?
 }
@@ -184,7 +204,7 @@ model Pledge {
 model SocialSupportRecord {
   id                  String          @id @default(cuid())
   memberId            String          @unique
-  member              Member          @relation(fields: [memberId], references: [id])
+  member              Member          @relation(fields: [memberId], references: [id], onDelete: Cascade)
   residencyStatus     ResidencyStatus
   documentNumber      String?
   hasRenewalDocuments Boolean?
@@ -192,15 +212,16 @@ model SocialSupportRecord {
   updatedAt           DateTime        @updatedAt
 }
 
+// Les mots de passe sont gérés par Supabase Auth (verrouillage, réinitialisation) :
+// cette table ne porte que le rôle, rattaché au compte par l'e-mail.
 model User {
-  id           String    @id @default(cuid())
-  email        String    @unique
-  passwordHash String
-  role         Role
-  memberId     String?   @unique
-  member       Member?   @relation(fields: [memberId], references: [id])
-  lastLoginAt  DateTime?
-  createdAt    DateTime  @default(now())
+  id          String    @id @default(cuid())
+  email       String    @unique
+  role        Role
+  memberId    String?   @unique
+  member      Member?   @relation(fields: [memberId], references: [id], onDelete: SetNull)
+  lastLoginAt DateTime?
+  createdAt   DateTime  @default(now())
 }
 
 // Les actualités ne sont modifiées que par les administrateurs depuis l'intranet

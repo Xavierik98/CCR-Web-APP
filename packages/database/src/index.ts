@@ -1,7 +1,19 @@
 import { randomUUID } from "node:crypto";
-import { CheckInMethod, MemberCategory, PrismaClient } from "@prisma/client";
+import { CheckInMethod, PrismaClient } from "@prisma/client";
 
-export const prisma = new PrismaClient();
+// L'intégration Supabase de Vercel fournit POSTGRES_PRISMA_URL (pooler, prêt
+// pour Prisma) ; DATABASE_URL reste accepté pour un usage local.
+export function databaseUrl(): string | undefined {
+  return process.env.POSTGRES_PRISMA_URL ?? process.env.DATABASE_URL;
+}
+
+const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
+
+export const prisma =
+  globalForPrisma.prisma ??
+  new PrismaClient({ datasourceUrl: databaseUrl() });
+
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
 export * from "@prisma/client";
 
@@ -11,7 +23,7 @@ export * from "@prisma/client";
 export type AttendanceSummary = {
   eventId: string;
   total: number;
-  byCategory: Record<MemberCategory, number>;
+  byCategory: { MAN: number; WOMAN: number; CHILD: number; UNKNOWN: number };
 };
 
 export async function getAttendanceSummary(
@@ -22,13 +34,9 @@ export async function getAttendanceSummary(
     select: { member: { select: { category: true } } },
   });
 
-  const byCategory: Record<MemberCategory, number> = {
-    MAN: 0,
-    WOMAN: 0,
-    CHILD: 0,
-  };
+  const byCategory = { MAN: 0, WOMAN: 0, CHILD: 0, UNKNOWN: 0 };
   for (const row of rows) {
-    byCategory[row.member.category] += 1;
+    byCategory[row.member.category ?? "UNKNOWN"] += 1;
   }
 
   return { eventId, total: rows.length, byCategory };

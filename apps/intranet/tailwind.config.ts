@@ -3,7 +3,12 @@ import type { Config } from "tailwindcss";
 // Meme palette que le site public (section 7 : identite visuelle partagee entre
 // les deux espaces), usage plus sobre puisque l'intranet est oriente productivite.
 const config: Config = {
-  content: ["./app/**/*.{ts,tsx}", "../../packages/ui/src/**/*.{ts,tsx}"],
+  content: [
+    "./app/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./lib/**/*.{ts,tsx}",
+    "../../packages/ui/src/**/*.{ts,tsx}",
+  ],
   theme: {
     extend: {
       colors: {
