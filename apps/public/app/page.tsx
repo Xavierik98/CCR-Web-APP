@@ -3,7 +3,9 @@ import Link from "next/link";
 import { HeroSlideshow } from "./_components/hero-slideshow";
 import { Icon } from "./_components/icon";
 import { Marquee } from "./_components/marquee";
+import { NextActivity } from "./_components/next-activity";
 import { Reveal } from "./_components/reveal";
+import { TypeOnce } from "./_components/type-once";
 import { TypewriterWords } from "./_components/typewriter-words";
 import { YoutubeBackground } from "./_components/youtube-background";
 import { ACTUALITES } from "./_data/actualites";
@@ -54,8 +56,12 @@ export default function HomePage() {
           <h1 className="animate-fade-in-up font-display text-5xl font-black leading-[1.05] tracking-tight text-ccr-cream md:text-6xl">
             La famille
             <br />
-            <span className="text-ccr-magenta">CCR</span>{" "}
-            <span className="text-ccr-gold-light">à Casablanca</span>
+            <TypeOnce
+              segments={[
+                { text: "CCR", className: "text-ccr-magenta" },
+                { text: " à Casablanca", className: "text-ccr-gold-light" },
+              ]}
+            />
           </h1>
           <p
             className="animate-fade-in-up mt-6 max-w-md text-lg text-ccr-cream/80"
@@ -169,27 +175,7 @@ export default function HomePage() {
       <Reveal>
         <section id="prochaines-activites" className="mx-auto max-w-6xl px-6 py-16">
           <h2 className="font-display text-2xl font-bold">Prochaines activités</h2>
-          <div className="mt-6 flex flex-col gap-4 overflow-hidden rounded-2xl border border-ccr-ink/10 bg-white transition-shadow hover:shadow-md sm:flex-row">
-            <div className="flex shrink-0 flex-col items-center justify-center bg-ccr-gold/10 px-8 py-6 text-center">
-              <span className="text-xs font-semibold uppercase tracking-wide text-ccr-gold">
-                Dim
-              </span>
-              <span className="font-display text-4xl font-black text-ccr-ink">
-                01
-              </span>
-              <span className="text-xs font-semibold uppercase tracking-wide text-ccr-ink/60">
-                Nov 2026
-              </span>
-            </div>
-            <div className="flex-1 px-6 py-6">
-              <h3 className="font-display text-xl font-bold">
-                Sunday Service : rassemblement de famille
-              </h3>
-              <p className="mt-2 text-sm text-ccr-ink/70">
-                10h30 - 13h30 &middot; Salle de réunion CCR Casablanca
-              </p>
-            </div>
-          </div>
+          <NextActivity />
         </section>
       </Reveal>
 

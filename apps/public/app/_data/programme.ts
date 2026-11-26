@@ -65,3 +65,56 @@ export const ACCENTS = {
   magenta: { text: "text-ccr-magenta", bg: "bg-ccr-magenta/10" },
   blue: { text: "text-ccr-blue", bg: "bg-ccr-blue/10" },
 };
+
+// Jours de la semaine au sens de Date.getDay() (0 = dimanche).
+const JOURS: Record<string, number[]> = {
+  Dimanche: [0],
+  Lundi: [1],
+  Mardi: [2],
+  Mercredi: [3],
+  Jeudi: [4],
+  Vendredi: [5],
+  Samedi: [6],
+  "Lundi à vendredi": [1, 2, 3, 4, 5],
+};
+
+// Calcule la prochaine occurrence (date + heure) d'un élément du programme
+// hebdomadaire à partir d'une date de référence, pour que "Prochaines
+// activités" bascule automatiquement sans intervention manuelle. Une
+// modification ponctuelle par un administrateur (via le futur CMS) restera
+// prioritaire une fois ce module câblé.
+export function getNextOccurrence(item: ProgrammeItem, from: Date): Date {
+  const [heureDebut] = item.horaire.split(" - ");
+  const [heures, minutes] = heureDebut.split("h").map(Number);
+  const jours = JOURS[item.jour] ?? [];
+
+  let meilleure: Date | null = null;
+  for (const jour of jours) {
+    const candidate = new Date(from);
+    const decalage = (jour - from.getDay() + 7) % 7;
+    candidate.setDate(from.getDate() + decalage);
+    candidate.setHours(heures, minutes, 0, 0);
+    if (candidate <= from) {
+      candidate.setDate(candidate.getDate() + 7);
+    }
+    if (!meilleure || candidate < meilleure) {
+      meilleure = candidate;
+    }
+  }
+
+  return meilleure ?? from;
+}
+
+export function getNextActivity(
+  programme: readonly ProgrammeItem[],
+  from: Date,
+): { item: ProgrammeItem; date: Date } {
+  let meilleur = { item: programme[0], date: getNextOccurrence(programme[0], from) };
+  for (const item of programme) {
+    const date = getNextOccurrence(item, from);
+    if (date < meilleur.date) {
+      meilleur = { item, date };
+    }
+  }
+  return meilleur;
+}
