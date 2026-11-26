@@ -2,7 +2,7 @@ import { prisma } from "@ccr/database";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Button, Card, Field, Input, Notice, PageHeader, Select, Textarea } from "@/components/ui";
-import { requireUser } from "@/lib/auth";
+import { requireAccess } from "@/lib/auth";
 import { fullName } from "@/lib/labels";
 import {
   addDepartmentMember,
@@ -19,7 +19,7 @@ export default async function DepartementPage({
   params: Promise<{ id: string }>;
   searchParams: Promise<{ enregistre?: string }>;
 }) {
-  await requireUser();
+  await requireAccess("departements");
   const { id } = await params;
   const { enregistre } = await searchParams;
 

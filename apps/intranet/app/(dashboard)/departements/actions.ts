@@ -3,7 +3,7 @@
 import { prisma } from "@ccr/database";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { EDITORS, requireUser } from "@/lib/auth";
+import { requireAccess } from "@/lib/auth";
 
 function text(formData: FormData, key: string) {
   const v = String(formData.get(key) ?? "").trim();
@@ -11,7 +11,7 @@ function text(formData: FormData, key: string) {
 }
 
 export async function saveDepartment(formData: FormData) {
-  await requireUser(EDITORS);
+  await requireAccess("departements", "edit");
   const id = text(formData, "id");
   const name = text(formData, "name");
   if (!name) redirect(id ? `/departements/${id}` : "/departements");
@@ -24,14 +24,14 @@ export async function saveDepartment(formData: FormData) {
 }
 
 export async function deleteDepartment(formData: FormData) {
-  await requireUser(EDITORS);
+  await requireAccess("departements", "edit");
   await prisma.department.delete({ where: { id: String(formData.get("id")) } });
   revalidatePath("/departements");
   redirect("/departements");
 }
 
 export async function addDepartmentMember(formData: FormData) {
-  await requireUser(EDITORS);
+  await requireAccess("departements", "edit");
   const departmentId = String(formData.get("departmentId"));
   const memberId = text(formData, "memberId");
   if (memberId) {
@@ -47,7 +47,7 @@ export async function addDepartmentMember(formData: FormData) {
 }
 
 export async function updateMembershipRole(formData: FormData) {
-  await requireUser(EDITORS);
+  await requireAccess("departements", "edit");
   const id = String(formData.get("id"));
   const ms = await prisma.departmentMembership.update({
     where: { id },
@@ -58,14 +58,14 @@ export async function updateMembershipRole(formData: FormData) {
 }
 
 export async function removeDepartmentMember(formData: FormData) {
-  await requireUser(EDITORS);
+  await requireAccess("departements", "edit");
   const ms = await prisma.departmentMembership.delete({ where: { id: String(formData.get("id")) } });
   revalidatePath(`/departements/${ms.departmentId}`);
   redirect(`/departements/${ms.departmentId}`);
 }
 
 export async function saveGroup(formData: FormData) {
-  await requireUser(EDITORS);
+  await requireAccess("departements", "edit");
   const id = text(formData, "id");
   const name = text(formData, "name");
   if (!name) redirect("/departements");
@@ -86,7 +86,7 @@ export async function saveGroup(formData: FormData) {
 }
 
 export async function setGroupMember(formData: FormData) {
-  await requireUser(EDITORS);
+  await requireAccess("departements", "edit");
   const groupId = String(formData.get("groupId"));
   const memberId = text(formData, "memberId");
   const remove = formData.get("remove") === "1";
@@ -98,7 +98,7 @@ export async function setGroupMember(formData: FormData) {
 }
 
 export async function deleteGroup(formData: FormData) {
-  await requireUser(EDITORS);
+  await requireAccess("departements", "edit");
   await prisma.group.delete({ where: { id: String(formData.get("id")) } });
   revalidatePath("/departements");
   redirect("/departements");

@@ -1,7 +1,7 @@
 import { prisma } from "@ccr/database";
 import Link from "next/link";
 import { Button, Card, Field, Input, Notice, PageHeader, Select, Table } from "@/components/ui";
-import { requireUser } from "@/lib/auth";
+import { requireAccess } from "@/lib/auth";
 import { formatDate } from "@/lib/labels";
 import { createEvent } from "./actions";
 
@@ -12,7 +12,7 @@ export default async function PresencesPage({
 }: {
   searchParams: Promise<{ erreur?: string }>;
 }) {
-  await requireUser();
+  await requireAccess("presences");
   const { erreur } = await searchParams;
 
   const [events, rows] = await Promise.all([

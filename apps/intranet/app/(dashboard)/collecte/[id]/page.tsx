@@ -2,7 +2,7 @@ import { prisma } from "@ccr/database";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Button, Card, Field, Input, Notice, PageHeader, Select, Stat } from "@/components/ui";
-import { requireUser } from "@/lib/auth";
+import { requireAccess } from "@/lib/auth";
 import { fullName, toDateInput } from "@/lib/labels";
 import { deleteCampaign, deletePledge, saveCampaign, savePledge } from "../actions";
 
@@ -13,7 +13,7 @@ export default async function CampagnePage({
   params: Promise<{ id: string }>;
   searchParams: Promise<{ enregistre?: string; erreur?: string }>;
 }) {
-  await requireUser();
+  await requireAccess("collecte");
   const { id } = await params;
   const { enregistre, erreur } = await searchParams;
 

@@ -1,7 +1,7 @@
 import { prisma, type ResidencyStatus } from "@ccr/database";
 import Link from "next/link";
 import { Badge, Button, Card, PageHeader, Select, Table } from "@/components/ui";
-import { requireUser, SOCIAL } from "@/lib/auth";
+import { requireAccess } from "@/lib/auth";
 import { RESIDENCY_LABELS, fullName } from "@/lib/labels";
 
 // Module Accompagnement social (sections 3 et 5) : dossiers de titre de séjour.
@@ -11,7 +11,7 @@ export default async function AccompagnementSocialPage({
 }: {
   searchParams: Promise<{ statut?: string }>;
 }) {
-  await requireUser(SOCIAL);
+  await requireAccess("social");
   const { statut } = await searchParams;
 
   const [records, withoutRecord] = await Promise.all([

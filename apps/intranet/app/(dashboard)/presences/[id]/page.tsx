@@ -1,7 +1,7 @@
 import { getAttendanceSummary, prisma } from "@ccr/database";
 import { notFound } from "next/navigation";
 import { Button, Card, Notice, PageHeader, Stat } from "@/components/ui";
-import { requireUser } from "@/lib/auth";
+import { requireAccess } from "@/lib/auth";
 import { CATEGORY_LABELS, formatDate, fullName } from "@/lib/labels";
 import { deleteEvent, saveAttendance } from "../actions";
 import { Checklist } from "./checklist";
@@ -13,7 +13,7 @@ export default async function PointagePage({
   params: Promise<{ id: string }>;
   searchParams: Promise<{ enregistre?: string }>;
 }) {
-  await requireUser();
+  await requireAccess("presences");
   const { id } = await params;
   const { enregistre } = await searchParams;
 

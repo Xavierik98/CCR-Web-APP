@@ -1,7 +1,7 @@
 import { prisma } from "@ccr/database";
 import Link from "next/link";
 import { Button, Card, Field, Input, Notice, PageHeader, Table } from "@/components/ui";
-import { requireUser } from "@/lib/auth";
+import { requireAccess } from "@/lib/auth";
 import { formatDate } from "@/lib/labels";
 import { saveCampaign } from "./actions";
 
@@ -12,7 +12,7 @@ export default async function CollectePage({
 }: {
   searchParams: Promise<{ erreur?: string }>;
 }) {
-  await requireUser();
+  await requireAccess("collecte");
   const { erreur } = await searchParams;
   const campaigns = await prisma.campaign.findMany({
     orderBy: { startDate: "desc" },

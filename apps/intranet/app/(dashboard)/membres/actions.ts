@@ -8,7 +8,28 @@ import {
 } from "@ccr/database";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { EDITORS, requireUser } from "@/lib/auth";
+import { requireAccess } from "@/lib/auth";
+import { mergeMembers } from "@/lib/members";
+
+// Cases cochées + fonctions libres séparées par des virgules.
+function readFunctions(formData: FormData) {
+  const checked = formData.getAll("functions").map(String);
+  const free = String(formData.get("functionsOther") ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  return [...new Set([...checked, ...free])];
+}
+
+export async function mergeInto(formData: FormData) {
+  await requireAccess("membres", "edit");
+  const keepId = String(formData.get("keepId"));
+  const removeId = String(formData.get("removeId") ?? "");
+  if (!removeId) redirect(`/membres/${keepId}`);
+  await mergeMembers(keepId, removeId);
+  revalidatePath("/membres");
+  redirect(`/membres/${keepId}?fusionne=1`);
+}
 
 function text(formData: FormData, key: string) {
   const v = String(formData.get(key) ?? "").trim();
@@ -21,7 +42,7 @@ function date(formData: FormData, key: string) {
 }
 
 export async function saveMember(formData: FormData) {
-  await requireUser(EDITORS);
+  await requireAccess("membres", "edit");
   const id = text(formData, "id");
   const status = (text(formData, "membershipStatus") ?? "ACTIVE") as MembershipStatus;
   const data = {
@@ -38,6 +59,7 @@ export async function saveMember(formData: FormData) {
     departureReason: status === "DEPARTED" ? text(formData, "departureReason") : null,
     groupId: text(formData, "groupId"),
     notes: text(formData, "notes"),
+    functions: readFunctions(formData),
   };
   if (!data.firstName) redirect(`/membres/${id ?? "nouveau"}?erreur=nom`);
 
@@ -49,7 +71,7 @@ export async function saveMember(formData: FormData) {
 }
 
 export async function deleteMember(formData: FormData) {
-  await requireUser(EDITORS);
+  await requireAccess("membres", "edit");
   const id = String(formData.get("id"));
   await prisma.group.updateMany({ where: { leaderMemberId: id }, data: { leaderMemberId: null } });
   await prisma.member.delete({ where: { id } });
@@ -58,7 +80,7 @@ export async function deleteMember(formData: FormData) {
 }
 
 export async function addMembership(formData: FormData) {
-  await requireUser(EDITORS);
+  await requireAccess("membres", "edit");
   const memberId = String(formData.get("memberId"));
   const departmentId = String(formData.get("departmentId") ?? "");
   if (!departmentId) redirect(`/membres/${memberId}`);
@@ -73,7 +95,7 @@ export async function addMembership(formData: FormData) {
 }
 
 export async function removeMembership(formData: FormData) {
-  await requireUser(EDITORS);
+  await requireAccess("membres", "edit");
   const id = String(formData.get("id"));
   const memberId = String(formData.get("memberId"));
   await prisma.departmentMembership.delete({ where: { id } });

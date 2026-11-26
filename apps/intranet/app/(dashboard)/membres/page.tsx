@@ -1,7 +1,8 @@
 import { prisma, type MemberCategory, type MembershipStatus, type Prisma } from "@ccr/database";
 import Link from "next/link";
 import { Badge, ButtonLink, Notice, PageHeader, Select, Table } from "@/components/ui";
-import { requireUser } from "@/lib/auth";
+import { canEdit, requireAccess } from "@/lib/auth";
+import { CHURCH_FUNCTIONS } from "@/lib/members";
 import { CATEGORY_LABELS, STATUS_LABELS, fullName } from "@/lib/labels";
 
 // Module Membres (section 3). Champs sensibles (titre de séjour) exclus de
@@ -11,9 +12,10 @@ const PAGE_SIZE = 50;
 export default async function MembresPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; categorie?: string; statut?: string; page?: string; supprime?: string }>;
+  searchParams: Promise<{ q?: string; categorie?: string; statut?: string; fonction?: string; page?: string; supprime?: string }>;
 }) {
-  await requireUser();
+  const user = await requireAccess("membres");
+  const editable = canEdit(user.role, "membres");
   const params = await searchParams;
   const q = params.q?.trim() ?? "";
   const page = Math.max(1, Number(params.page) || 1);
@@ -34,6 +36,7 @@ export default async function MembresPage({
         ? { category: params.categorie as MemberCategory }
         : {}),
     ...(params.statut ? { membershipStatus: params.statut as MembershipStatus } : {}),
+    ...(params.fonction ? { functions: { has: params.fonction } } : {}),
   };
 
   const [total, membres] = await Promise.all([
@@ -51,18 +54,18 @@ export default async function MembresPage({
   ]);
   const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const link = (p: number) =>
-    `/membres?${new URLSearchParams({ ...(q && { q }), ...(params.categorie && { categorie: params.categorie }), ...(params.statut && { statut: params.statut }), page: String(p) })}`;
+    `/membres?${new URLSearchParams({ ...(q && { q }), ...(params.categorie && { categorie: params.categorie }), ...(params.statut && { statut: params.statut }), ...(params.fonction && { fonction: params.fonction }), page: String(p) })}`;
 
   return (
     <>
       <PageHeader
         title="Membres"
         subtitle={`${total} fiche${total > 1 ? "s" : ""}`}
-        action={<ButtonLink href="/membres/nouveau">Ajouter un membre</ButtonLink>}
+        action={editable ? <ButtonLink href="/membres/nouveau">Ajouter un membre</ButtonLink> : undefined}
       />
       {params.supprime ? <Notice>Fiche supprimée.</Notice> : null}
 
-      <form className="mb-6 grid gap-3 sm:grid-cols-[1fr_200px_200px_auto]">
+      <form className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-[1fr_180px_160px_200px_auto]">
         <input
           name="q"
           defaultValue={q}
@@ -76,12 +79,13 @@ export default async function MembresPage({
           options={{ ...CATEGORY_LABELS, aucune: "À compléter" }}
         />
         <Select name="statut" defaultValue={params.statut ?? ""} empty="Tous les statuts" options={STATUS_LABELS} />
+        <Select name="fonction" defaultValue={params.fonction ?? ""} empty="Toutes les fonctions" options={CHURCH_FUNCTIONS.map((f) => [f, f])} />
         <button type="submit" className="rounded-full bg-ccr-ink px-5 py-2 text-sm font-semibold text-ccr-cream">
           Filtrer
         </button>
       </form>
 
-      <Table head={["Nom", "Catégorie", "Téléphone", "Statut", "Départements", "Présences"]}>
+      <Table head={["Nom", "Catégorie", "Téléphone", "Statut", "Fonctions et départements", "Présences"]}>
         {membres.map((m) => (
           <tr key={m.id} className="hover:bg-ccr-gold/5">
             <td className="px-4 py-3">
@@ -99,6 +103,13 @@ export default async function MembresPage({
               </Badge>
             </td>
             <td className="px-4 py-3 text-ccr-ink/70">
+              {m.functions.length > 0 ? (
+                <span className="mb-1 flex flex-wrap gap-1">
+                  {m.functions.map((f) => (
+                    <Badge key={f} tone="blue">{f}</Badge>
+                  ))}
+                </span>
+              ) : null}
               {m.memberships.map((d) => d.department.name).join(", ")}
             </td>
             <td className="px-4 py-3 text-ccr-ink/70">{m._count.attendances}</td>

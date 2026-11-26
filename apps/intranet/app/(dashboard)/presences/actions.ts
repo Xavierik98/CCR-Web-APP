@@ -3,12 +3,10 @@
 import { prisma, type EventType } from "@ccr/database";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { requireUser } from "@/lib/auth";
-
-const ATTENDANCE_EDITORS = ["SUPER_ADMIN", "ADMIN", "SECRETARY", "ATTENDANCE_MANAGER"] as const;
+import { requireAccess } from "@/lib/auth";
 
 export async function createEvent(formData: FormData) {
-  await requireUser([...ATTENDANCE_EDITORS]);
+  await requireAccess("presences", "edit");
   const title = String(formData.get("title") ?? "").trim() || "Rassemblement dominical";
   const day = String(formData.get("date") ?? "");
   const time = String(formData.get("time") ?? "10:30");
@@ -23,7 +21,7 @@ export async function createEvent(formData: FormData) {
 }
 
 export async function saveAttendance(formData: FormData) {
-  await requireUser([...ATTENDANCE_EDITORS]);
+  await requireAccess("presences", "edit");
   const eventId = String(formData.get("eventId"));
   const present = formData.getAll("present").map(String);
 
@@ -40,7 +38,7 @@ export async function saveAttendance(formData: FormData) {
 }
 
 export async function deleteEvent(formData: FormData) {
-  await requireUser([...ATTENDANCE_EDITORS]);
+  await requireAccess("presences", "edit");
   await prisma.serviceEvent.delete({ where: { id: String(formData.get("id")) } });
   revalidatePath("/presences");
   redirect("/presences");

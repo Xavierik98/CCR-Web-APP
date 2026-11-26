@@ -3,7 +3,7 @@
 import { prisma, type ContentStatus } from "@ccr/database";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { EDITORS, requireUser } from "@/lib/auth";
+import { requireAccess } from "@/lib/auth";
 
 function text(formData: FormData, key: string) {
   const v = String(formData.get(key) ?? "").trim();
@@ -13,7 +13,7 @@ function text(formData: FormData, key: string) {
 function slugify(value: string) {
   return value
     .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
+    .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "")
@@ -21,7 +21,7 @@ function slugify(value: string) {
 }
 
 export async function saveNews(formData: FormData) {
-  const user = await requireUser(EDITORS);
+  const user = await requireAccess("actualites", "edit");
   const id = text(formData, "id");
   const title = text(formData, "title");
   const body = text(formData, "body") ?? "";
@@ -48,7 +48,7 @@ export async function saveNews(formData: FormData) {
 }
 
 export async function deleteNews(formData: FormData) {
-  await requireUser(EDITORS);
+  await requireAccess("actualites", "edit");
   await prisma.content.delete({ where: { id: String(formData.get("id")) } });
   revalidatePath("/cms");
   redirect("/cms");

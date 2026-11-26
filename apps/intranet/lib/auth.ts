@@ -18,26 +18,91 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
   return user ? { email, role: user.role } : null;
 });
 
-export async function requireUser(allowed?: Role[]): Promise<CurrentUser> {
+export type Module =
+  | "membres"
+  | "presences"
+  | "departements"
+  | "collecte"
+  | "social"
+  | "actualites"
+  | "fiches"
+  | "utilisateurs";
+
+type Level = "view" | "edit";
+const ALL: Module[] = ["membres", "presences", "departements", "collecte", "social", "actualites", "fiches", "utilisateurs"];
+
+function grant(edit: Module[], view: Module[] = []): Partial<Record<Module, Level>> {
+  const out: Partial<Record<Module, Level>> = {};
+  for (const m of view) out[m] = "view";
+  for (const m of edit) out[m] = "edit";
+  return out;
+}
+
+// Qui peut consulter ou modifier quoi (décisions du 26/11) :
+// - le pasteur voit tout et peut tout modifier, sauf les accès ;
+// - seuls trésoriers, pasteur et super administrateur voient les finances ;
+// - la communication ne fait que valider présences et absences.
+const MATRIX: Record<Role, Partial<Record<Module, Level>>> = {
+  SUPER_ADMIN: grant(ALL),
+  PASTOR: grant(ALL.filter((m) => m !== "utilisateurs")),
+  ADMIN: grant(["membres", "presences", "departements", "actualites", "fiches"]),
+  SECRETARY: grant(["membres", "presences", "departements", "actualites", "fiches"]),
+  TREASURER: grant(["collecte"], ["membres"]),
+  COMMUNICATION: grant(["presences"]),
+  ATTENDANCE_MANAGER: grant(["presences"]),
+  SOCIAL_SUPPORT: grant(["social"], ["membres"]),
+  DEPARTMENT_LEADER: grant([], ["membres", "presences", "departements"]),
+  GROUP_LEADER: grant([], ["membres", "presences", "departements"]),
+  READ_ONLY: grant([], ["membres", "presences", "departements", "actualites"]),
+};
+
+export function canView(role: Role, module: Module) {
+  return MATRIX[role][module] !== undefined;
+}
+
+export function canEdit(role: Role, module: Module) {
+  return MATRIX[role][module] === "edit";
+}
+
+export async function requireUser(): Promise<CurrentUser> {
   const user = await getCurrentUser();
   if (!user) redirect("/login?erreur=acces");
-  if (allowed && !allowed.includes(user.role) && user.role !== "SUPER_ADMIN") {
-    redirect("/tableau-de-bord?erreur=role");
-  }
   return user;
 }
 
-// Rôles autorisés à modifier les données générales (membres, présences...).
-export const EDITORS: Role[] = ["SUPER_ADMIN", "ADMIN", "SECRETARY"];
-export const SOCIAL: Role[] = ["SUPER_ADMIN", "SOCIAL_SUPPORT"];
+// À appeler en tête de chaque page (level "view") et de chaque action
+// serveur qui modifie des données (level "edit").
+export async function requireAccess(module: Module, level: Level = "view"): Promise<CurrentUser> {
+  const user = await requireUser();
+  const ok = level === "edit" ? canEdit(user.role, module) : canView(user.role, module);
+  if (!ok) redirect("/tableau-de-bord?erreur=role");
+  return user;
+}
 
 export const ROLE_LABELS: Record<Role, string> = {
   SUPER_ADMIN: "Super administrateur",
+  PASTOR: "Pasteur",
+  TREASURER: "Trésorier",
+  COMMUNICATION: "Communication (présences)",
   ADMIN: "Administrateur",
+  SECRETARY: "Secrétariat",
   DEPARTMENT_LEADER: "Responsable de département",
   GROUP_LEADER: "Responsable de groupe",
-  SECRETARY: "Secrétariat",
   SOCIAL_SUPPORT: "Accompagnement social",
   ATTENDANCE_MANAGER: "Gestion des présences",
   READ_ONLY: "Lecture seule",
+};
+
+export const ROLE_DESCRIPTIONS: Record<Role, string> = {
+  SUPER_ADMIN: "Tout, y compris l'attribution des rôles.",
+  PASTOR: "Voit et modifie tout, sauf les accès.",
+  TREASURER: "Collecte et engagements ; consulte les membres.",
+  COMMUNICATION: "Valide les présences et absences, rien d'autre.",
+  ADMIN: "Membres, présences, départements, actualités, fiches.",
+  SECRETARY: "Membres, présences, départements, actualités, fiches.",
+  DEPARTMENT_LEADER: "Consultation des membres, présences et départements.",
+  GROUP_LEADER: "Consultation des membres, présences et départements.",
+  SOCIAL_SUPPORT: "Dossiers de titre de séjour ; consulte les membres.",
+  ATTENDANCE_MANAGER: "Valide les présences et absences, rien d'autre.",
+  READ_ONLY: "Consultation seule.",
 };

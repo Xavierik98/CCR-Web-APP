@@ -1,7 +1,7 @@
 import { prisma } from "@ccr/database";
 import { notFound } from "next/navigation";
 import { Button, Card, Field, Input, Notice, PageHeader, Select, Textarea } from "@/components/ui";
-import { requireUser, SOCIAL } from "@/lib/auth";
+import { requireAccess } from "@/lib/auth";
 import { RESIDENCY_LABELS, fullName } from "@/lib/labels";
 import { deleteSocialRecord, saveSocialRecord } from "../actions";
 
@@ -12,7 +12,7 @@ export default async function DossierSocialPage({
   params: Promise<{ memberId: string }>;
   searchParams: Promise<{ enregistre?: string }>;
 }) {
-  await requireUser(SOCIAL);
+  await requireAccess("social");
   const { memberId } = await params;
   const { enregistre } = await searchParams;
 

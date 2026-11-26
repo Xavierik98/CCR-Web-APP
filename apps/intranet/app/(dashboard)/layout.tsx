@@ -1,67 +1,68 @@
+import { prisma } from "@ccr/database";
 import Image from "next/image";
-import Link from "next/link";
-import { ROLE_LABELS, requireUser, SOCIAL } from "@/lib/auth";
+import { Icon } from "@/components/icons";
+import { SidebarNav, type NavItem } from "@/components/sidebar-nav";
+import { ROLE_LABELS, canView, requireUser, type Module } from "@/lib/auth";
 import { signOut } from "../(auth)/login/actions";
 
 // Données toujours lues à la demande : jamais de page figée au moment du build.
 export const dynamic = "force-dynamic";
 
-// Coquille du tableau de bord (section 3) : menu latéral filtré selon le rôle
-// de la personne connectée.
-export default async function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const user = await requireUser();
+const NAV: (Omit<NavItem, "count"> & { module?: Module })[] = [
+  { href: "/tableau-de-bord", label: "Tableau de bord", icon: "home" },
+  { href: "/membres", label: "Membres", icon: "users", module: "membres" },
+  { href: "/presences", label: "Présences", icon: "check", module: "presences" },
+  { href: "/departements", label: "Départements", icon: "layers", module: "departements" },
+  { href: "/collecte", label: "Collecte", icon: "coins", module: "collecte" },
+  { href: "/cms", label: "Actualités", icon: "megaphone", module: "actualites" },
+  { href: "/fiches", label: "Fiches à valider", icon: "inbox", module: "fiches" },
+  { href: "/accompagnement-social", label: "Accompagnement social", icon: "heart", module: "social" },
+  { href: "/utilisateurs", label: "Accès et rôles", icon: "key", module: "utilisateurs" },
+];
 
-  const nav = [
-    { href: "/tableau-de-bord", label: "Tableau de bord" },
-    { href: "/membres", label: "Membres" },
-    { href: "/presences", label: "Présences" },
-    { href: "/departements", label: "Départements et groupes" },
-    { href: "/collecte", label: "Collecte" },
-    { href: "/cms", label: "Actualités" },
-    ...(SOCIAL.includes(user.role)
-      ? [{ href: "/accompagnement-social", label: "Accompagnement social" }]
-      : []),
-    ...(user.role === "SUPER_ADMIN"
-      ? [{ href: "/utilisateurs", label: "Utilisateurs" }]
-      : []),
-  ];
+// Coquille du tableau de bord : le menu ne montre que les rubriques que le
+// rôle de la personne connectée peut ouvrir.
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const user = await requireUser();
+  const pendingFiches = canView(user.role, "fiches")
+    ? await prisma.memberSubmission.count({ where: { status: "PENDING" } })
+    : 0;
+
+  const items: NavItem[] = NAV.filter((n) => !n.module || canView(user.role, n.module)).map(
+    ({ module, ...n }) => ({ ...n, count: module === "fiches" ? pendingFiches : undefined }),
+  );
+  const initials = user.email.slice(0, 2).toUpperCase();
 
   return (
-    <div className="min-h-screen md:flex">
-      <aside className="bg-ccr-ink text-ccr-cream md:sticky md:top-0 md:flex md:h-screen md:w-64 md:shrink-0 md:flex-col">
-        <div className="flex items-center gap-3 px-6 py-5">
-          <Image src="/logo-ccr-famille.png" alt="" width={32} height={56} className="h-10 w-auto" />
+    <div className="min-h-screen bg-ccr-cream md:flex">
+      <aside className="bg-ccr-ink text-ccr-cream md:sticky md:top-0 md:flex md:h-screen md:w-[260px] md:shrink-0 md:flex-col">
+        <div className="flex items-center gap-3 px-6 pb-6 pt-6">
+          <Image src="/logo-ccr-famille.png" alt="" width={32} height={56} className="h-11 w-auto" />
           <div>
             <p className="font-display text-lg font-bold leading-tight">CCR Famille</p>
-            <p className="text-xs text-ccr-cream/50">Intranet</p>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-ccr-gold-light/80">Espace gestion</p>
           </div>
         </div>
-        <nav className="flex gap-1 overflow-x-auto px-3 pb-3 md:flex-1 md:flex-col md:overflow-visible">
-          {nav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="whitespace-nowrap rounded-lg px-3 py-2 text-sm text-ccr-cream/80 transition-colors hover:bg-ccr-cream/10 hover:text-ccr-cream"
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-        <div className="hidden border-t border-ccr-cream/10 px-6 py-4 md:block">
-          <p className="truncate text-xs text-ccr-cream/70">{user.email}</p>
-          <p className="text-xs text-ccr-gold-light">{ROLE_LABELS[user.role]}</p>
-          <form action={signOut}>
-            <button type="submit" className="mt-3 text-xs font-semibold text-ccr-cream/60 hover:text-ccr-cream">
-              Se déconnecter
-            </button>
-          </form>
+        <SidebarNav items={items} />
+        <div className="border-t border-ccr-cream/10 p-3 md:p-4">
+          <div className="flex items-center gap-3 rounded-xl px-2 py-2">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-ccr-cream/10 text-xs font-bold text-ccr-gold-light">
+              {initials}
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-xs text-ccr-cream/80">{user.email}</p>
+              <p className="text-xs text-ccr-gold-light">{ROLE_LABELS[user.role]}</p>
+            </div>
+            <form action={signOut}>
+              <button type="submit" title="Se déconnecter" className="rounded-lg p-1.5 text-ccr-cream/50 hover:bg-ccr-cream/10 hover:text-ccr-cream">
+                <Icon name="logout" className="h-4 w-4" />
+                <span className="sr-only">Se déconnecter</span>
+              </button>
+            </form>
+          </div>
         </div>
       </aside>
-      <main className="flex-1 px-6 py-8 md:px-10 md:py-10">{children}</main>
+      <main className="min-w-0 flex-1 px-5 py-8 md:px-10 md:py-10">{children}</main>
     </div>
   );
 }

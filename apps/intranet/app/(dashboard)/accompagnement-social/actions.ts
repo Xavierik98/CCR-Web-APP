@@ -3,7 +3,7 @@
 import { prisma, type ResidencyStatus } from "@ccr/database";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { requireUser, SOCIAL } from "@/lib/auth";
+import { requireAccess } from "@/lib/auth";
 
 function text(formData: FormData, key: string) {
   const v = String(formData.get(key) ?? "").trim();
@@ -11,7 +11,7 @@ function text(formData: FormData, key: string) {
 }
 
 export async function saveSocialRecord(formData: FormData) {
-  await requireUser(SOCIAL);
+  await requireAccess("social", "edit");
   const memberId = text(formData, "memberId");
   if (!memberId) redirect("/accompagnement-social");
   const renew = text(formData, "hasRenewalDocuments");
@@ -31,7 +31,7 @@ export async function saveSocialRecord(formData: FormData) {
 }
 
 export async function deleteSocialRecord(formData: FormData) {
-  await requireUser(SOCIAL);
+  await requireAccess("social", "edit");
   await prisma.socialSupportRecord.delete({ where: { memberId: String(formData.get("memberId")) } });
   revalidatePath("/accompagnement-social");
   redirect("/accompagnement-social");

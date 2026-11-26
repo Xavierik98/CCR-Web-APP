@@ -48,6 +48,9 @@ enum ResidencyStatus {
 
 enum Role {
   SUPER_ADMIN
+  PASTOR
+  TREASURER
+  COMMUNICATION
   ADMIN
   DEPARTMENT_LEADER
   GROUP_LEADER
@@ -106,6 +109,10 @@ model Member {
   // automatique des présences", décision du 26/11) : scanné à l'entrée, il
   // identifie le membre sans exposer son identifiant de base de données.
   qrToken            String?                @unique
+  // Fonctions dans l'église (Ancien, Assistant pasteur, Diacre, Protocole...),
+  // distinctes de la fonction tenue dans un département.
+  functions          String[]               @default([])
+  submissions        MemberSubmission[]
   createdAt          DateTime               @default(now())
   updatedAt          DateTime               @updatedAt
 }
@@ -241,4 +248,36 @@ model Content {
   publishedAt    DateTime?
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
+}
+
+enum SubmissionStatus {
+  PENDING
+  MERGED
+  CREATED
+  REJECTED
+}
+
+// Fiche remplie par un membre depuis le formulaire public : elle n'écrase
+// jamais la base directement. Un administrateur la fusionne avec une fiche
+// existante, en crée une nouvelle, ou la rejette.
+model MemberSubmission {
+  id                 String              @id @default(cuid())
+  firstName          String
+  lastName           String
+  phone              String?
+  email              String?
+  birthDate          DateTime?
+  neighborhood       String?
+  category           MemberCategory?
+  professionalStatus ProfessionalStatus?
+  functions          String[]            @default([])
+  // [{ departmentId, role }]
+  departments        Json                @default("[]")
+  message            String?
+  status             SubmissionStatus    @default(PENDING)
+  memberId           String?
+  member             Member?             @relation(fields: [memberId], references: [id], onDelete: SetNull)
+  reviewedBy         String?
+  reviewedAt         DateTime?
+  createdAt          DateTime            @default(now())
 }

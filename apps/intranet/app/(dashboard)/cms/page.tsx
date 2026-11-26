@@ -1,13 +1,13 @@
 import { prisma } from "@ccr/database";
 import Link from "next/link";
 import { Badge, ButtonLink, PageHeader, Table } from "@/components/ui";
-import { requireUser } from "@/lib/auth";
+import { requireAccess } from "@/lib/auth";
 import { CONTENT_STATUS_LABELS, formatDate } from "@/lib/labels";
 
 // Module Actualités (section 6) : seuls les administrateurs ajoutent, modifient
 // ou suppriment les actualités, avec le workflow brouillon / publié / archivé.
 export default async function CmsPage() {
-  await requireUser();
+  await requireAccess("actualites");
   const items = await prisma.content.findMany({
     where: { type: "NEWS" },
     orderBy: { updatedAt: "desc" },

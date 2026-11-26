@@ -1,7 +1,7 @@
 import { prisma } from "@ccr/database";
 import { notFound } from "next/navigation";
 import { Button, Card, Field, Input, Notice, PageHeader, Select, Textarea } from "@/components/ui";
-import { requireUser } from "@/lib/auth";
+import { requireAccess } from "@/lib/auth";
 import { CONTENT_STATUS_LABELS } from "@/lib/labels";
 import { deleteNews, saveNews } from "../actions";
 
@@ -12,7 +12,7 @@ export default async function ActualitePage({
   params: Promise<{ id: string }>;
   searchParams: Promise<{ enregistre?: string; erreur?: string }>;
 }) {
-  await requireUser();
+  await requireAccess("actualites");
   const { id } = await params;
   const { enregistre, erreur } = await searchParams;
   const item = id === "nouveau" ? null : await prisma.content.findUnique({ where: { id } });

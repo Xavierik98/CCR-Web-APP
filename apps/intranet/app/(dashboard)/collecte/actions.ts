@@ -3,9 +3,7 @@
 import { prisma } from "@ccr/database";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { requireUser } from "@/lib/auth";
-
-const FINANCE = ["SUPER_ADMIN", "ADMIN", "SECRETARY"] as const;
+import { requireAccess } from "@/lib/auth";
 
 function text(formData: FormData, key: string) {
   const v = String(formData.get(key) ?? "").trim();
@@ -18,7 +16,7 @@ function amount(formData: FormData) {
 }
 
 export async function saveCampaign(formData: FormData) {
-  await requireUser([...FINANCE]);
+  await requireAccess("collecte", "edit");
   const id = text(formData, "id");
   const name = text(formData, "name");
   const day = text(formData, "startDate");
@@ -32,14 +30,14 @@ export async function saveCampaign(formData: FormData) {
 }
 
 export async function deleteCampaign(formData: FormData) {
-  await requireUser([...FINANCE]);
+  await requireAccess("collecte", "edit");
   await prisma.campaign.delete({ where: { id: String(formData.get("id")) } });
   revalidatePath("/collecte");
   redirect("/collecte");
 }
 
 export async function savePledge(formData: FormData) {
-  await requireUser([...FINANCE]);
+  await requireAccess("collecte", "edit");
   const id = text(formData, "id");
   const campaignId = String(formData.get("campaignId"));
   const memberId = text(formData, "memberId");
@@ -63,7 +61,7 @@ export async function savePledge(formData: FormData) {
 }
 
 export async function deletePledge(formData: FormData) {
-  await requireUser([...FINANCE]);
+  await requireAccess("collecte", "edit");
   const p = await prisma.pledge.delete({ where: { id: String(formData.get("id")) } });
   revalidatePath(`/collecte/${p.campaignId}`);
   redirect(`/collecte/${p.campaignId}`);

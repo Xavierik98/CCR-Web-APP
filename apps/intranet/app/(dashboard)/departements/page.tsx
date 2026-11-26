@@ -1,14 +1,14 @@
 import { prisma } from "@ccr/database";
 import Link from "next/link";
 import { Button, Card, Input, PageHeader, Table } from "@/components/ui";
-import { requireUser } from "@/lib/auth";
+import { requireAccess } from "@/lib/auth";
 import { fullName } from "@/lib/labels";
 import { saveDepartment, saveGroup } from "./actions";
 
 // Module Départements et groupes (section 3) : départements avec la fonction
 // de chacun, et groupes de suivi avec leur responsable.
 export default async function DepartementsPage() {
-  await requireUser();
+  await requireAccess("departements");
   const [departments, groups] = await Promise.all([
     prisma.department.findMany({
       orderBy: { name: "asc" },
