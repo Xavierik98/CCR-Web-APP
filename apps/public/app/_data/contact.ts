@@ -8,3 +8,10 @@ export const ADRESSE = "44 Rue de Bazas, Quartier Gironde, Casablanca, Maroc";
 export const MAPS_EMBED_SRC = `https://www.google.com/maps?q=${encodeURIComponent(
   ADRESSE,
 )}&output=embed&z=16`;
+
+// Ouvre l'itinéraire vers l'église dans Google Maps (téléphone ou ordinateur).
+export const MAPS_DIRECTIONS_URL = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+  ADRESSE,
+)}`;
+
+export const ACCES_TRAM = "À 5 minutes à pied de la station de tramway La Gironde.";

@@ -1,107 +1,216 @@
 import type { Metadata } from "next";
-import { ADRESSE, MAPS_EMBED_SRC } from "../_data/contact";
+import Link from "next/link";
+import { Icon } from "../_components/icon";
+import { Reveal } from "../_components/reveal";
+import { RevealText } from "../_components/reveal-text";
+import { ACCES_TRAM, ADRESSE, MAPS_DIRECTIONS_URL, MAPS_EMBED_SRC } from "../_data/contact";
+import { PROGRAMME } from "../_data/programme";
 
 export const metadata: Metadata = {
-  title: "Contact",
-  description: "Adresse, localisation et formulaire de contact de CCR Famille Casablanca.",
+  title: "Nous trouver et contact",
+  description: "Adresse, accès en tramway, horaires des cultes et formulaire de contact de CCR Famille Casablanca.",
 };
+
+// Rendez-vous qui ont lieu à l'église même (l'église de maison se tient dans
+// les quartiers et la prière de minuit chaque nuit, ils ne sont pas listés ici).
+const HORAIRES = PROGRAMME.filter((item) =>
+  ["Dimanche", "Mardi", "Vendredi"].includes(item.jour),
+).sort((a, b) => (a.jour === "Dimanche" ? -1 : b.jour === "Dimanche" ? 1 : 0));
+
+const SUJETS = [
+  "Préparer ma première visite",
+  "Demande d'information",
+  "Demande de prière",
+  "Rejoindre un département",
+  "Autre",
+];
+
+const fieldClass =
+  "mt-1 w-full rounded-xl border border-ccr-ink/15 bg-ccr-cream/60 px-4 py-3 text-sm outline-none transition focus:border-ccr-gold focus:bg-white focus:ring-2 focus:ring-ccr-gold/30";
 
 export default function ContactPage() {
   return (
-    <main className="mx-auto max-w-4xl px-6 py-16">
-      <h1 className="font-display text-4xl font-black">Nous contacter</h1>
-      <p className="mt-3 text-ccr-ink/70">
-        Une question, une demande de visite ? Écrivez-nous ou venez nous
-        rencontrer.
-      </p>
+    <main>
+      {/* Bandeau sombre qui se fond vers le contenu clair par une vague. */}
+      <section className="relative bg-gradient-to-b from-ccr-ink via-ccr-ink to-[#1b1d26] pb-28 pt-16 text-ccr-cream">
+        <div className="mx-auto max-w-6xl px-6">
+          <RevealText
+            as="h1"
+            text="Nous trouver & Contact"
+            className="font-display text-5xl font-black md:text-6xl"
+          />
+          <Reveal delay={250}>
+            <p className="mt-4 max-w-xl text-ccr-cream/80">
+              Vous préparez votre première visite à Casablanca ou souhaitez
+              échanger avec notre équipe ? Nous serons heureux de vous
+              accueillir.
+            </p>
+          </Reveal>
+        </div>
+        <svg
+          viewBox="0 0 1440 80"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+          className="absolute bottom-0 left-0 h-16 w-full text-ccr-cream"
+        >
+          <path d="M0,40 C360,90 1080,0 1440,30 L1440,80 L0,80 Z" fill="currentColor" />
+        </svg>
+      </section>
 
-      <div className="mt-10 grid gap-10 md:grid-cols-2">
-        <div>
-          <h2 className="font-display text-xl font-bold">Adresse</h2>
-          <p className="mt-2 text-ccr-ink/80">
-            CCR - Centre Chrétien de Restauration
-            <br />
-            {ADRESSE}
-          </p>
+      <section className="mx-auto -mt-10 grid max-w-6xl gap-8 px-6 pb-16 lg:grid-cols-[0.9fr_1.1fr]">
+        <div className="space-y-6">
+          <Reveal>
+            <div className="rounded-3xl bg-white p-8 shadow-[0_20px_50px_-25px_rgba(32,28,22,0.35)]">
+              <div className="flex gap-4">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ccr-gold text-ccr-ink">
+                  <Icon name="map" className="h-5 w-5" />
+                </span>
+                <div>
+                  <h2 className="font-display text-xl font-bold">Adresse</h2>
+                  <p className="mt-1 text-sm text-ccr-ink/70">
+                    CCR Famille, Centre Chrétien de Restauration
+                    <br />
+                    {ADRESSE}
+                  </p>
+                </div>
+              </div>
 
-          <h2 className="mt-8 font-display text-xl font-bold">Autres moyens</h2>
-          <p className="mt-2 text-sm text-ccr-ink/60">
-            Téléphone et e-mail à venir.
-          </p>
+              <div className="my-6 h-px bg-ccr-ink/10" />
 
-          <div className="mt-8 aspect-[4/3] w-full overflow-hidden rounded-2xl border border-ccr-ink/10">
+              <div className="flex gap-4">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ccr-magenta text-ccr-cream">
+                  <Icon name="clock" className="h-5 w-5" />
+                </span>
+                <div>
+                  <h2 className="font-display text-xl font-bold">Horaires des cultes</h2>
+                  <ul className="mt-1 space-y-1 text-sm text-ccr-ink/70">
+                    {HORAIRES.map((item) => (
+                      <li key={item.titre}>
+                        <span className="font-semibold text-ccr-ink">{item.jour}</span> :{" "}
+                        {item.horaire.replace(" - ", " à ")} ({item.titre})
+                      </li>
+                    ))}
+                  </ul>
+                  <Link
+                    href="/cultes-et-programmes"
+                    className="mt-2 inline-block text-sm font-semibold text-ccr-magenta hover:underline"
+                  >
+                    Tout le programme de la semaine &rarr;
+                  </Link>
+                </div>
+              </div>
+
+              <div className="my-6 h-px bg-ccr-ink/10" />
+
+              <div className="flex gap-4">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ccr-blue text-ccr-cream">
+                  <Icon name="mail" className="h-5 w-5" />
+                </span>
+                <div>
+                  <h2 className="font-display text-xl font-bold">Coordonnées</h2>
+                  <p className="mt-1 text-sm text-ccr-ink/70">
+                    Téléphone et e-mail à venir. En attendant, écrivez-nous
+                    avec le formulaire.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </Reveal>
+
+          <Reveal delay={150}>
+            <div className="flex items-center gap-4 rounded-2xl bg-ccr-gold/15 px-6 py-5">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ccr-gold/30 text-ccr-ink">
+                <Icon name="tram" className="h-5 w-5" />
+              </span>
+              <p className="text-sm text-ccr-ink/80">{ACCES_TRAM}</p>
+            </div>
+          </Reveal>
+        </div>
+
+        <Reveal delay={100}>
+          <div className="h-full rounded-3xl border-2 border-ccr-gold/40 bg-white p-8 shadow-[0_20px_50px_-25px_rgba(32,28,22,0.35)]">
+            <h2 className="font-display text-2xl font-bold">Écrire à l&rsquo;équipe</h2>
+            <p className="mt-1 text-sm text-ccr-ink/60">
+              Une question, une demande de prière ou l&rsquo;envie de rejoindre
+              un département ? Laissez-nous un message.
+            </p>
+            {/* Envoi réel du formulaire à câbler une fois le canal de réception
+                (e-mail ou intranet) choisi : pas de traitement côté client pour l'instant. */}
+            <form className="mt-6 grid gap-4 sm:grid-cols-2">
+              <label className="block">
+                <span className="text-sm font-semibold">Nom complet</span>
+                <input name="nom" required placeholder="Votre nom" className={fieldClass} />
+              </label>
+              <label className="block">
+                <span className="text-sm font-semibold">Adresse e-mail</span>
+                <input name="email" type="email" required placeholder="vous@exemple.com" className={fieldClass} />
+              </label>
+              <label className="block sm:col-span-2">
+                <span className="text-sm font-semibold">Sujet</span>
+                <select name="sujet" className={fieldClass}>
+                  {SUJETS.map((s) => (
+                    <option key={s}>{s}</option>
+                  ))}
+                </select>
+              </label>
+              <label className="block sm:col-span-2">
+                <span className="text-sm font-semibold">Votre message</span>
+                <textarea
+                  name="message"
+                  rows={5}
+                  required
+                  placeholder="Dites-nous comment nous pouvons vous aider ou vous accueillir"
+                  className={fieldClass}
+                />
+              </label>
+              <div className="sm:col-span-2">
+                <button
+                  type="submit"
+                  className="rounded-full bg-ccr-gold px-8 py-3 text-sm font-semibold text-ccr-ink transition-colors hover:bg-ccr-gold-light"
+                >
+                  Envoyer le message
+                </button>
+              </div>
+            </form>
+          </div>
+        </Reveal>
+      </section>
+
+      {/* Carte pleine largeur, avec une carte d'accès posée dessus. */}
+      <section className="mx-auto max-w-6xl px-6 pb-20">
+        <Reveal>
+          <div className="relative overflow-hidden rounded-3xl ring-1 ring-ccr-ink/10">
             <iframe
               title={`Localisation CCR Famille - ${ADRESSE}`}
               src={MAPS_EMBED_SRC}
-              className="h-full w-full"
+              className="h-[420px] w-full md:h-[480px]"
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
             />
+            <div className="pointer-events-none absolute inset-x-4 bottom-4 md:inset-x-auto md:bottom-auto md:left-6 md:top-6 md:max-w-xs">
+              <div className="pointer-events-auto rounded-2xl bg-ccr-ink/90 p-5 text-ccr-cream shadow-xl backdrop-blur">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-ccr-gold-light">
+                  Nous trouver
+                </p>
+                <p className="mt-2 text-sm">{ADRESSE}</p>
+                <p className="mt-2 flex items-start gap-2 text-sm text-ccr-cream/70">
+                  <Icon name="tram" className="mt-0.5 h-4 w-4 shrink-0 text-ccr-gold-light" />
+                  {ACCES_TRAM}
+                </p>
+                <a
+                  href={MAPS_DIRECTIONS_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 inline-flex items-center gap-2 rounded-full bg-ccr-gold px-5 py-2 text-sm font-semibold text-ccr-ink transition-colors hover:bg-ccr-gold-light"
+                >
+                  <Icon name="route" className="h-4 w-4" />
+                  Itinéraire
+                </a>
+              </div>
+            </div>
           </div>
-        </div>
-
-        <form className="flex flex-col gap-4">
-          <div>
-            <label htmlFor="nom" className="text-sm font-semibold">
-              Nom
-            </label>
-            <input
-              id="nom"
-              name="nom"
-              type="text"
-              required
-              className="mt-1 w-full rounded-lg border border-ccr-ink/20 bg-white px-3 py-2 text-sm"
-            />
-          </div>
-          <div>
-            <label htmlFor="email" className="text-sm font-semibold">
-              E-mail
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              required
-              className="mt-1 w-full rounded-lg border border-ccr-ink/20 bg-white px-3 py-2 text-sm"
-            />
-          </div>
-          <div>
-            <label htmlFor="sujet" className="text-sm font-semibold">
-              Sujet
-            </label>
-            <select
-              id="sujet"
-              name="sujet"
-              className="mt-1 w-full rounded-lg border border-ccr-ink/20 bg-white px-3 py-2 text-sm"
-            >
-              <option>Demande d&rsquo;information</option>
-              <option>Demande de visite</option>
-              <option>Demande de prière</option>
-              <option>Autre</option>
-            </select>
-          </div>
-          <div>
-            <label htmlFor="message" className="text-sm font-semibold">
-              Message
-            </label>
-            <textarea
-              id="message"
-              name="message"
-              rows={5}
-              required
-              className="mt-1 w-full rounded-lg border border-ccr-ink/20 bg-white px-3 py-2 text-sm"
-            />
-          </div>
-          {/* Envoi réel du formulaire à câbler une fois le canal de réception
-              (e-mail ou intranet) choisi : pas de traitement côté client pour l'instant. */}
-          <button
-            type="submit"
-            className="mt-2 rounded-full bg-ccr-gold px-6 py-3 text-sm font-semibold text-ccr-ink transition-colors hover:bg-ccr-gold-light"
-          >
-            Envoyer
-          </button>
-        </form>
-      </div>
+        </Reveal>
+      </section>
     </main>
   );
 }

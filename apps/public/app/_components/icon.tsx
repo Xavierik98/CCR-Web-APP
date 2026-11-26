@@ -67,6 +67,25 @@ const PATHS: Record<string, ReactNode> = {
       <path d="M15 10.5 21 7v10l-6-3.5Z" />
     </>
   ),
+  mail: (
+    <>
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="m4 7 8 6 8-6" />
+    </>
+  ),
+  tram: (
+    <>
+      <rect x="6" y="5" width="12" height="12" rx="2.5" />
+      <path d="M6 11h12M9 3h6M12 3v2M9 14h.01M15 14h.01M8 21l2-4M16 21l-2-4" />
+    </>
+  ),
+  route: (
+    <>
+      <circle cx="6" cy="18" r="2" />
+      <circle cx="18" cy="6" r="2" />
+      <path d="M8 18h7a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h7" />
+    </>
+  ),
   facebook: (
     <>
       <circle cx="12" cy="12" r="9" />

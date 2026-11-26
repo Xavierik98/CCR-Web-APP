@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FooterMap } from "./footer-map";
 import { Icon } from "./icon";
 import { ADRESSE, MAPS_EMBED_SRC } from "../_data/contact";
 import { SOCIAL_LINKS } from "../_data/social";
@@ -96,15 +97,7 @@ export function Footer() {
             {ADRESSE}
           </p>
           <p className="mt-1 pl-6 text-xs text-ccr-cream/50">Téléphone et e-mail à venir</p>
-          <div className="mt-4 aspect-[16/10] w-full overflow-hidden rounded-2xl ring-1 ring-ccr-gold/30">
-            <iframe
-              title={`Localisation CCR Famille - ${ADRESSE}`}
-              src={MAPS_EMBED_SRC}
-              className="h-full w-full"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
-          </div>
+          <FooterMap src={MAPS_EMBED_SRC} title={`Localisation CCR Famille - ${ADRESSE}`} />
         </div>
       </div>
 
