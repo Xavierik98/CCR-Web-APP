@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { FlipPhotos } from "../_components/flip-photos";
 import { HeroSlideshow } from "../_components/hero-slideshow";
 import { ImageSlot } from "../_components/image-slot";
 import { A_PROPOS_PHOTOS } from "../_data/a-propos-photos";
@@ -71,8 +72,9 @@ export default function AProposPage() {
         </div>
       </section>
 
-      {/* Notre histoire */}
-      <section className="mx-auto max-w-3xl px-6 py-16">
+      {/* Notre histoire : texte à gauche, photo 3D de l'apôtre et de son épouse à droite */}
+      <section className="mx-auto grid max-w-6xl items-center gap-12 px-6 py-16 md:grid-cols-2 md:gap-16">
+        <div>
         <h2 className="font-display text-3xl font-bold">Notre histoire</h2>
         <div className="mt-6 space-y-4 text-ccr-ink/80">
           <p>
@@ -110,6 +112,33 @@ export default function AProposPage() {
             </li>
           ))}
         </ol>
+        </div>
+
+        <figure className="relative mx-auto w-full max-w-md">
+          <div
+            aria-hidden="true"
+            className="absolute -inset-8 rounded-[3rem] bg-gradient-to-br from-ccr-gold/30 via-ccr-magenta/15 to-ccr-blue/20 blur-3xl"
+          />
+          <div className="relative">
+            <FlipPhotos
+              front={
+                <ImageSlot
+                  src="/images/about/apotre-et-epouse-1.jpg"
+                  alt="L'apôtre Gel EBA GATSE et son épouse"
+                />
+              }
+              back={
+                <ImageSlot
+                  src="/images/about/apotre-et-epouse-2.jpg"
+                  alt="L'apôtre Gel EBA GATSE et son épouse"
+                />
+              }
+            />
+          </div>
+          <figcaption className="relative mt-5 text-center text-sm text-ccr-ink/60">
+            L&rsquo;apôtre Gel EBA GATSE et son épouse
+          </figcaption>
+        </figure>
       </section>
 
       {/* Nos responsables */}
