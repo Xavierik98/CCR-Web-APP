@@ -18,7 +18,7 @@ const LISTE: Actualite[] = [
     slug: "nuit-de-priere-traversee-2026-2027",
     titre: "Nuit de prière Traversée",
     texte:
-      "Banquet de la nouvelle saison 2026-2027, avec le pasteur principal Gilblas TCHOUNAND et le pasteur assistant Arsène KIFILA. Jeudi 31 décembre 2026, de 20h à 2h, au 44 Rue de Bazas, Quartier Gironde, Casablanca. Dress code : rouge, doré, blanc. Ne viens pas seul(e) ! « Passons à l'autre bord. » (Marc 4:35)",
+      "Banquet de la nouvelle saison. Jeudi 31 décembre, de 20h à 2h, au CCR Casablanca. Dress code : rouge, doré, blanc.",
     date: "2026-12-31",
     image: "/images/actualites/traversee-2026-2027-affiche.webp",
   },
