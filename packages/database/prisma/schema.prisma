@@ -234,6 +234,36 @@ model User {
   calendarToken String? @unique
   tasks         Task[]  @relation("TaskAssignee")
   createdTasks  Task[]  @relation("TaskCreator")
+  authEvents    AuthEvent[]
+}
+
+enum AuthEventType {
+  LINK_SENT
+  LINK_REFUSED
+  LOGIN
+  LOGIN_FAILED
+  LOGOUT
+}
+
+// Journal des connexions et déconnexions à l'intranet, consultable par le
+// super administrateur uniquement : date, lieu approximatif (déduit de
+// l'adresse IP par Vercel) et appareil utilisé. Conservé douze mois.
+model AuthEvent {
+  id        String        @id @default(cuid())
+  type      AuthEventType
+  email     String
+  userId    String?
+  user      User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  ip        String?
+  city      String?
+  region    String?
+  country   String?
+  userAgent String?
+  device    String?
+  createdAt DateTime      @default(now())
+
+  @@index([createdAt])
+  @@index([userId, createdAt])
 }
 
 // Tâche assignée à un responsable (personne ayant un accès à l'intranet),

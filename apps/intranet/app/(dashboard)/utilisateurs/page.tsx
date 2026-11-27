@@ -1,6 +1,6 @@
 import { prisma, type Role } from "@ccr/database";
 import Link from "next/link";
-import { Button, Card, Field, Input, Notice, PageHeader, Select, Table } from "@/components/ui";
+import { Button, ButtonLink, Card, Field, Input, Notice, PageHeader, Select, Table } from "@/components/ui";
 import { ROLE_DESCRIPTIONS, ROLE_LABELS, requireAccess } from "@/lib/auth";
 import { formatDate, fullName } from "@/lib/labels";
 import { deleteUser, saveUser } from "./actions";
@@ -28,14 +28,18 @@ export default async function UtilisateursPage({
 
   return (
     <>
-      <PageHeader title="Utilisateurs et rôles" subtitle="Seul le super administrateur attribue et révoque les accès." />
+      <PageHeader
+        title="Utilisateurs et rôles"
+        subtitle="Seul le super administrateur attribue et révoque les accès."
+        action={<ButtonLink href="/utilisateurs/connexions">Journal des connexions</ButtonLink>}
+      />
       {enregistre ? <Notice>Accès enregistré.</Notice> : null}
       {revoque ? <Notice>Accès révoqué.</Notice> : null}
       {erreur === "email" ? <Notice tone="magenta">Adresse e-mail ou rôle invalide.</Notice> : null}
       {erreur === "soi" ? <Notice tone="magenta">Vous ne pouvez pas retirer votre propre accès de super administrateur.</Notice> : null}
 
       <div className="grid gap-6 xl:grid-cols-[2fr_1fr]">
-        <Table head={["Personne", "Rôle", "Depuis", ""]}>
+        <Table head={["Personne", "Rôle", "Dernière connexion", ""]}>
           {users.map((u) => (
             <tr key={u.id}>
               <td className="px-4 py-3">
@@ -49,7 +53,11 @@ export default async function UtilisateursPage({
                   <Button type="submit" variant="secondary">OK</Button>
                 </form>
               </td>
-              <td className="px-4 py-3 text-ccr-ink/70">{formatDate(u.createdAt)}</td>
+              <td className="px-4 py-3 text-ccr-ink/70">
+                {u.lastLoginAt
+                  ? u.lastLoginAt.toLocaleString("fr-FR", { dateStyle: "medium", timeStyle: "short", timeZone: "Africa/Casablanca" })
+                  : "Jamais connecté"}
+              </td>
               <td className="px-4 py-3">
                 {u.email !== me.email ? (
                   <form action={deleteUser}>

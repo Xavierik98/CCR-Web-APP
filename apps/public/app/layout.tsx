@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Montserrat, Playfair_Display } from "next/font/google";
+import { AnnouncementBar } from "./_components/announcement-bar";
 import { BackToTop } from "./_components/back-to-top";
 import { Footer } from "./_components/footer";
 import { Header } from "./_components/header";
@@ -36,6 +37,7 @@ export default function RootLayout({
   return (
     <html lang="fr" className={`${playfair.variable} ${montserrat.variable}`}>
       <body className="bg-ccr-cream font-body text-ccr-ink">
+        <AnnouncementBar />
         <Header />
         {children}
         <Footer />
