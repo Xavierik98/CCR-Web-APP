@@ -4,6 +4,7 @@ import { Icon } from "@/components/icons";
 import { SidebarNav, type NavItem } from "@/components/sidebar-nav";
 import { TopBar } from "@/components/top-bar";
 import { ROLE_LABELS, canView, requireUser, type Module } from "@/lib/auth";
+import { pledgesToRemind } from "@/lib/pledges";
 import { signOut } from "../(auth)/login/actions";
 
 // Données toujours lues à la demande : jamais de page figée au moment du build.
@@ -35,11 +36,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
     canView(user.role, "fiches") ? prisma.memberSubmission.count({ where: { status: "PENDING" } }) : 0,
     prisma.task.count({ where: { assigneeId: user.id, doneAt: null } }),
   ]);
+  const myReminders = user.role === "TREASURER" ? (await pledgesToRemind()).length : 0;
 
   const items: NavItem[] = NAV.filter((n) => !n.module || canView(user.role, n.module)).map(
     ({ module, ...n }) => ({
       ...n,
-      count: module === "fiches" ? pendingFiches : n.href === "/mes-taches" ? myTasks : undefined,
+      count: module === "fiches" ? pendingFiches : n.href === "/mes-taches" ? myTasks + myReminders : undefined,
     }),
   );
   const initials = user.email.slice(0, 2).toUpperCase();

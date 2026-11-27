@@ -1,6 +1,9 @@
 import { prisma } from "@ccr/database";
 import { Badge, Button, Card, Notice, PageHeader } from "@/components/ui";
+import { RemindButton } from "@/components/remind-button";
 import { requireUser } from "@/lib/auth";
+import { formatDate, fullName } from "@/lib/labels";
+import { pledgeSummary, pledgesToRemind, reminderLink } from "@/lib/pledges";
 import { formatDue, googleCalendarUrl, siteOrigin } from "@/lib/tasks";
 import { renewCalendarToken, toggleTask } from "../taches/actions";
 
@@ -20,6 +23,9 @@ export default async function MesTachesPage({
       take: 200,
     }),
   ]);
+  // Rappels de relance réservés au rôle Trésorier (la liste reste visible
+  // pour tous les rôles de la collecte sur la page Collecte).
+  const relances = user.role === "TREASURER" ? await pledgesToRemind() : [];
   const origin = await siteOrigin();
   const feed = me.calendarToken ? `${origin}/agenda/${me.calendarToken}` : null;
   const now = new Date();
@@ -33,7 +39,33 @@ export default async function MesTachesPage({
 
       <div className="grid gap-6 xl:grid-cols-[2fr_1fr]">
         <div className="space-y-3">
-          {open.length === 0 ? (
+          {relances.length > 0 ? (
+            <Card className="border-ccr-magenta/30">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="font-display text-lg font-bold">Engagements à relancer ({relances.length})</p>
+                <a href="/collecte" className="text-sm font-semibold text-ccr-magenta hover:underline">Voir la collecte &rarr;</a>
+              </div>
+              <p className="mt-1 text-xs text-ccr-ink/50">Un clic ouvre WhatsApp avec le message prêt ; la personne disparaît de cette liste et de votre agenda.</p>
+              <ul className="mt-3 divide-y divide-ccr-ink/5">
+                {relances.slice(0, 15).map((p) => {
+                  const link = reminderLink(p);
+                  return (
+                    <li key={p.id} className="flex items-center justify-between gap-3 py-2.5">
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-semibold">{p.member ? fullName(p.member) : p.donorName}</p>
+                        <p className="truncate text-xs text-ccr-ink/50">
+                          {p.campaign.name}, {pledgeSummary(p)}
+                          {p.lastReminderAt ? `, relancé le ${formatDate(p.lastReminderAt)}` : ""}
+                        </p>
+                      </div>
+                      {link ? <RemindButton pledgeId={p.id} href={link} compact /> : null}
+                    </li>
+                  );
+                })}
+              </ul>
+            </Card>
+          ) : null}
+          {open.length === 0 && relances.length === 0 ? (
             <Card>
               <p className="text-sm text-ccr-ink/60">Aucune tâche en cours.</p>
             </Card>

@@ -10,8 +10,8 @@ function text(formData: FormData, key: string) {
   return v === "" ? null : v;
 }
 
-function amount(formData: FormData) {
-  const v = text(formData, "amountPromised")?.replace(",", ".");
+function amount(formData: FormData, key = "amountPromised") {
+  const v = text(formData, key)?.replace(/\s/g, "").replace(",", ".");
   return v && !Number.isNaN(Number(v)) ? v : null;
 }
 
@@ -50,14 +50,31 @@ export async function savePledge(formData: FormData) {
   const data = {
     donorName,
     amountPromised: amount(formData),
-    followUpDone: formData.get("followUpDone") === "on",
+    amountPaid: amount(formData, "amountPaid"),
+    phone: text(formData, "phone"),
     comment: text(formData, "comment"),
     ...(id ? {} : { memberId }),
   };
   if (id) await prisma.pledge.update({ where: { id }, data });
   else await prisma.pledge.create({ data: { ...data, campaignId } });
   revalidatePath(`/collecte/${campaignId}`);
-  redirect(`/collecte/${campaignId}?enregistre=1`);
+  const back = text(formData, "retour");
+  redirect(back?.startsWith(`/collecte/${campaignId}`) ? back : `/collecte/${campaignId}?enregistre=1`);
+}
+
+// Note qu'une relance WhatsApp vient d'être envoyée (appelé au clic, pendant
+// que WhatsApp s'ouvre avec le message prêt).
+export async function remindPledge(id: string) {
+  await requireAccess("collecte", "edit");
+  const p = await prisma.pledge.update({
+    where: { id },
+    data: { lastReminderAt: new Date(), reminderCount: { increment: 1 }, followUpDone: true },
+  });
+  revalidatePath("/collecte");
+  revalidatePath(`/collecte/${p.campaignId}`);
+  revalidatePath("/mes-taches");
+  revalidatePath("/tableau-de-bord");
+  return { at: new Date().toISOString() };
 }
 
 export async function deletePledge(formData: FormData) {

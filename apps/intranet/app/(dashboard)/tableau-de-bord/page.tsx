@@ -7,6 +7,7 @@ import { canEdit, canView, requireUser } from "@/lib/auth";
 import { CONTENT_STATUS_LABELS, formatDate, fullName } from "@/lib/labels";
 import { formatOccurrence, nextCulte, upcoming } from "@/lib/programme";
 import { formatDue } from "@/lib/tasks";
+import { pledgesToRemind } from "@/lib/pledges";
 
 const TONES = {
   gold: "bg-ccr-gold/15 text-[#b07a12]",
@@ -98,11 +99,12 @@ export default async function TableauDeBordPage({
       },
     }),
     see.fiches ? prisma.memberSubmission.count({ where: { status: "PENDING" } }) : 0,
-    see.collecte ? prisma.pledge.aggregate({ _sum: { amountPromised: true }, _count: true }) : null,
+    see.collecte ? prisma.pledge.aggregate({ _sum: { amountPromised: true, amountPaid: true }, _count: true }) : null,
     see.actualites
       ? prisma.content.findMany({ orderBy: { updatedAt: "desc" }, take: 3, select: { id: true, title: true, status: true, updatedAt: true } })
       : [],
   ]);
+  const relancesCollecte = user.role === "TREASURER" ? (await pledgesToRemind()).length : 0;
   const rappels = await prisma.task.findMany({
     where: { assigneeId: user.id, doneAt: null },
     orderBy: { dueAt: "asc" },
@@ -178,6 +180,24 @@ export default async function TableauDeBordPage({
 
       {erreur === "role" ? <Notice tone="magenta">Votre rôle ne donne pas accès à cette rubrique.</Notice> : null}
 
+      {relancesCollecte > 0 ? (
+        <Link
+          href="/mes-taches"
+          className="mb-4 flex items-center justify-between gap-3 rounded-2xl border border-ccr-magenta/30 bg-ccr-magenta/[0.06] px-5 py-4 transition-colors hover:bg-ccr-magenta/10"
+        >
+          <span className="flex items-center gap-3">
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-ccr-magenta/15 text-ccr-magenta">
+              <Icon name="coins" className="h-5 w-5" />
+            </span>
+            <span>
+              <span className="block font-semibold">{relancesCollecte} engagement{relancesCollecte > 1 ? "s" : ""} à relancer</span>
+              <span className="block text-xs text-ccr-ink/60">Relance WhatsApp en un clic depuis Mes tâches ou la Collecte</span>
+            </span>
+          </span>
+          <Icon name="arrow" className="h-5 w-5 text-ccr-magenta" />
+        </Link>
+      ) : null}
+
       {rappels.length > 0 ? (
         <section className="mb-6 rounded-2xl border border-ccr-gold/40 bg-ccr-gold/10 p-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
@@ -238,9 +258,9 @@ export default async function TableauDeBordPage({
           <StatCard
             icon="coins"
             tone="ink"
-            label="Collecte : montants promis"
-            value={money(Number(promesses._sum.amountPromised ?? 0))}
-            hint={`${promesses._count} engagements`}
+            label="Collecte : reçu"
+            value={money(Number(promesses._sum.amountPaid ?? 0))}
+            hint={`sur ${money(Number(promesses._sum.amountPromised ?? 0))} promis, ${promesses._count} engagements`}
             href="/collecte"
           />
         ) : (

@@ -200,7 +200,14 @@ model Pledge {
   member         Member?  @relation(fields: [memberId], references: [id], onDelete: SetNull)
   donorName      String
   amountPromised Decimal?
+  // Montant déjà reçu ; « payé » quand il atteint le montant promis.
+  amountPaid     Decimal?
+  // Numéro pour la relance WhatsApp quand le donateur n'a pas de fiche membre.
+  phone          String?
   followUpDone   Boolean  @default(false)
+  // Relances WhatsApp envoyées depuis l'intranet (date de la dernière, nombre).
+  lastReminderAt DateTime?
+  reminderCount  Int      @default(0)
   comment        String?
 }
 
