@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { PHOTOS, shuffle } from "../_data/galerie";
+import { GalleryGrid } from "./_components/gallery-grid";
 
 export const metadata: Metadata = {
   title: "Galerie",
@@ -18,7 +18,7 @@ export default function GaleriePage() {
   const photos = shuffle(PHOTOS);
 
   return (
-    <main className="mx-auto max-w-5xl px-6 py-16">
+    <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-16">
       <Link
         href="/"
         className="inline-flex items-center gap-2 text-sm font-semibold text-ccr-ink/60 transition-colors hover:text-ccr-magenta"
@@ -29,32 +29,10 @@ export default function GaleriePage() {
       <h1 className="mt-6 font-display text-4xl font-black">Galerie</h1>
       <p className="mt-3 max-w-xl text-ccr-ink/70">
         La vie de l&rsquo;église, portée par une jeunesse qui loue, sert et
-        grandit dans la foi. D&rsquo;autres photos et vidéos seront ajoutées
-        prochainement.
+        grandit dans la foi. Touchez une photo pour l&rsquo;agrandir.
       </p>
 
-      <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
-        {photos.map((photo) => (
-          <div
-            key={photo.src}
-            className="relative aspect-square overflow-hidden rounded-xl"
-          >
-            <Image
-              src={photo.src}
-              alt={photo.alt}
-              fill
-              sizes="(min-width: 768px) 25vw, 50vw"
-              className="object-cover"
-            />
-          </div>
-        ))}
-        {Array.from({ length: 3 }).map((_, index) => (
-          <div
-            key={`placeholder-${index}`}
-            className="aspect-square rounded-xl border border-dashed border-ccr-ink/15 bg-ccr-ink/5"
-          />
-        ))}
-      </div>
+      <GalleryGrid photos={photos} />
     </main>
   );
 }

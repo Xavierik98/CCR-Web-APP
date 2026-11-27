@@ -32,7 +32,7 @@ export function Footer() {
         aria-hidden="true"
         className="h-[3px] bg-gradient-to-r from-ccr-magenta via-ccr-gold-light to-ccr-blue"
       />
-      <div className="mx-auto grid max-w-6xl gap-10 px-6 py-12 md:grid-cols-2 lg:grid-cols-[1.1fr_0.9fr_1.6fr]">
+      <div className="mx-auto grid max-w-6xl gap-9 px-5 py-10 sm:px-6 md:grid-cols-2 md:py-12 lg:grid-cols-[1.1fr_0.9fr_1.6fr]">
         <div>
           <p className="font-display text-xl font-bold">CCR Famille</p>
           <p className="mt-1 text-sm text-ccr-cream/70">Centre Chrétien de Restauration</p>
@@ -77,7 +77,7 @@ export function Footer() {
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-ccr-gold-light">
             Navigation
           </p>
-          <ul className="mt-3 space-y-2 text-sm text-ccr-cream/80">
+          <ul className="mt-3 grid grid-cols-2 gap-x-6 gap-y-2.5 text-sm text-ccr-cream/80 lg:grid-cols-1 lg:gap-y-2">
             {NAV.map((item) => (
               <li key={item.href}>
                 <Link href={item.href} className="transition-colors hover:text-ccr-gold-light">

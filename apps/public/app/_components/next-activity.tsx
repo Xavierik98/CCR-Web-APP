@@ -41,20 +41,20 @@ export function NextActivity() {
   const { item, date } = next;
 
   return (
-    <div className="mt-6 flex flex-col gap-4 overflow-hidden rounded-2xl border border-ccr-ink/10 bg-white transition-shadow hover:shadow-md sm:flex-row">
-      <div className="flex shrink-0 flex-col items-center justify-center bg-ccr-gold/10 px-8 py-6 text-center">
+    <div className="mt-6 flex overflow-hidden rounded-3xl border border-ccr-ink/10 bg-white shadow-[0_10px_30px_-18px_rgba(32,28,22,0.35)] transition-shadow hover:shadow-md">
+      <div className="flex w-24 shrink-0 flex-col items-center justify-center bg-ccr-gold/10 px-3 py-5 text-center sm:w-auto sm:px-8 sm:py-6">
         <span className="text-xs font-semibold uppercase tracking-wide text-ccr-gold">
           {JOURS_COURTS[date.getDay()]}
         </span>
-        <span className="font-display text-4xl font-black text-ccr-ink">
+        <span className="font-display text-3xl font-black text-ccr-ink [font-variant-numeric:lining-nums] sm:text-4xl">
           {String(date.getDate()).padStart(2, "0")}
         </span>
         <span className="text-xs font-semibold uppercase tracking-wide text-ccr-ink/60">
           {MOIS_COURTS[date.getMonth()]} {date.getFullYear()}
         </span>
       </div>
-      <div className="flex-1 px-6 py-6">
-        <h3 className="font-display text-xl font-bold">{item.titre}</h3>
+      <div className="min-w-0 flex-1 px-5 py-5 sm:px-6 sm:py-6">
+        <h3 className="font-display text-lg font-bold sm:text-xl">{item.titre}</h3>
         <p className="mt-2 text-sm font-semibold text-ccr-ink/80">{item.horaire}</p>
         <p className="text-sm text-ccr-ink/60">Salle de réunion CCR Casablanca</p>
       </div>

@@ -29,9 +29,8 @@ export function DepartementsBrowser({
   departements: Departement[];
 }) {
   const [query, setQuery] = useState("");
-  const [categorie, setCategorie] = useState<"Toutes" | Departement["categorie"]>(
-    "Toutes",
-  );
+  // Une seule catégorie (Ministère) pour l'instant : seul le nom est filtré.
+  const categorie: "Toutes" | Departement["categorie"] = "Toutes";
 
   const resultats = useMemo(() => {
     return departements.filter((d) => {
@@ -43,27 +42,15 @@ export function DepartementsBrowser({
 
   return (
     <div>
-      <div className="flex flex-col gap-3 rounded-2xl border border-ccr-ink/10 bg-white p-3 shadow-sm sm:flex-row">
+      <div className="flex rounded-2xl border border-ccr-ink/10 bg-white p-2 shadow-sm">
         <input
           type="search"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Rechercher un département"
-          className="flex-1 rounded-lg border border-ccr-ink/15 px-3 py-2 text-sm outline-none focus:border-ccr-gold focus:ring-2 focus:ring-ccr-gold/30"
+          className="flex-1 rounded-xl border-0 bg-ccr-ink/[0.04] px-4 py-3 text-[15px] outline-none focus:border-ccr-gold focus:ring-2 focus:ring-ccr-gold/30"
           aria-label="Rechercher un département"
         />
-        <select
-          value={categorie}
-          onChange={(event) =>
-            setCategorie(event.target.value as typeof categorie)
-          }
-          className="rounded-lg border border-ccr-ink/15 px-3 py-2 text-sm outline-none focus:border-ccr-gold focus:ring-2 focus:ring-ccr-gold/30 sm:w-56"
-          aria-label="Filtrer par catégorie"
-        >
-          <option value="Toutes">Toutes les catégories</option>
-          <option value="Ministère">Ministère</option>
-          <option value="Formation et métier">Formation et métier</option>
-        </select>
       </div>
 
       {resultats.length === 0 ? (

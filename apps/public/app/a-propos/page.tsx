@@ -127,7 +127,7 @@ export default function AProposPage() {
           <figure className="relative mx-auto w-full max-w-md">
             <div
               aria-hidden="true"
-              className="absolute -inset-8 rounded-[3rem] bg-gradient-to-br from-ccr-gold/30 via-ccr-magenta/15 to-ccr-blue/20 blur-3xl"
+              className="absolute -inset-4 rounded-[3rem] bg-gradient-to-br sm:-inset-8 from-ccr-gold/30 via-ccr-magenta/15 to-ccr-blue/20 blur-3xl"
             />
             <div className="relative">
               <FlipPhotos

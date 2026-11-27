@@ -74,18 +74,18 @@ export default function HomePage() {
             de Casablanca.
           </p>
           <div
-            className="animate-fade-in-up mt-8 flex flex-wrap gap-4"
+            className="animate-fade-in-up mt-8 grid gap-3 sm:flex sm:flex-wrap sm:gap-4"
             style={{ animationDelay: "300ms" }}
           >
             <Link
               href="/a-propos"
-              className="rounded-full border border-ccr-cream/50 px-6 py-3 text-sm font-semibold text-ccr-cream transition-colors hover:bg-ccr-cream/10"
+              className="order-2 rounded-2xl border border-ccr-cream/40 bg-ccr-cream/10 px-6 py-3.5 text-center text-[15px] font-semibold text-ccr-cream backdrop-blur-md transition-colors hover:bg-ccr-cream/15 active:scale-[0.98] sm:order-none sm:rounded-full sm:py-3 sm:text-sm"
             >
               Découvrir l&rsquo;église
             </Link>
             <Link
               href="/cultes-et-programmes"
-              className="rounded-full bg-ccr-gold px-6 py-3 text-sm font-semibold text-ccr-ink transition-transform hover:scale-105 hover:bg-ccr-gold-light"
+              className="order-1 rounded-2xl bg-ccr-gold px-6 py-3.5 text-center text-[15px] font-semibold text-ccr-ink shadow-[0_10px_24px_-12px_rgba(227,166,56,0.9)] transition-transform hover:scale-105 hover:bg-ccr-gold-light active:scale-[0.98] sm:order-none sm:rounded-full sm:py-3 sm:text-sm"
             >
               Participer à un culte
             </Link>
@@ -93,7 +93,7 @@ export default function HomePage() {
               href={WHATSAPP_URL ?? "/contact"}
               target={WHATSAPP_URL ? "_blank" : undefined}
               rel={WHATSAPP_URL ? "noopener noreferrer" : undefined}
-              className="inline-flex items-center gap-2 rounded-full bg-[#25D366] px-6 py-3 text-sm font-semibold text-ccr-ink transition-transform hover:scale-105"
+              className="order-3 inline-flex items-center justify-center gap-2 rounded-2xl bg-[#25D366] px-6 py-3.5 text-[15px] font-semibold text-ccr-ink transition-transform hover:scale-105 active:scale-[0.98] sm:order-none sm:rounded-full sm:py-3 sm:text-sm"
             >
               <Icon name="chat" className="h-4 w-4" />
               Nous écrire sur WhatsApp
@@ -105,7 +105,7 @@ export default function HomePage() {
       {/* Notre vision, juste après le hero : bande sombre, grandes icônes au
           trait qui se dessinent, titres en capitales (inspiration
           impactcentrechretien.com, aux couleurs CCR). */}
-      <section className="relative bg-ccr-ink pb-24 pt-16 text-center text-ccr-cream">
+      <section className="relative bg-ccr-ink pb-20 pt-14 text-center text-ccr-cream md:pb-24 md:pt-16">
         <div className="mx-auto max-w-6xl px-6">
           <RevealText
             as="p"
@@ -118,10 +118,12 @@ export default function HomePage() {
             className="mx-auto mt-3 max-w-2xl font-display text-3xl font-black md:text-4xl"
           />
 
-          <div className="mt-14 grid gap-14 md:grid-cols-3 md:gap-10">
+          {/* Sur mobile : cartes en verre à faire glisser (une à la fois, à
+              crans) au lieu d'une longue colonne ; sur grand écran, 3 colonnes. */}
+          <div className="snap-row -mx-6 mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-3 md:mx-0 md:mt-14 md:grid md:grid-cols-3 md:gap-10 md:overflow-visible md:px-0 md:pb-0">
             {PILIERS.map((pilier, index) => (
-              <Reveal key={pilier.nom} delay={index * 200}>
-                <article className="group flex flex-col items-center">
+              <Reveal key={pilier.nom} delay={index * 200} className="w-[80%] shrink-0 snap-center md:w-auto">
+                <article className="group flex h-full flex-col items-center rounded-[28px] border border-white/10 bg-white/[0.05] px-5 py-8 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur md:rounded-none md:border-0 md:bg-transparent md:p-0 md:shadow-none md:backdrop-blur-none">
                   <VisionIcon
                     name={pilier.nom as "Rassembler" | "Former" | "Envoyer"}
                     className={`h-24 w-24 transition-transform duration-500 group-hover:-translate-y-1 group-hover:scale-105 ${VISION_COLORS[pilier.accent]}`}
@@ -140,9 +142,13 @@ export default function HomePage() {
             ))}
           </div>
 
+          <p className="mt-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-ccr-cream/40 md:hidden">
+            Glissez pour découvrir &rarr;
+          </p>
+
           <Link
             href="/a-propos"
-            className="mt-14 inline-block rounded-full border border-ccr-cream/30 px-6 py-3 text-sm font-semibold transition-colors hover:border-ccr-gold-light hover:text-ccr-gold-light"
+            className="mt-8 inline-block rounded-full border border-ccr-cream/30 md:mt-14 px-6 py-3 text-sm font-semibold transition-colors hover:border-ccr-gold-light hover:text-ccr-gold-light"
           >
             En savoir plus sur notre vision &rarr;
           </Link>
@@ -164,7 +170,7 @@ export default function HomePage() {
       </section>
 
       <Reveal>
-        <section id="prochaines-activites" className="mx-auto max-w-6xl px-6 pb-16 pt-24">
+        <section id="prochaines-activites" className="mx-auto max-w-6xl px-5 pb-12 pt-20 sm:px-6 md:pb-16 md:pt-24">
           <RevealText as="h2" text="Prochaines activités" className="font-display text-2xl font-bold" />
           <NextActivity />
         </section>
@@ -245,7 +251,7 @@ export default function HomePage() {
       </Reveal>
 
       <Reveal>
-        <section id="actualites" className="mx-auto max-w-6xl px-6 py-16">
+        <section id="actualites" className="mx-auto max-w-6xl px-5 py-12 sm:px-6 md:py-16">
           <RevealText as="h2" text="Actualités" className="font-display text-2xl font-bold" />
 
           {ACTUALITES.length === 0 ? (
@@ -259,11 +265,12 @@ export default function HomePage() {
             </div>
           ) : (
             <>
-              <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {/* Sur mobile : cartes à faire glisser horizontalement. */}
+              <div className="snap-row -mx-5 mt-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-3 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3">
                 {ACTUALITES.slice(0, 3).map((article) => (
                   <article
                     key={article.slug}
-                    className="overflow-hidden rounded-2xl border border-ccr-ink/10 bg-white transition-transform hover:-translate-y-1 hover:shadow-md"
+                    className="w-[85%] shrink-0 snap-center overflow-hidden rounded-3xl border border-ccr-ink/10 bg-white shadow-[0_10px_30px_-18px_rgba(32,28,22,0.35)] transition-transform hover:-translate-y-1 hover:shadow-md sm:w-auto sm:rounded-2xl"
                   >
                     <div className="relative aspect-[16/9]">
                       <ActualiteMedia

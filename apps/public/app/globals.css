@@ -396,3 +396,25 @@
     animation: none;
   }
 }
+
+/* Mobile : aucune page ne doit pouvoir glisser sur le côté, pas de flash
+   gris au toucher (comme une app iOS). overflow-x: clip ne casse pas les
+   éléments collants (sticky), contrairement à hidden. */
+html,
+body {
+  overflow-x: clip;
+}
+
+body {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Défilement horizontal à crans (cartes à faire glisser sur mobile). */
+.snap-row {
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.snap-row::-webkit-scrollbar {
+  display: none;
+}
