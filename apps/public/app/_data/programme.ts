@@ -21,7 +21,7 @@ export const PROGRAMME = [
   {
     jour: "Mardi",
     titre: "Intercession",
-    image: "/images/galerie/photo-4.jpg",
+    image: "/images/programme/intercession.jpg",
     horaire: "19h30 - 21h30",
     icon: "spark",
     accent: "magenta",
