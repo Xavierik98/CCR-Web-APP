@@ -10,6 +10,18 @@ export const PHOTOS = [
   { src: "/images/galerie/photo-7.jpg", alt: "Dédicace de livres" },
   { src: "/images/galerie/photo-8.jpg", alt: "Moment d'échange" },
   { src: "/images/galerie/photo-9.jpg", alt: "Photo de groupe" },
+  // Photos ajoutées le 27/11 : sortie au parc, louange, Gospel Culture Day
+  // (plaques d'immatriculation floutées).
+  { src: "/images/galerie/photo-10.jpg", alt: "Pique-nique de la jeunesse au parc" },
+  { src: "/images/galerie/photo-11.jpg", alt: "Sortie au parc" },
+  { src: "/images/galerie/photo-12.jpg", alt: "Photo de groupe au parc" },
+  { src: "/images/galerie/photo-13.jpg", alt: "Temps de louange et de prière" },
+  { src: "/images/galerie/photo-14.jpg", alt: "La famille CCR réunie au parc" },
+  { src: "/images/galerie/photo-15.jpg", alt: "Gospel Culture Day : tenues traditionnelles" },
+  { src: "/images/galerie/photo-16.jpg", alt: "Gospel Culture Day : la joie du trophée" },
+  { src: "/images/galerie/photo-17.jpg", alt: "Gospel Culture Day : tenue traditionnelle" },
+  { src: "/images/galerie/photo-18.jpg", alt: "Gospel Culture Day : célébration" },
+  { src: "/images/galerie/photo-19.jpg", alt: "Gospel Culture Day : remise du trophée" },
 ];
 
 // Mélange Fisher-Yates : utilisé pour afficher les photos dans un ordre
