@@ -22,6 +22,14 @@ export const PHOTOS = [
   { src: "/images/galerie/photo-17.jpg", alt: "Gospel Culture Day : tenue traditionnelle" },
   { src: "/images/galerie/photo-18.jpg", alt: "Gospel Culture Day : célébration" },
   { src: "/images/galerie/photo-19.jpg", alt: "Gospel Culture Day : remise du trophée" },
+  { src: "/images/galerie/photo-20.jpg", alt: "Gospel Culture Day : défilé en tenues traditionnelles" },
+  { src: "/images/galerie/photo-21.jpg", alt: "Gospel Culture Day : aux couleurs du Maroc" },
+  { src: "/images/galerie/photo-22.jpg", alt: "Gospel Culture Day : la salle réunie" },
+  { src: "/images/galerie/photo-23.jpg", alt: "Gospel Culture Day : les médailles" },
+  { src: "/images/galerie/photo-24.jpg", alt: "Gospel Culture Day : le public" },
+  { src: "/images/galerie/photo-25.jpg", alt: "Recueillement pendant le culte" },
+  { src: "/images/galerie/photo-26.jpg", alt: "Gospel Culture Day : tenues traditionnelles" },
+  { src: "/images/galerie/photo-27.jpg", alt: "Gospel Culture Day : photo de groupe avec le trophée" },
 ];
 
 // Mélange Fisher-Yates : utilisé pour afficher les photos dans un ordre
