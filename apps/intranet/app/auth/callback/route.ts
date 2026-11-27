@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { prisma } from "@ccr/database";
-import { recordAuthEvent } from "@/lib/audit";
+import { recordAuthEvent, requestInfo, sessionIdFromToken } from "@/lib/audit";
 import { createSupabaseServerClient } from "@/lib/supabase";
 
 // Retour du lien de connexion reçu par e-mail : échange le code contre une
@@ -13,7 +13,21 @@ export async function GET(request: NextRequest) {
     const email = result?.data.user?.email?.toLowerCase();
     if (result && !result.error && email) {
       const user = await prisma.user.findUnique({ where: { email }, select: { id: true } });
-      if (user) await prisma.user.update({ where: { id: user.id }, data: { lastLoginAt: new Date() } });
+      if (user) {
+        const info = await requestInfo();
+        await prisma.user.update({
+          where: { id: user.id },
+          data: {
+            lastLoginAt: new Date(),
+            lastSeenAt: new Date(),
+            lastSeenIp: info.ip,
+            lastSeenCity: info.city,
+            lastSeenCountry: info.country,
+            lastSeenDevice: info.device,
+            lastSessionId: sessionIdFromToken(result.data.session?.access_token),
+          },
+        });
+      }
       await recordAuthEvent(user ? "LOGIN" : "LOGIN_FAILED", email, user?.id);
       return NextResponse.redirect(new URL("/tableau-de-bord", request.url));
     }

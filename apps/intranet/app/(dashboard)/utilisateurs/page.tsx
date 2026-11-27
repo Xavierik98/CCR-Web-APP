@@ -39,7 +39,7 @@ export default async function UtilisateursPage({
       {erreur === "soi" ? <Notice tone="magenta">Vous ne pouvez pas retirer votre propre accès de super administrateur.</Notice> : null}
 
       <div className="grid gap-6 xl:grid-cols-[2fr_1fr]">
-        <Table head={["Personne", "Rôle", "Dernière connexion", ""]}>
+        <Table head={["Personne", "Rôle", "Dernière activité", ""]}>
           {users.map((u) => (
             <tr key={u.id}>
               <td className="px-4 py-3">
@@ -54,9 +54,9 @@ export default async function UtilisateursPage({
                 </form>
               </td>
               <td className="px-4 py-3 text-ccr-ink/70">
-                {u.lastLoginAt
-                  ? u.lastLoginAt.toLocaleString("fr-FR", { dateStyle: "medium", timeStyle: "short", timeZone: "Africa/Casablanca" })
-                  : "Jamais connecté"}
+                {u.lastSeenAt ?? u.lastLoginAt
+                  ? (u.lastSeenAt ?? u.lastLoginAt)!.toLocaleString("fr-FR", { dateStyle: "medium", timeStyle: "short", timeZone: "Africa/Casablanca" })
+                  : "Pas encore d'activité"}
               </td>
               <td className="px-4 py-3">
                 {u.email !== me.email ? (

@@ -1,4 +1,5 @@
 import { prisma, type AuthEventType } from "@ccr/database";
+import { AutoRefresh } from "@/components/auto-refresh";
 import { Badge, Card, PageHeader, Table } from "@/components/ui";
 import { requireAccess } from "@/lib/auth";
 import { fullName } from "@/lib/labels";
@@ -29,7 +30,14 @@ export default async function ConnexionsPage({
   const { personne, type } = await searchParams;
   const typeFilter = type && type in TYPES ? (type as AuthEventType) : undefined;
 
-  const [events, users, last24h] = await Promise.all([
+  const [activity, events, users, last24h] = await Promise.all([
+    prisma.user.findMany({
+      orderBy: { lastSeenAt: { sort: "desc", nulls: "last" } },
+      include: {
+        member: { select: { firstName: true, lastName: true } },
+        authEvents: { where: { type: "LOGOUT" }, orderBy: { createdAt: "desc" }, take: 1, select: { createdAt: true } },
+      },
+    }),
     prisma.authEvent.findMany({
       where: { ...(personne ? { email: personne } : {}), ...(typeFilter ? { type: typeFilter } : {}) },
       orderBy: { createdAt: "desc" },
@@ -47,6 +55,18 @@ export default async function ConnexionsPage({
   const when = (d: Date) =>
     d.toLocaleString("fr-FR", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit", timeZone: "Africa/Casablanca" });
   const select = "rounded-lg border border-ccr-ink/15 bg-white px-3 py-2 text-sm";
+  const now = Date.now();
+  // En ligne : une page de l'intranet vue dans les 5 dernières minutes.
+  const online = (d: Date | null) => !!d && now - d.getTime() < 5 * 60000;
+  const since = (d: Date) => {
+    const min = Math.round((now - d.getTime()) / 60000);
+    if (min < 1) return "à l'instant";
+    if (min < 60) return `il y a ${min} min`;
+    const h = Math.round(min / 60);
+    if (h < 24) return `il y a ${h} h`;
+    return `il y a ${Math.round(h / 24)} j`;
+  };
+  const enLigne = activity.filter((u) => online(u.lastSeenAt));
 
   return (
     <>
@@ -56,6 +76,62 @@ export default async function ConnexionsPage({
         back={{ href: "/utilisateurs", label: "Accès et rôles" }}
       />
 
+      <div className="mb-4 flex justify-end">
+        <AutoRefresh seconds={30} />
+      </div>
+
+      <section className="mb-8">
+        <h2 className="mb-3 flex items-center gap-2 font-display text-xl font-bold">
+          En ligne maintenant
+          <span className="rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-sm font-semibold text-emerald-700">{enLigne.length}</span>
+        </h2>
+        <Table head={["Personne", "Statut", "Dernière activité", "Lieu", "Appareil", "Dernière connexion", "Dernière déconnexion"]}>
+          {activity.map((u) => {
+            const on = online(u.lastSeenAt);
+            const logout = u.authEvents[0]?.createdAt;
+            return (
+              <tr key={u.id} className={on ? "bg-emerald-500/[0.04]" : ""}>
+                <td className="px-4 py-3">
+                  <p className="font-semibold">{u.member ? fullName(u.member) : u.email}</p>
+                  {u.member ? <p className="text-xs text-ccr-ink/50">{u.email}</p> : null}
+                </td>
+                <td className="px-4 py-3">
+                  {on ? (
+                    <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-emerald-700">
+                      <span className="h-2 w-2 rounded-full bg-emerald-500" /> En ligne
+                    </span>
+                  ) : (
+                    <span className="text-sm text-ccr-ink/50">Hors ligne</span>
+                  )}
+                </td>
+                <td className="whitespace-nowrap px-4 py-3 text-ccr-ink/70">
+                  {u.lastSeenAt ? (
+                    <>
+                      {when(u.lastSeenAt)}
+                      <span className="block text-xs text-ccr-ink/50">{since(u.lastSeenAt)}</span>
+                    </>
+                  ) : (
+                    "Aucune activité enregistrée"
+                  )}
+                </td>
+                <td className="px-4 py-3 text-ccr-ink/70">
+                  {u.lastSeenAt ? place({ city: u.lastSeenCity, region: null, country: u.lastSeenCountry }) : ""}
+                  {u.lastSeenIp ? <span className="block font-mono text-xs text-ccr-ink/40">{u.lastSeenIp}</span> : null}
+                </td>
+                <td className="px-4 py-3 text-ccr-ink/70">{u.lastSeenDevice ?? ""}</td>
+                <td className="whitespace-nowrap px-4 py-3 text-ccr-ink/70">{u.lastLoginAt ? when(u.lastLoginAt) : ""}</td>
+                <td className="whitespace-nowrap px-4 py-3 text-ccr-ink/70">{logout ? when(logout) : ""}</td>
+              </tr>
+            );
+          })}
+        </Table>
+        <p className="mt-2 text-xs text-ccr-ink/50">
+          « En ligne » : au moins une page ouverte dans les 5 dernières minutes. Fermer l&rsquo;onglet sans se déconnecter
+          n&rsquo;envoie pas d&rsquo;heure de déconnexion : la personne passe alors « hors ligne » après 5 minutes.
+        </p>
+      </section>
+
+      <h2 className="mb-3 font-display text-xl font-bold">Historique</h2>
       <div className="mb-6 grid gap-3 sm:grid-cols-3">
         <Card>
           <p className="text-sm text-ccr-ink/60">Connexions (24 h)</p>

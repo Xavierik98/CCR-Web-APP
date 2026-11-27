@@ -229,6 +229,14 @@ model User {
   member      Member?   @relation(fields: [memberId], references: [id], onDelete: SetNull)
   lastLoginAt DateTime?
   createdAt   DateTime  @default(now())
+  // Dernière activité vue sur l'intranet (mise à jour au plus toutes les
+  // minutes), pour savoir qui est en ligne, d'où et avec quel appareil.
+  lastSeenAt      DateTime?
+  lastSeenIp      String?
+  lastSeenCity    String?
+  lastSeenCountry String?
+  lastSeenDevice  String?
+  lastSessionId   String?
   // Jeton secret du lien d'abonnement à l'agenda personnel (fichier .ics) :
   // les tâches assignées apparaissent dans Google Agenda, Outlook ou iPhone.
   calendarToken String? @unique

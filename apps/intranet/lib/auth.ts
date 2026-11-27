@@ -1,6 +1,7 @@
 import { prisma, type Role } from "@ccr/database";
 import { redirect } from "next/navigation";
 import { cache } from "react";
+import { sessionIdFromToken, trackActivity } from "./audit";
 import { createSupabaseServerClient } from "./supabase";
 
 export type CurrentUser = { id: string; email: string; role: Role };
@@ -15,7 +16,10 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
   const email = data.user?.email?.toLowerCase();
   if (!email) return null;
   const user = await prisma.user.findUnique({ where: { email } });
-  return user ? { id: user.id, email, role: user.role } : null;
+  if (!user) return null;
+  const { data: session } = await supabase.auth.getSession();
+  await trackActivity({ ...user, email }, sessionIdFromToken(session.session?.access_token));
+  return { id: user.id, email, role: user.role };
 });
 
 export type Module =
