@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { CheckedField } from "@ccr/ui/src/checked-field";
+import Image from "next/image";
 import Link from "next/link";
 import { Icon } from "../_components/icon";
 import { Reveal } from "../_components/reveal";
@@ -32,9 +33,20 @@ const fieldClass =
 export default function ContactPage() {
   return (
     <main>
-      {/* Bandeau sombre qui se fond vers le contenu clair par une vague. */}
-      <section className="relative bg-gradient-to-b from-ccr-ink via-ccr-ink to-[#1b1d26] pb-28 pt-16 text-ccr-cream">
-        <div className="mx-auto max-w-6xl px-6">
+      {/* Bandeau photo (l'assemblée réunie) assombri pour la lisibilité, qui se
+          fond vers le contenu clair par une vague en mouvement doux. */}
+      <section className="relative overflow-hidden bg-ccr-ink pb-32 pt-20 text-ccr-cream md:pt-28">
+        <Image
+          src="/images/galerie/photo-22.jpg"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="animate-slow-zoom object-cover object-center"
+        />
+        <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-ccr-ink via-ccr-ink/85 to-ccr-ink/40" />
+        <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-ccr-ink/70 via-transparent to-ccr-ink/30" />
+        <div className="relative mx-auto max-w-6xl px-6">
           <RevealText
             as="h1"
             text="Nous trouver & Contact"
@@ -48,20 +60,21 @@ export default function ContactPage() {
             </p>
           </Reveal>
         </div>
-        <svg
-          viewBox="0 0 1440 80"
-          preserveAspectRatio="none"
-          aria-hidden="true"
-          className="absolute bottom-0 left-0 h-16 w-full text-ccr-cream"
-        >
-          <path d="M0,40 C360,90 1080,0 1440,30 L1440,80 L0,80 Z" fill="currentColor" />
-        </svg>
+        {/* Deux vagues superposées qui glissent à des vitesses différentes. */}
+        <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-20 overflow-hidden">
+          <svg viewBox="0 0 2880 80" preserveAspectRatio="none" className="animate-wave-slide-slow absolute bottom-0 left-0 h-full w-[200%] text-ccr-cream/40">
+            <path d="M0,45 C360,10 720,80 1440,45 C1800,10 2160,80 2880,45 L2880,80 L0,80 Z" fill="currentColor" />
+          </svg>
+          <svg viewBox="0 0 2880 80" preserveAspectRatio="none" className="animate-wave-slide absolute bottom-0 left-0 h-full w-[200%] text-ccr-cream">
+            <path d="M0,50 C360,80 1080,20 1440,50 C1800,80 2520,20 2880,50 L2880,80 L0,80 Z" fill="currentColor" />
+          </svg>
+        </div>
       </section>
 
       <section className="mx-auto -mt-10 grid max-w-6xl gap-8 px-6 pb-16 lg:grid-cols-[0.9fr_1.1fr]">
         <div className="space-y-6">
           <Reveal>
-            <div className="rounded-3xl bg-white p-8 shadow-[0_20px_50px_-25px_rgba(32,28,22,0.35)]">
+            <div className="animate-swell rounded-3xl bg-white p-8 shadow-[0_20px_50px_-25px_rgba(32,28,22,0.35)]">
               <div className="flex gap-4">
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ccr-gold text-ccr-ink">
                   <Icon name="map" className="h-5 w-5" />
@@ -129,7 +142,7 @@ export default function ContactPage() {
         </div>
 
         <Reveal delay={100}>
-          <div className="h-full rounded-3xl border-2 border-ccr-gold/40 bg-white p-8 shadow-[0_20px_50px_-25px_rgba(32,28,22,0.35)]">
+          <div className="animate-swell-late h-full rounded-3xl border-2 border-ccr-gold/40 bg-white p-8 shadow-[0_20px_50px_-25px_rgba(32,28,22,0.35)]">
             <h2 className="font-display text-2xl font-bold">Écrire à l&rsquo;équipe</h2>
             <p className="mt-1 text-sm text-ccr-ink/60">
               Une question, une demande de prière ou l&rsquo;envie de rejoindre

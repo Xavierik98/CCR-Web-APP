@@ -171,3 +171,49 @@
     animation: none;
   }
 }
+
+/* Page Contact : vague qui glisse doucement sous le bandeau, et cartes qui
+   ondulent légèrement en décalé, comme portées par une houle. */
+@keyframes wave-slide {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-wave-slide {
+  animation: wave-slide 18s linear infinite;
+}
+
+.animate-wave-slide-slow {
+  animation: wave-slide 30s linear infinite reverse;
+}
+
+@keyframes swell {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-swell {
+  animation: swell 7s ease-in-out infinite;
+}
+
+.animate-swell-late {
+  animation: swell 7s ease-in-out -3.5s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-wave-slide,
+  .animate-wave-slide-slow,
+  .animate-swell,
+  .animate-swell-late {
+    animation: none;
+  }
+}

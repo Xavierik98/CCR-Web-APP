@@ -4,7 +4,7 @@ export const PROGRAMME = [
   {
     jour: "Lundi à vendredi",
     titre: "Prière de minuit",
-    image: "/images/about/photo-5.jpg",
+    image: "/images/programme/priere-de-minuit.jpg",
     horaire: "00h00 - 00h30",
     description: "30 minutes de prière chaque nuit.",
     icon: "clock",

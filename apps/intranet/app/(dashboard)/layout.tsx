@@ -2,11 +2,16 @@ import { prisma } from "@ccr/database";
 import Image from "next/image";
 import { Icon } from "@/components/icons";
 import { SidebarNav, type NavItem } from "@/components/sidebar-nav";
+import { TopBar } from "@/components/top-bar";
 import { ROLE_LABELS, canView, requireUser, type Module } from "@/lib/auth";
 import { signOut } from "../(auth)/login/actions";
 
 // Données toujours lues à la demande : jamais de page figée au moment du build.
 export const dynamic = "force-dynamic";
+
+// Adresse du site public (modifiable par variable d'environnement le jour où
+// un nom de domaine propre sera branché).
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://ccr-famille-public.vercel.app";
 
 const NAV: (Omit<NavItem, "count"> & { module?: Module })[] = [
   { href: "/tableau-de-bord", label: "Tableau de bord", icon: "home" },
@@ -68,7 +73,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
           </div>
         </div>
       </aside>
-      <main className="min-w-0 flex-1 px-5 py-8 md:px-10 md:py-10 print:p-0">{children}</main>
+      <main className="min-w-0 flex-1 px-5 py-6 md:px-10 md:py-8 print:p-0">
+        <TopBar siteUrl={SITE_URL} />
+        {children}
+      </main>
     </div>
   );
 }

@@ -15,7 +15,7 @@ export const dynamic = "force-dynamic";
 
 const ERREURS: Record<string, string> = {
   nom: "Le nom ou le prénom n'est pas conforme : au moins 2 lettres, sans chiffres ni symboles.",
-  telephone: "Le numéro de téléphone n'est pas conforme. Format attendu : +212 6XX XX XX XX ou 06 XX XX XX XX.",
+  telephone: "Le numéro de téléphone n'est pas conforme. Ex. : +212 6XX XX XX XX",
   email: "L'adresse e-mail n'est pas conforme. Exemple : prenom.nom@gmail.com",
   consentement: "Merci de cocher la case d'accord pour envoyer votre fiche.",
 };

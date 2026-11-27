@@ -1,4 +1,4 @@
-import { getAttendanceSummary, prisma } from "@ccr/database";
+import { prisma } from "@ccr/database";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Icon, type IconName } from "@/components/icons";
@@ -110,7 +110,22 @@ export default async function TableauDeBordPage({
   });
   const compte = (c: string | null) => parCategorie.find((g) => g.category === c)?._count ?? 0;
 
-  const resumes = await Promise.all(cultes.map(async (e) => ({ event: e, summary: await getAttendanceSummary(e.id) })));
+  // Une seule requête pour les présences des derniers cultes (au lieu d'une
+  // par culte), regroupées ensuite par culte et par catégorie.
+  const pointages = await prisma.attendance.findMany({
+    where: { eventId: { in: cultes.map((c) => c.id) }, present: true },
+    select: { eventId: true, member: { select: { category: true } } },
+  });
+  const resumes = cultes.map((event) => {
+    const byCategory = { MAN: 0, WOMAN: 0, CHILD: 0, UNKNOWN: 0 };
+    let total = 0;
+    for (const p of pointages) {
+      if (p.eventId !== event.id) continue;
+      byCategory[p.member.category ?? "UNKNOWN"] += 1;
+      total += 1;
+    }
+    return { event, summary: { total, byCategory } };
+  });
   const [dernier, precedent] = resumes;
   const ecart = dernier && precedent ? dernier.summary.total - precedent.summary.total : null;
 

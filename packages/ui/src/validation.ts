@@ -7,7 +7,7 @@ export type FieldKind = "name" | "phone" | "email";
 
 export const FIELD_HINTS: Record<FieldKind, string> = {
   name: "Lettres uniquement, au moins 2 caractères.",
-  phone: "Format : +212 6XX XX XX XX ou 06 XX XX XX XX",
+  phone: "Ex. : +212 6XX XX XX XX",
   email: "Exemple : prenom.nom@gmail.com",
 };
 
@@ -38,7 +38,7 @@ export function checkField(kind: FieldKind, raw: string | null | undefined, requ
   if (kind === "phone") {
     const p = cleanPhone(v);
     if (!PHONE_MA.test(p) && !PHONE_INTL.test(p)) {
-      return "Numéro non conforme. Format attendu : +212 6XX XX XX XX ou 06 XX XX XX XX.";
+      return "Numéro non conforme. Ex. : +212 6XX XX XX XX";
     }
   }
   if (kind === "email" && !EMAIL.test(v)) {
