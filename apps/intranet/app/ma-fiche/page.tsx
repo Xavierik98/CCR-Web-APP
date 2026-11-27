@@ -2,7 +2,6 @@ import { prisma } from "@ccr/database";
 import type { Metadata } from "next";
 import { CheckedField } from "@ccr/ui/src/checked-field";
 import Image from "next/image";
-import { CATEGORY_LABELS, PROFESSIONAL_LABELS } from "@/lib/labels";
 import { CHURCH_FUNCTIONS } from "@/lib/members";
 import { submitFiche } from "./actions";
 
@@ -64,90 +63,83 @@ export default async function MaFichePage({
                 <p className="mt-4 rounded-lg bg-ccr-magenta/10 p-3 text-sm text-ccr-magenta">{ERREURS[erreur]}</p>
               ) : null}
 
-              <form action={submitFiche} className="mt-6 space-y-6">
+              <form action={submitFiche} className="mt-6 space-y-7">
                 <input type="text" name="site_web" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
 
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <CheckedField kind="name" label="Nom(s)" name="lastName" autoComplete="family-name" hint="Exemple : KIFILA" inputClassName={field} />
-                  <CheckedField kind="name" label="Prénom(s)" name="firstName" autoComplete="given-name" hint="Exemple : Arsène" inputClassName={field} />
-                  <CheckedField kind="phone" label="Téléphone (WhatsApp)" name="phone" autoComplete="tel" inputClassName={field} />
-                  <CheckedField kind="email" label="E-mail" name="email" autoComplete="email" inputClassName={field} />
-                  <label className="block">
-                    <span className="text-sm font-semibold">Date de naissance</span>
-                    <input name="birthDate" type="date" className={field} />
-                  </label>
-                  <label className="block">
-                    <span className="text-sm font-semibold">Quartier</span>
-                    <input name="neighborhood" className={field} />
-                  </label>
-                  <label className="block">
+                <fieldset className="space-y-4">
+                  <legend className="mb-1 text-xs font-bold uppercase tracking-[0.18em] text-ccr-gold">1. Vous</legend>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <CheckedField kind="name" label="Nom(s)" name="lastName" autoComplete="family-name" hint="Exemple : KIFILA" inputClassName={field} />
+                    <CheckedField kind="name" label="Prénom(s)" name="firstName" autoComplete="given-name" hint="Exemple : Arsène" inputClassName={field} />
+                    <CheckedField kind="phone" label="Téléphone (WhatsApp)" name="phone" autoComplete="tel" inputClassName={field} />
+                    <CheckedField kind="email" label="E-mail" name="email" autoComplete="email" inputClassName={field} />
+                  </div>
+
+                  <div>
                     <span className="text-sm font-semibold">Je suis</span>
-                    <select name="category" className={field} defaultValue="">
-                      <option value="">Choisir…</option>
-                      {Object.entries(CATEGORY_LABELS).map(([v, l]) => (
-                        <option key={v} value={v}>
-                          {v === "CHILD" ? "Un enfant (fiche remplie par un parent)" : l}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="block">
-                    <span className="text-sm font-semibold">Situation professionnelle</span>
-                    <select name="professionalStatus" className={field} defaultValue="">
-                      <option value="">Choisir…</option>
-                      {Object.entries(PROFESSIONAL_LABELS).map(([v, l]) => (
-                        <option key={v} value={v}>{l}</option>
-                      ))}
-                    </select>
-                  </label>
-                </div>
-
-                <fieldset>
-                  <legend className="text-sm font-semibold">Mes fonctions dans l&rsquo;église</legend>
-                  <div className="mt-2 grid gap-1 sm:grid-cols-2">
-                    {CHURCH_FUNCTIONS.map((f) => (
-                      <label key={f} className="flex items-center gap-2 text-sm">
-                        <input type="checkbox" name="functions" value={f} className="h-4 w-4 accent-ccr-gold" />
-                        {f}
-                      </label>
-                    ))}
-                  </div>
-                  <input name="functionsOther" placeholder="Autre fonction (facultatif)" className={`${field} mt-3`} />
-                </fieldset>
-
-                <fieldset>
-                  <legend className="text-sm font-semibold">Les départements où je sers</legend>
-                  <div className="mt-2 space-y-2">
-                    {departments.map((d) => (
-                      <div key={d.id} className="grid items-center gap-2 sm:grid-cols-[1fr_1fr]">
-                        <label className="flex items-center gap-2 text-sm">
-                          <input type="checkbox" name="departments" value={d.id} className="h-4 w-4 accent-ccr-gold" />
-                          {d.name}
+                    <div className="mt-2 grid grid-cols-3 gap-2" role="radiogroup">
+                      {(["WOMAN", "MAN", "CHILD"] as const).map((v) => (
+                        <label key={v} className="cursor-pointer">
+                          <input type="radio" name="category" value={v} className="peer sr-only" />
+                          <span className="block rounded-xl border border-ccr-ink/15 px-3 py-2.5 text-center text-sm font-semibold transition-colors hover:border-ccr-gold peer-checked:border-ccr-gold peer-checked:bg-ccr-gold peer-checked:text-ccr-ink peer-focus-visible:ring-2 peer-focus-visible:ring-ccr-gold/40">
+                            {v === "WOMAN" ? "Une femme" : v === "MAN" ? "Un homme" : "Un enfant"}
+                          </span>
                         </label>
-                        <input
-                          name={`role_${d.id}`}
-                          placeholder="Ma fonction (ex. choriste)"
-                          className="rounded-lg border border-ccr-ink/15 px-3 py-1.5 text-sm outline-none focus:border-ccr-gold"
-                        />
-                      </div>
-                    ))}
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <label className="block">
+                      <span className="text-sm font-semibold">Quartier</span>
+                      <input name="neighborhood" className={field} placeholder="Ex. Maarif" />
+                    </label>
+                    <label className="block">
+                      <span className="text-sm font-semibold">Date de naissance <span className="font-normal text-ccr-ink/50">(facultatif)</span></span>
+                      <input name="birthDate" type="date" className={field} />
+                    </label>
                   </div>
                 </fieldset>
 
-                <label className="block">
-                  <span className="text-sm font-semibold">Remarques</span>
-                  <textarea name="message" rows={3} className={field} />
-                </label>
+                <fieldset className="space-y-4">
+                  <legend className="mb-1 text-xs font-bold uppercase tracking-[0.18em] text-ccr-gold">2. Votre service</legend>
+                  <label className="block">
+                    <span className="text-sm font-semibold">Ma fonction dans l&rsquo;église</span>
+                    <select name="function" className={field} defaultValue="">
+                      <option value="">Aucune pour l&rsquo;instant</option>
+                      {CHURCH_FUNCTIONS.map((f) => (
+                        <option key={f} value={f}>{f}</option>
+                      ))}
+                    </select>
+                  </label>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <label className="block">
+                      <span className="text-sm font-semibold">Le département où je sers</span>
+                      <select name="departmentId" className={field} defaultValue="">
+                        <option value="">Aucun pour l&rsquo;instant</option>
+                        {departments.map((d) => (
+                          <option key={d.id} value={d.id}>{d.name}</option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="block">
+                      <span className="text-sm font-semibold">Mon rôle dans ce département</span>
+                      <input name="departmentRole" className={field} placeholder="Ex. choriste, technicien" />
+                    </label>
+                  </div>
+                </fieldset>
 
-                <label className="flex items-start gap-2 text-sm text-ccr-ink/70">
-                  <input type="checkbox" name="consentement" required className="mt-1 h-4 w-4 accent-ccr-gold" />
-                  J&rsquo;accepte que ces informations soient conservées par CCR Famille pour la vie et
-                  l&rsquo;organisation de l&rsquo;église.
+                <label className="flex items-start gap-3 rounded-xl bg-ccr-cream p-4 text-sm text-ccr-ink/70">
+                  <input type="checkbox" name="consentement" required className="mt-0.5 h-5 w-5 shrink-0 accent-ccr-gold" />
+                  <span>
+                    J&rsquo;accepte que ces informations soient conservées par CCR Famille pour la vie et
+                    l&rsquo;organisation de l&rsquo;église. <span className="text-red-600">*</span>
+                  </span>
                 </label>
 
                 <button
                   type="submit"
-                  className="w-full rounded-full bg-ccr-gold px-6 py-3 text-sm font-semibold text-ccr-ink transition-colors hover:bg-ccr-gold-light"
+                  className="w-full rounded-full bg-ccr-gold px-6 py-3.5 text-sm font-semibold text-ccr-ink transition-colors hover:bg-ccr-gold-light"
                 >
                   Envoyer ma fiche
                 </button>

@@ -31,20 +31,16 @@ export async function submitFiche(formData: FormData) {
   const category = text(formData, "category");
   const pro = text(formData, "professionalStatus");
   const birth = text(formData, "birthDate", 10);
-  const functions = [
-    ...formData.getAll("functions").map((f) => String(f).slice(0, 60)),
-    ...String(formData.get("functionsOther") ?? "")
-      .split(",")
-      .map((s) => s.trim().slice(0, 60))
-      .filter(Boolean),
-  ].slice(0, 20);
+  // Une seule fonction et un seul département, choisis dans des listes.
+  const fn = text(formData, "function", 60);
+  const functions = fn ? [fn] : [];
 
   const knownDepartments = new Set((await prisma.department.findMany({ select: { id: true } })).map((d) => d.id));
-  const departments = formData
-    .getAll("departments")
-    .map(String)
-    .filter((id) => knownDepartments.has(id))
-    .map((id) => ({ departmentId: id, role: text(formData, `role_${id}`, 80) }));
+  const departmentId = text(formData, "departmentId");
+  const departments =
+    departmentId && knownDepartments.has(departmentId)
+      ? [{ departmentId, role: text(formData, "departmentRole", 80) }]
+      : [];
 
   await prisma.memberSubmission.create({
     data: {

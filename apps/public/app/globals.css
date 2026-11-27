@@ -237,3 +237,162 @@
     animation-duration: 120s;
   }
 }
+
+/* Pictogrammes animés de la page Départements. */
+.dept-note,
+.dept-wave,
+.dept-coin,
+.dept-heart,
+.dept-door,
+.dept-guest {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@keyframes dept-note {
+  0% {
+    opacity: 0;
+    transform: translate(0, 8px) rotate(-6deg);
+  }
+  20%,
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(6px, -10px) rotate(8deg);
+  }
+}
+
+.dept-note {
+  animation: dept-note 3.2s ease-in-out infinite;
+}
+
+.dept-note-late {
+  animation-delay: -1.6s;
+}
+
+@keyframes dept-wave {
+  0%,
+  100% {
+    opacity: 0.15;
+  }
+  40% {
+    opacity: 1;
+  }
+}
+
+.dept-wave {
+  animation: dept-wave 1.8s ease-in-out infinite;
+}
+
+.dept-wave-2 {
+  animation-delay: 0.25s;
+}
+
+.dept-wave-3 {
+  animation-delay: 0.5s;
+}
+
+@keyframes dept-coin {
+  0% {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  20% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(12px);
+  }
+  75%,
+  100% {
+    opacity: 0;
+    transform: translateY(14px) scaleY(0.4);
+  }
+}
+
+.dept-coin {
+  animation: dept-coin 2.6s ease-in infinite;
+}
+
+@keyframes dept-heart {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  15% {
+    transform: scale(1.14);
+  }
+  30% {
+    transform: scale(0.98);
+  }
+  45% {
+    transform: scale(1.1);
+  }
+}
+
+.dept-heart {
+  animation: dept-heart 1.6s ease-in-out infinite;
+}
+
+@keyframes dept-door {
+  0%,
+  100% {
+    transform: perspective(80px) rotateY(0deg);
+  }
+  50% {
+    transform: perspective(80px) rotateY(-38deg);
+  }
+}
+
+.dept-door {
+  transform-origin: left center;
+  animation: dept-door 4s ease-in-out infinite;
+}
+
+@keyframes dept-guest {
+  0%,
+  100% {
+    transform: translateX(4px);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateX(-4px);
+    opacity: 1;
+  }
+}
+
+.dept-guest {
+  animation: dept-guest 4s ease-in-out infinite;
+}
+
+/* Halo coloré qui se déforme lentement derrière chaque pictogramme. */
+@keyframes blob {
+  0%,
+  100% {
+    border-radius: 42% 58% 60% 40% / 45% 45% 55% 55%;
+    transform: rotate(0deg);
+  }
+  50% {
+    border-radius: 58% 42% 40% 60% / 55% 60% 40% 45%;
+    transform: rotate(14deg);
+  }
+}
+
+.animate-blob {
+  animation: blob 9s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dept-note,
+  .dept-wave,
+  .dept-coin,
+  .dept-heart,
+  .dept-door,
+  .dept-guest,
+  .animate-blob {
+    animation: none;
+  }
+}
