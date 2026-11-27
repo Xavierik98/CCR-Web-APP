@@ -58,7 +58,7 @@ export function DepartementsBrowser({
           Aucun département ne correspond à votre recherche.
         </p>
       ) : (
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-5 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-6 lg:grid-cols-3">
           {resultats.map((pole, i) => {
             const c = COULEURS[pole.couleur];
             const href = joinLink(pole.nom);
@@ -70,24 +70,25 @@ export function DepartementsBrowser({
                   target={external ? "_blank" : undefined}
                   rel={external ? "noopener noreferrer" : undefined}
                   aria-label={`Rejoindre le département ${pole.nom}`}
-                  className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-ccr-ink/10 bg-white shadow-sm transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_24px_50px_-24px_rgba(32,28,22,0.45)]"
+                  className="group relative flex h-full flex-col overflow-hidden rounded-2xl border sm:rounded-3xl border-ccr-ink/10 bg-white shadow-sm transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_24px_50px_-24px_rgba(32,28,22,0.45)]"
                 >
-                  <div className={`relative flex h-44 items-center justify-center overflow-hidden ${c.panel}`}>
-                    <span aria-hidden="true" className={`animate-blob absolute h-36 w-36 ${c.blob} opacity-80`} style={{ animationDelay: `${-i * 1.7}s` }} />
+                  <div className={`relative flex h-28 items-center justify-center overflow-hidden sm:h-44 ${c.panel}`}>
+                    <span aria-hidden="true" className={`animate-blob absolute h-24 w-24 sm:h-36 sm:w-36 ${c.blob} opacity-80`} style={{ animationDelay: `${-i * 1.7}s` }} />
                     <span aria-hidden="true" className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-white/30 blur-xl" />
                     <DepartmentIcon
                       name={pole.icone}
-                      className={`relative h-24 w-24 ${c.icon} transition-transform duration-500 group-hover:-rotate-6 group-hover:scale-110`}
+                      className={`relative h-16 w-16 sm:h-24 sm:w-24 ${c.icon} transition-transform duration-500 group-hover:-rotate-6 group-hover:scale-110`}
                     />
                   </div>
-                  <div className="flex flex-1 flex-col p-6">
-                    <span className={`inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.15em] ${c.chip}`}>
+                  <div className="flex flex-1 flex-col p-3.5 sm:p-6">
+                    <span className={`hidden w-fit items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.15em] sm:inline-flex ${c.chip}`}>
                       {pole.categorie}
                     </span>
-                    <h2 className="mt-3 font-display text-xl font-bold">{pole.nom}</h2>
-                    <p className="mt-2 flex-1 text-sm text-ccr-ink/70">{pole.description}</p>
-                    <span className={`mt-5 inline-flex items-center gap-2 text-sm font-semibold ${c.link}`}>
-                      Rejoindre ce département
+                    <h2 className="font-display text-[15px] font-bold leading-snug sm:mt-3 sm:text-xl">{pole.nom}</h2>
+                    <p className="mt-1.5 line-clamp-4 flex-1 text-xs text-ccr-ink/70 sm:mt-2 sm:line-clamp-none sm:text-sm">{pole.description}</p>
+                    <span className={`mt-3 inline-flex items-center gap-1.5 text-xs font-semibold sm:mt-5 sm:gap-2 sm:text-sm ${c.link}`}>
+                      <span className="sm:hidden">Rejoindre</span>
+                      <span className="hidden sm:inline">Rejoindre ce département</span>
                       <span className="transition-transform duration-300 group-hover:translate-x-1.5">&rarr;</span>
                     </span>
                   </div>

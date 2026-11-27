@@ -92,7 +92,7 @@ function TimelineRow({
   return (
     <li
       ref={ref}
-      className="relative grid items-center gap-8 pl-12 md:grid-cols-2 md:gap-24 md:pl-0"
+      className="relative grid grid-cols-[1fr_1.1fr] items-center gap-3 pl-8 md:grid-cols-2 md:gap-24 md:pl-0"
     >
       <span
         aria-hidden="true"
@@ -108,24 +108,24 @@ function TimelineRow({
       </span>
 
       <div className={`transition-all duration-700 ease-out ${slide} ${reversed ? "md:order-2" : ""}`}>
-        <p className={`text-xs font-semibold uppercase tracking-[0.2em] ${accent.text}`}>
+        <p className={`text-[10px] font-semibold uppercase tracking-[0.12em] md:text-xs md:tracking-[0.2em] ${accent.text}`}>
           {item.horaire}
         </p>
-        <h2 className="mt-2 bg-gradient-to-b from-ccr-cream via-ccr-cream to-ccr-cream/40 bg-clip-text font-display text-5xl font-black leading-tight text-transparent md:text-6xl">
+        <h2 className="mt-1 bg-gradient-to-b from-ccr-cream via-ccr-cream to-ccr-cream/40 bg-clip-text font-display text-2xl font-black leading-tight text-transparent md:mt-2 md:text-6xl">
           {item.jour}
         </h2>
-        <ul className="mt-5 space-y-3 text-ccr-cream/85">
+        <ul className="mt-2 space-y-1.5 text-ccr-cream/85 md:mt-5 md:space-y-3">
           <li className="flex gap-3">
             <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: theme.hex }} />
-            <span className="text-lg font-semibold">{item.titre}</span>
+            <span className="text-[13px] font-semibold leading-snug md:text-lg">{item.titre}</span>
           </li>
           {"description" in item ? (
-            <li className="flex gap-3">
+            <li className="hidden gap-3 md:flex">
               <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: theme.hex }} />
               <span>{item.description}</span>
             </li>
           ) : null}
-          <li className="flex gap-3">
+          <li className="hidden gap-3 md:flex">
             <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: theme.hex }} />
             <span>Salle de réunion CCR Casablanca</span>
           </li>
@@ -133,10 +133,11 @@ function TimelineRow({
         <button
           type="button"
           onClick={onSelect}
-          className="mt-6 text-sm font-semibold transition-opacity hover:opacity-80"
+          className="mt-2 text-xs font-semibold transition-opacity hover:opacity-80 md:mt-6 md:text-sm"
           style={{ color: theme.hex }}
         >
-          Nous écrire à ce sujet &rarr;
+          <span className="md:hidden">Nous écrire &rarr;</span>
+          <span className="hidden md:inline">Nous écrire à ce sujet &rarr;</span>
         </button>
       </div>
 
@@ -150,10 +151,10 @@ function TimelineRow({
       >
         <div
           aria-hidden="true"
-          className={`absolute -inset-6 rounded-[2rem] bg-gradient-to-br ${theme.glow} to-transparent opacity-60 blur-2xl transition-opacity group-hover:opacity-100`}
+          className={`absolute -inset-3 rounded-[2rem] bg-gradient-to-br md:-inset-6 ${theme.glow} to-transparent opacity-60 blur-2xl transition-opacity group-hover:opacity-100`}
         />
         <div className="animate-float relative">
-          <div className={`relative overflow-hidden rounded-3xl bg-[#1b1712] ring-1 ${theme.ring} transition-transform duration-500 group-hover:-rotate-1 group-hover:scale-[1.02]`}>
+          <div className={`relative overflow-hidden rounded-2xl bg-[#1b1712] ring-1 md:rounded-3xl ${theme.ring} transition-transform duration-500 group-hover:-rotate-1 group-hover:scale-[1.02]`}>
             <div className="relative aspect-[16/10]">
               <Image
                 src={item.image}
@@ -164,30 +165,30 @@ function TimelineRow({
               />
               <div className={`absolute inset-0 bg-gradient-to-t ${theme.overlay}`} />
               {featured ? (
-                <span className="absolute right-4 top-4 rounded-full bg-ccr-gold px-3 py-1 text-xs font-semibold text-ccr-ink">
+                <span className="absolute right-2 top-2 rounded-full bg-ccr-gold px-2 py-0.5 text-[9px] font-semibold text-ccr-ink md:right-4 md:top-4 md:px-3 md:py-1 md:text-xs">
                   Culte principal
                 </span>
               ) : null}
-              <div className={`absolute left-4 top-4 flex h-10 w-10 items-center justify-center rounded-xl ${accent.bg} ${accent.text} backdrop-blur`}>
-                <Icon name={item.icon} className="h-5 w-5" />
+              <div className={`absolute left-2 top-2 flex h-7 w-7 items-center justify-center rounded-lg md:left-4 md:top-4 md:h-10 md:w-10 md:rounded-xl ${accent.bg} ${accent.text} backdrop-blur`}>
+                <Icon name={item.icon} className="h-4 w-4 md:h-5 md:w-5" />
               </div>
             </div>
-            <div className="relative flex items-end gap-5 px-6 pb-6">
+            <div className="relative flex items-end gap-2 px-2.5 pb-3 md:gap-5 md:px-6 md:pb-6">
               <AnalogClock
                 time={debut}
                 ready={seen}
                 accent={theme.hex}
-                className="-mt-12 h-24 w-24 shrink-0 drop-shadow-xl"
+                className="-mt-6 h-11 w-11 shrink-0 drop-shadow-xl md:-mt-12 md:h-24 md:w-24"
               />
               <div className="pb-1">
-                <p className="font-display text-4xl font-black text-ccr-cream [font-variant-numeric:lining-nums]">
+                <p className="font-display text-xl font-black text-ccr-cream [font-variant-numeric:lining-nums] md:text-4xl">
                   {debut}
                 </p>
-                <p className="text-sm text-ccr-cream/50">jusqu&rsquo;à {fin}</p>
+                <p className="text-[10px] text-ccr-cream/50 md:text-sm">jusqu&rsquo;à {fin}</p>
               </div>
             </div>
-            <div className="mx-6 h-px bg-gradient-to-r from-transparent via-ccr-cream/15 to-transparent" />
-            <p className="px-6 py-4 text-sm font-semibold uppercase tracking-wide text-ccr-cream/70">
+            <div className="mx-6 hidden h-px bg-gradient-to-r from-transparent via-ccr-cream/15 to-transparent md:block" />
+            <p className="hidden px-6 py-4 text-sm font-semibold uppercase tracking-wide text-ccr-cream/70 md:block">
               {item.titre}
             </p>
           </div>
@@ -245,7 +246,7 @@ export function ProgrammeTimeline({ items }: { items: readonly ProgrammeItem[] }
           style={{ height: `${progress * 100}%` }}
         />
 
-        <ol className="space-y-28 md:space-y-40">
+        <ol className="space-y-10 md:space-y-40">
           {items.map((item, index) => (
             <TimelineRow
               key={item.titre}

@@ -418,3 +418,11 @@ body {
 .snap-row::-webkit-scrollbar {
   display: none;
 }
+
+/* Mobile : tout est un peu miniaturisé (texte, espacements, cartes) pour
+   voir davantage de contenu à l'écran ; les tailles en rem suivent. */
+@media (max-width: 639px) {
+  html {
+    font-size: 15px;
+  }
+}

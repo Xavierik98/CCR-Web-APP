@@ -32,17 +32,16 @@ export function Footer() {
         aria-hidden="true"
         className="h-[3px] bg-gradient-to-r from-ccr-magenta via-ccr-gold-light to-ccr-blue"
       />
-      <div className="mx-auto grid max-w-6xl gap-9 px-5 py-10 sm:px-6 md:grid-cols-2 md:py-12 lg:grid-cols-[1.1fr_0.9fr_1.6fr]">
+      <div className="mx-auto grid max-w-6xl gap-6 px-5 py-8 sm:px-6 md:grid-cols-2 md:gap-9 md:py-12 lg:grid-cols-[1.1fr_0.9fr_1.6fr]">
         <div>
           <p className="font-display text-xl font-bold">CCR Famille</p>
-          <p className="mt-1 text-sm text-ccr-cream/70">Centre Chrétien de Restauration</p>
-          <p className="text-sm text-ccr-cream/70">Casablanca, Maroc</p>
-          <p className="mt-4 flex gap-4 text-xs font-semibold uppercase tracking-[0.2em]">
+          <p className="mt-1 text-sm text-ccr-cream/70">Centre Chrétien de Restauration, Casablanca</p>
+          <p className="mt-4 hidden gap-4 text-xs font-semibold uppercase tracking-[0.2em] md:flex">
             <span className="text-ccr-gold-light">Rassembler</span>
             <span className="text-ccr-magenta">Former</span>
             <span className="text-[#6f9fe0]">Envoyer</span>
           </p>
-          <div className="mt-5 flex items-center gap-2">
+          <div className="mt-4 flex items-center gap-2 md:mt-5">
             {SOCIAL_LINKS.map((social) => (
               <a
                 key={social.name}
@@ -67,17 +66,17 @@ export function Footer() {
           </div>
           <a
             href={INTRANET_URL}
-            className="mt-6 inline-block text-sm font-semibold text-ccr-gold-light hover:underline"
+            className="mt-6 hidden text-sm font-semibold text-ccr-gold-light hover:underline md:inline-block"
           >
             Espace membres &rarr;
           </a>
         </div>
 
         <nav>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-ccr-gold-light">
+          <p className="hidden text-xs font-semibold uppercase tracking-[0.2em] text-ccr-gold-light md:block">
             Navigation
           </p>
-          <ul className="mt-3 grid grid-cols-2 gap-x-6 gap-y-2.5 text-sm text-ccr-cream/80 lg:grid-cols-1 lg:gap-y-2">
+          <ul className="grid grid-cols-3 gap-x-3 gap-y-2 text-[13px] text-ccr-cream/80 md:mt-3 md:grid-cols-2 md:gap-x-6 md:gap-y-2.5 md:text-sm lg:grid-cols-1 lg:gap-y-2">
             {NAV.map((item) => (
               <li key={item.href}>
                 <Link href={item.href} className="transition-colors hover:text-ccr-gold-light">
@@ -89,20 +88,26 @@ export function Footer() {
         </nav>
 
         <div className="md:col-span-2 lg:col-span-1">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-ccr-gold-light">
+          <p className="hidden text-xs font-semibold uppercase tracking-[0.2em] text-ccr-gold-light md:block">
             Nous trouver
           </p>
-          <p className="mt-3 flex items-start gap-2 text-sm text-ccr-cream/80">
+          <p className="flex items-start gap-2 text-[13px] text-ccr-cream/80 md:mt-3 md:text-sm">
             <Icon name="map" className="mt-0.5 h-4 w-4 shrink-0 text-ccr-gold-light" />
             {ADRESSE}
           </p>
-          <p className="mt-1 pl-6 text-xs text-ccr-cream/50">Téléphone et e-mail à venir</p>
-          <FooterMap src={MAPS_EMBED_SRC} title={`Localisation CCR Famille - ${ADRESSE}`} />
+          <p className="mt-1 hidden pl-6 text-xs text-ccr-cream/50 md:block">Téléphone et e-mail à venir</p>
+          {/* Carte masquée sur téléphone : elle est sur la page Contact. */}
+          <div className="hidden md:block">
+            <FooterMap src={MAPS_EMBED_SRC} title={`Localisation CCR Famille - ${ADRESSE}`} />
+          </div>
         </div>
       </div>
 
-      <div className="border-t border-ccr-cream/10 px-6 py-4 text-center text-xs text-ccr-cream/50">
-        © {new Date().getFullYear()} CCR Famille Casablanca
+      <div className="flex items-center justify-between gap-3 border-t border-ccr-cream/10 px-5 py-3.5 text-xs text-ccr-cream/50 md:justify-center md:px-6 md:py-4">
+        <span>© {new Date().getFullYear()} CCR Famille Casablanca</span>
+        <a href={INTRANET_URL} className="font-semibold text-ccr-gold-light md:hidden">
+          Espace membres &rarr;
+        </a>
       </div>
     </footer>
   );

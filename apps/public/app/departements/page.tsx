@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default function DepartementsPage() {
   return (
     <main>
-      <section className="relative isolate min-h-[380px] overflow-hidden bg-ccr-ink py-16">
+      <section className="relative isolate min-h-[240px] overflow-hidden bg-ccr-ink py-12 md:min-h-[380px] md:py-16">
         <YoutubeBackground videoId="_8GzXCXd1GI" />
         <div className="absolute inset-0 bg-ccr-ink/70" />
         <div className="relative mx-auto max-w-5xl px-6">
@@ -27,7 +27,7 @@ export default function DepartementsPage() {
         </div>
       </section>
 
-      <div className="mx-auto max-w-5xl px-6 py-12">
+      <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-12">
         <DepartementsBrowser departements={DEPARTEMENTS} />
 
         <div className="mt-16 rounded-2xl bg-ccr-ink px-8 py-10 text-center text-ccr-cream">

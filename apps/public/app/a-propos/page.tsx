@@ -153,23 +153,23 @@ export default function AProposPage() {
       </section>
 
       {/* Nos responsables : pasteur principal et assistant pasteur */}
-      <section className="bg-ccr-ink/5 py-16">
-        <div className="mx-auto max-w-4xl px-6">
+      <section className="bg-ccr-ink/5 py-10 sm:py-16">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6">
           <RevealText as="h2" text="Nos responsables" className="font-display text-3xl font-bold" />
-          <div className="mt-8 grid gap-8 sm:grid-cols-2">
+          <div className="mt-5 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-8">
             {responsables.map((leader, i) => (
               <Reveal key={leader.slug} delay={i * 150}>
                 <article className="h-full overflow-hidden rounded-2xl bg-white transition-transform hover:-translate-y-1 hover:shadow-md">
                   <div className="relative aspect-[4/5]">
                     <ImageSlot src={leader.photo} alt={leader.nom} className={leader.cadrage} />
                   </div>
-                  <div className="p-6">
-                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-ccr-magenta">
+                  <div className="p-3 sm:p-6">
+                    <p className="text-[9.5px] font-semibold uppercase tracking-[0.12em] text-ccr-magenta sm:text-xs sm:tracking-[0.2em]">
                       {leader.titre}
                     </p>
-                    <h3 className="mt-1 font-display text-xl font-bold">{leader.nom}</h3>
+                    <h3 className="mt-1 font-display text-sm font-bold leading-snug sm:text-xl">{leader.nom}</h3>
                     {leader.texte ? (
-                      <p className="mt-3 text-sm text-ccr-ink/70">{leader.texte}</p>
+                      <p className="mt-2 line-clamp-4 text-xs text-ccr-ink/70 sm:mt-3 sm:line-clamp-none sm:text-sm">{leader.texte}</p>
                     ) : null}
                   </div>
                 </article>
@@ -180,7 +180,7 @@ export default function AProposPage() {
       </section>
 
       {/* Notre vision */}
-      <section className="mx-auto max-w-5xl px-6 py-16">
+      <section className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-16">
         <RevealText as="h2" text="Notre vision" className="font-display text-3xl font-bold" />
         <Reveal delay={150}>
           <p className="mt-4 max-w-2xl text-ccr-ink/80">
@@ -190,18 +190,22 @@ export default function AProposPage() {
           </p>
         </Reveal>
 
-        <div className="mt-10 grid gap-6 md:grid-cols-3">
+        {/* Mobile : pictogramme à gauche, texte à droite (lignes compactes) ;
+            grand écran : trois cartes côte à côte. */}
+        <div className="mt-6 grid gap-3 sm:mt-10 md:grid-cols-3 md:gap-6">
           {PILIERS.map((pilier, i) => (
             <Reveal key={pilier.nom} delay={i * 180}>
-              <article className="h-full rounded-2xl border border-ccr-ink/10 p-6 transition-transform hover:-translate-y-1 hover:shadow-md">
-                <VisionIcon name={pilier.nom} className={`h-14 w-14 ${pilier.couleur}`} />
-                <h3 className={`mt-4 text-lg font-bold uppercase tracking-[0.15em] ${pilier.couleur}`}>
-                  {pilier.nom}
-                </h3>
-                <p className="mt-3 text-sm text-ccr-ink/70">{pilier.texte}</p>
-                <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-ccr-ink/40">
-                  {pilier.verset}
-                </p>
+              <article className="flex h-full gap-4 rounded-2xl border border-ccr-ink/10 p-4 transition-transform hover:-translate-y-1 hover:shadow-md md:block md:p-6">
+                <VisionIcon name={pilier.nom} className={`h-11 w-11 shrink-0 md:h-14 md:w-14 ${pilier.couleur}`} />
+                <div className="min-w-0">
+                  <h3 className={`text-sm font-bold uppercase tracking-[0.12em] md:mt-4 md:text-lg md:tracking-[0.15em] ${pilier.couleur}`}>
+                    {pilier.nom}
+                  </h3>
+                  <p className="mt-1 text-[13px] leading-snug text-ccr-ink/70 md:mt-3 md:text-sm md:leading-normal">{pilier.texte}</p>
+                  <p className="mt-1.5 text-[10px] font-semibold uppercase tracking-wide text-ccr-ink/40 md:mt-4 md:text-xs">
+                    {pilier.verset}
+                  </p>
+                </div>
               </article>
             </Reveal>
           ))}

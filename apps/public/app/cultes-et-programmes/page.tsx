@@ -71,9 +71,9 @@ export default function CultesEtProgrammesPage() {
         <RevealText
           as="h1"
           text="Toute la semaine, un temps pour grandir ensemble"
-          className="mt-6 font-display text-5xl font-black leading-tight md:text-6xl"
+          className="mt-4 font-display text-3xl font-black leading-tight sm:text-5xl md:mt-6 md:text-6xl"
         />
-        <p className="mx-auto mt-5 max-w-xl text-ccr-cream/70">
+        <p className="mx-auto mt-3 max-w-xl text-sm text-ccr-cream/70 sm:mt-5 sm:text-base">
           Prière, enseignement, communion fraternelle : chaque jour a son
           rendez-vous. Cliquez sur un rendez-vous pour nous écrire à son sujet.
         </p>

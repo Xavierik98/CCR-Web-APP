@@ -118,33 +118,28 @@ export default function HomePage() {
             className="mx-auto mt-3 max-w-2xl font-display text-3xl font-black md:text-4xl"
           />
 
-          {/* Sur mobile : cartes en verre à faire glisser (une à la fois, à
-              crans) au lieu d'une longue colonne ; sur grand écran, 3 colonnes. */}
-          <div className="snap-row -mx-6 mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-3 md:mx-0 md:mt-14 md:grid md:grid-cols-3 md:gap-10 md:overflow-visible md:px-0 md:pb-0">
+          {/* Trois colonnes côte à côte, aussi sur mobile (en plus petit). */}
+          <div className="-mx-2 mt-8 grid grid-cols-3 gap-2 md:mx-0 md:mt-14 md:gap-10">
             {PILIERS.map((pilier, index) => (
-              <Reveal key={pilier.nom} delay={index * 200} className="w-[80%] shrink-0 snap-center md:w-auto">
-                <article className="group flex h-full flex-col items-center rounded-[28px] border border-white/10 bg-white/[0.05] px-5 py-8 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur md:rounded-none md:border-0 md:bg-transparent md:p-0 md:shadow-none md:backdrop-blur-none">
+              <Reveal key={pilier.nom} delay={index * 200}>
+                <article className="group flex h-full flex-col items-center rounded-2xl border border-white/10 bg-white/[0.05] px-2 py-4 md:rounded-none md:border-0 md:bg-transparent md:p-0">
                   <VisionIcon
                     name={pilier.nom as "Rassembler" | "Former" | "Envoyer"}
-                    className={`h-24 w-24 transition-transform duration-500 group-hover:-translate-y-1 group-hover:scale-105 ${VISION_COLORS[pilier.accent]}`}
+                    className={`h-12 w-12 transition-transform duration-500 group-hover:-translate-y-1 group-hover:scale-105 md:h-24 md:w-24 ${VISION_COLORS[pilier.accent]}`}
                   />
-                  <h3 className="mt-6 text-xl font-bold uppercase tracking-[0.15em]">
+                  <h3 className="mt-3 text-[11px] font-bold uppercase tracking-[0.08em] md:mt-6 md:text-xl md:tracking-[0.15em]">
                     {pilier.nom}
                   </h3>
-                  <p className="mt-3 max-w-xs text-sm leading-relaxed text-ccr-cream/75">
+                  <p className="mt-2 max-w-xs text-[10.5px] leading-snug text-ccr-cream/75 md:mt-3 md:text-sm md:leading-relaxed">
                     {pilier.texte}
                   </p>
-                  <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-ccr-cream/40">
+                  <p className="mt-2 text-[9px] font-semibold uppercase tracking-wide text-ccr-cream/40 md:mt-3 md:text-xs">
                     {pilier.verset}
                   </p>
                 </article>
               </Reveal>
             ))}
           </div>
-
-          <p className="mt-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-ccr-cream/40 md:hidden">
-            Glissez pour découvrir &rarr;
-          </p>
 
           <Link
             href="/a-propos"
@@ -179,7 +174,7 @@ export default function HomePage() {
       <Reveal>
         <section
           id="departements"
-          className="relative isolate flex min-h-[420px] items-center justify-center overflow-hidden text-center"
+          className="relative isolate flex min-h-[320px] items-center justify-center overflow-hidden py-12 text-center md:min-h-[420px] md:py-0"
         >
           <YoutubeBackground videoId="0INBD8VtAX0" />
           <div className="absolute inset-0 bg-ccr-ink/70" />
@@ -205,7 +200,7 @@ export default function HomePage() {
       </Reveal>
 
       <Reveal>
-        <section id="galerie" className="py-16">
+        <section id="galerie" className="py-12 md:py-16">
           <div className="mx-auto max-w-6xl px-6">
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-ccr-magenta">Galerie</p>
             <RevealText
@@ -265,27 +260,27 @@ export default function HomePage() {
             </div>
           ) : (
             <>
-              {/* Sur mobile : cartes à faire glisser horizontalement. */}
-              <div className="snap-row -mx-5 mt-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-3 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3">
-                {ACTUALITES.slice(0, 3).map((article) => (
+              {/* Deux colonnes côte à côte sur mobile (cartes réduites), trois sur grand écran. */}
+              <div className="mt-5 grid grid-cols-2 gap-3 sm:mt-6 sm:gap-6 lg:grid-cols-3">
+                {ACTUALITES.slice(0, 3).map((article, i) => (
                   <article
                     key={article.slug}
-                    className="w-[85%] shrink-0 snap-center overflow-hidden rounded-3xl border border-ccr-ink/10 bg-white shadow-[0_10px_30px_-18px_rgba(32,28,22,0.35)] transition-transform hover:-translate-y-1 hover:shadow-md sm:w-auto sm:rounded-2xl"
+                    className={`overflow-hidden rounded-2xl border border-ccr-ink/10 bg-white shadow-[0_10px_30px_-18px_rgba(32,28,22,0.35)] transition-transform hover:-translate-y-1 hover:shadow-md ${i === 2 ? "hidden lg:block" : ""}`}
                   >
                     <div className="relative aspect-[16/9]">
                       <ActualiteMedia
                         article={article}
-                        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                        sizes="(min-width: 1024px) 33vw, 50vw"
                       />
                     </div>
-                    <div className="p-5">
-                      <p className="text-xs font-semibold uppercase tracking-wide text-ccr-magenta">
+                    <div className="p-3 sm:p-5">
+                      <p className="text-[10px] font-semibold uppercase tracking-wide text-ccr-magenta sm:text-xs">
                         {formatDateActualite(article.date)}
                       </p>
-                      <h3 className="mt-1 font-display text-lg font-bold">
+                      <h3 className="mt-1 font-display text-sm font-bold leading-snug sm:text-lg">
                         {article.titre}
                       </h3>
-                      <p className="mt-1 text-sm text-ccr-ink/70">
+                      <p className="mt-1 line-clamp-3 text-xs text-ccr-ink/70 sm:line-clamp-none sm:text-sm">
                         {article.texte}
                       </p>
                     </div>
@@ -306,22 +301,22 @@ export default function HomePage() {
       {/* Dons et collectes par virement : le RIB n'est affiché que s'il a été
           fourni (voir _data/dons.ts), sinon on invite à le demander. */}
       <Reveal>
-        <section id="soutenir" className="mx-auto max-w-6xl px-6 pb-16">
-          <div className="relative overflow-hidden rounded-3xl border border-ccr-gold/30 bg-gradient-to-br from-ccr-gold/15 via-ccr-cream to-ccr-magenta/10 px-8 py-10 md:px-12">
-            <div className="grid gap-8 md:grid-cols-[1.4fr_1fr] md:items-center">
+        <section id="soutenir" className="mx-auto max-w-6xl px-4 pb-10 sm:px-6 md:pb-16">
+          <div className="relative overflow-hidden rounded-3xl border border-ccr-gold/30 bg-gradient-to-br from-ccr-gold/15 via-ccr-cream to-ccr-magenta/10 px-5 py-6 sm:px-8 sm:py-10 md:px-12">
+            <div className="grid gap-5 sm:gap-8 md:grid-cols-[1.4fr_1fr] md:items-center">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.3em] text-ccr-gold">Soutenir l&rsquo;œuvre</p>
                 <RevealText
                   as="h2"
                   text="Participer aux collectes, aussi par virement"
-                  className="mt-2 font-display text-3xl font-black"
+                  className="mt-2 font-display text-2xl font-black sm:text-3xl"
                 />
-                <p className="mt-3 max-w-lg text-ccr-ink/70">
+                <p className="mt-2 max-w-lg text-sm text-ccr-ink/70 sm:mt-3 sm:text-base">
                   Dîmes, offrandes et collectes peuvent se faire sur place
                   pendant le culte ou par virement bancaire.
                 </p>
               </div>
-              <div className="rounded-2xl bg-white/80 p-6 shadow-sm backdrop-blur">
+              <div className="rounded-2xl bg-white/80 p-4 shadow-sm backdrop-blur sm:p-6">
                 {RIB_DISPONIBLE ? (
                   <dl className="space-y-2 text-sm">
                     <div>
@@ -349,7 +344,7 @@ export default function HomePage() {
                       href={RIB_WHATSAPP_URL ?? "/contact"}
                       target={RIB_WHATSAPP_URL ? "_blank" : undefined}
                       rel={RIB_WHATSAPP_URL ? "noopener noreferrer" : undefined}
-                      className="mt-4 inline-flex items-center gap-2 rounded-full bg-ccr-gold px-5 py-3 text-sm font-semibold text-ccr-ink transition-colors hover:bg-ccr-gold-light"
+                      className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-ccr-gold px-5 py-3 text-sm font-semibold text-ccr-ink transition-colors hover:bg-ccr-gold-light sm:mt-4 sm:w-auto sm:rounded-full"
                     >
                       <Icon name="whatsapp" className="h-4 w-4" />
                       Demander le RIB
@@ -364,8 +359,8 @@ export default function HomePage() {
 
       {/* Bloc d'appel à l'action avant le footer, juste avant de quitter la page. */}
       <Reveal>
-        <section id="contact" className="mx-auto max-w-6xl px-6 pb-20">
-          <div className="rounded-3xl bg-ccr-ink px-8 py-12 text-ccr-cream md:flex md:items-center md:justify-between md:gap-10 md:px-12">
+        <section id="contact" className="mx-auto max-w-6xl px-4 pb-12 sm:px-6 md:pb-20">
+          <div className="rounded-3xl bg-ccr-ink px-5 py-7 text-ccr-cream sm:px-8 sm:py-12 md:flex md:items-center md:justify-between md:gap-10 md:px-12">
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-ccr-gold">
                 Première visite ?
@@ -373,23 +368,23 @@ export default function HomePage() {
               <RevealText
                 as="h2"
                 text="Vous êtes les bienvenus ce dimanche"
-                className="mt-2 font-display text-3xl font-black md:text-4xl"
+                className="mt-2 font-display text-2xl font-black sm:text-3xl md:text-4xl"
               />
               <p className="mt-3 max-w-lg text-sm text-ccr-cream/70">
                 Retrouvez-nous au {ADRESSE}, ou écrivez-nous pour préparer
                 votre venue ou proposer votre aide dans un département.
               </p>
             </div>
-            <div className="mt-6 flex shrink-0 flex-wrap gap-3 md:mt-0">
+            <div className="mt-5 grid shrink-0 grid-cols-2 gap-2 sm:mt-6 sm:flex sm:flex-wrap sm:gap-3 md:mt-0">
               <Link
                 href="/contact"
-                className="rounded-full bg-ccr-gold px-6 py-3 text-sm font-semibold text-ccr-ink transition-colors hover:bg-ccr-gold-light"
+                className="rounded-2xl bg-ccr-gold px-4 py-3 text-center text-sm font-semibold text-ccr-ink transition-colors hover:bg-ccr-gold-light sm:rounded-full sm:px-6"
               >
                 Nous contacter
               </Link>
               <Link
                 href="/departements"
-                className="rounded-full border border-ccr-cream/40 px-6 py-3 text-sm font-semibold transition-colors hover:border-ccr-cream"
+                className="rounded-2xl border border-ccr-cream/40 px-4 py-3 text-center text-sm font-semibold transition-colors hover:border-ccr-cream sm:rounded-full sm:px-6"
               >
                 Servir à l&rsquo;église
               </Link>
