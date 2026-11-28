@@ -122,3 +122,11 @@ export async function deletePledge(formData: FormData) {
   revalidatePath(`/collecte/${p.campaignId}`);
   redirect(`/collecte/${p.campaignId}`);
 }
+
+// « Déjà relancé » : la relance a été faite autrement (appel, en personne,
+// message envoyé ailleurs). Elle est notée sans ouvrir WhatsApp.
+export async function markReminded(formData: FormData) {
+  await remindPledge(String(formData.get("id")));
+  const back = String(formData.get("retour") ?? "");
+  redirect(back.startsWith("/collecte") ? back : "/collecte");
+}

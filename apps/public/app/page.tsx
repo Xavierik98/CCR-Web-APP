@@ -12,6 +12,7 @@ import { TypewriterWords } from "./_components/typewriter-words";
 import { VisionIcon } from "./_components/vision-icons";
 import { YoutubeBackground } from "./_components/youtube-background";
 import { formatDateActualite, getActualites } from "./_data/actualites";
+import { getCampagnes, periode } from "./_data/engagements";
 import { ADRESSE } from "./_data/contact";
 import { RIB, RIB_DISPONIBLE } from "./_data/dons";
 import { PHOTOS } from "./_data/galerie";
@@ -41,7 +42,7 @@ const RIB_WHATSAPP_URL = buildWhatsAppLink(
 );
 
 export default async function HomePage() {
-  const ACTUALITES = await getActualites();
+  const [ACTUALITES, CAMPAGNES] = await Promise.all([getActualites(), getCampagnes()]);
   return (
     <main>
       <section className="relative isolate flex min-h-[520px] items-center overflow-hidden md:min-h-[640px]">
@@ -394,6 +395,30 @@ export default async function HomePage() {
                 )}
               </div>
             </div>
+
+            {/* Campagnes ouvertes aux engagements, gérées par la trésorerie dans l'intranet. */}
+            {CAMPAGNES.length ? (
+              <div className="mt-6 border-t border-ccr-ink/10 pt-5 sm:mt-8 sm:pt-6">
+                <p className="text-xs font-semibold uppercase tracking-[0.25em] text-ccr-magenta">Campagnes en cours</p>
+                <div className="mt-3 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
+                  {CAMPAGNES.slice(0, 3).map((c) => (
+                    <Link key={c.id} href={`/engagement/${c.id}`} className="group overflow-hidden rounded-2xl bg-white/85 shadow-sm ring-1 ring-ccr-ink/5 backdrop-blur transition-transform hover:-translate-y-0.5">
+                      {c.image ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={c.image} alt="" className="aspect-[16/9] w-full object-cover" />
+                      ) : (
+                        <div className="flex aspect-[16/9] items-center justify-center bg-gradient-to-br from-ccr-gold to-ccr-magenta p-3 text-center font-display text-sm font-black text-white sm:text-lg">{c.nom}</div>
+                      )}
+                      <div className="p-3">
+                        <p className="line-clamp-1 text-sm font-bold">{c.nom}</p>
+                        <p className="line-clamp-1 text-[11px] text-ccr-ink/60">{c.mensuel ? "Chaque mois" : periode(c)}</p>
+                        <p className="mt-1 text-xs font-semibold text-ccr-magenta group-hover:underline">Je m&rsquo;engage &rarr;</p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ) : null}
           </div>
         </section>
       </Reveal>

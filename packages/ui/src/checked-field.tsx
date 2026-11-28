@@ -22,6 +22,7 @@ export function CheckedField({
   autoComplete,
   inputClassName = "",
   className = "",
+  compact = false,
   id,
 }: {
   kind: FieldKind;
@@ -33,6 +34,8 @@ export function CheckedField({
   autoComplete?: string;
   inputClassName?: string;
   className?: string;
+  // Version compacte (téléphone) : libellé plus petit, aide cachée sauf en cas d'erreur.
+  compact?: boolean;
   id?: string;
 }) {
   const [error, setError] = useState<string | null>(null);
@@ -46,7 +49,7 @@ export function CheckedField({
 
   return (
     <label className={`block ${className}`} htmlFor={id}>
-      <span className="text-sm font-semibold">
+      <span className={compact ? "text-xs font-semibold sm:text-sm" : "text-sm font-semibold"}>
         {label}
         {required ? (
           <span className="ml-0.5 text-red-600" aria-hidden="true">
@@ -81,7 +84,10 @@ export function CheckedField({
         }}
         className={`${inputClassName} ${error ? "!border-red-500 !ring-red-200" : ""}`}
       />
-      <span className={`mt-1 block text-xs ${error ? "font-semibold text-red-600" : "text-ccr-ink/50"}`} role={error ? "alert" : undefined}>
+      <span
+        className={`mt-1 text-xs ${error ? "block font-semibold text-red-600" : `text-ccr-ink/50 ${compact ? "hidden sm:block" : "block"}`}`}
+        role={error ? "alert" : undefined}
+      >
         {error ?? hint ?? FIELD_HINTS[kind]}
       </span>
     </label>

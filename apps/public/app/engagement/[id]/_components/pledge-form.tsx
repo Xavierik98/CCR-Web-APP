@@ -1,12 +1,14 @@
 "use client";
 
 import { CheckedField } from "@ccr/ui/src/checked-field";
+import { useState } from "react";
 import { FormSuccess, SiteForm } from "../../../_components/site-form";
 
 const field =
   "mt-1 w-full rounded-xl border border-ccr-ink/15 bg-ccr-cream/60 px-3 py-2.5 text-sm outline-none transition sm:px-4 sm:py-3 focus:border-ccr-gold focus:bg-white focus:ring-2 focus:ring-ccr-gold/30";
 
 export function PledgeForm({ id, mensuel, nom }: { id: string; mensuel: boolean; nom: string }) {
+  const [anonyme, setAnonyme] = useState(false);
   return (
     <SiteForm
       endpoint={`/api/engagement/${id}`}
@@ -18,6 +20,7 @@ export function PledgeForm({ id, mensuel, nom }: { id: string; mensuel: boolean;
         email: fd.get("email"),
         amount: fd.get("montant"),
         message: fd.get("message"),
+        anonymous: anonyme,
         site_web: fd.get("site_web"),
       })}
       success={
@@ -27,10 +30,23 @@ export function PledgeForm({ id, mensuel, nom }: { id: string; mensuel: boolean;
         />
       }
     >
-      <CheckedField kind="name" label="Nom(s)" name="nom" autoComplete="family-name" inputClassName={field} />
-      <CheckedField kind="name" label="Prénom(s)" name="prenom" autoComplete="given-name" inputClassName={field} />
-      <CheckedField kind="phone" label="Téléphone (WhatsApp)" name="telephone" autoComplete="tel" inputClassName={field} />
-      <CheckedField kind="email" label="E-mail" name="email" autoComplete="email" required={false} hint="Facultatif" inputClassName={field} />
+      <label className="col-span-full flex items-start gap-3 rounded-xl border border-ccr-ink/10 p-3">
+        <input type="checkbox" checked={anonyme} onChange={(e) => setAnonyme(e.target.checked)} className="mt-0.5 h-5 w-5 accent-ccr-gold" />
+        <span>
+          <span className="block text-sm font-semibold">Rester anonyme</span>
+          <span className="block text-xs text-ccr-ink/60">Votre nom n&rsquo;est pas demandé. Laissez un numéro seulement si vous souhaitez recevoir un rappel.</span>
+        </span>
+      </label>
+      {anonyme ? (
+        <CheckedField key="tel-anonyme" kind="phone" label="Téléphone pour le rappel" name="telephone" autoComplete="tel" required={false} hint="Facultatif" inputClassName={field} />
+      ) : (
+        <>
+          <CheckedField kind="name" label="Nom(s)" name="nom" autoComplete="family-name" inputClassName={field} />
+          <CheckedField kind="name" label="Prénom(s)" name="prenom" autoComplete="given-name" inputClassName={field} />
+          <CheckedField kind="phone" label="Téléphone (WhatsApp)" name="telephone" autoComplete="tel" inputClassName={field} />
+          <CheckedField kind="email" label="E-mail" name="email" autoComplete="email" required={false} hint="Facultatif" inputClassName={field} />
+        </>
+      )}
       <label className="col-span-full block">
         <span className="text-sm font-semibold">
           Montant de votre engagement {mensuel ? "par mois" : ""} <span className="font-normal text-ccr-ink/50">(en dirhams, facultatif)</span>

@@ -169,3 +169,14 @@ export async function mergeMembers(keepId: string, removeId: string) {
     await tx.member.delete({ where: { id: removeId } });
   });
 }
+
+// Titre qui indique le sexe (Mme, Maman, Sœur… ou M., Papa, Frère) : la
+// catégorie Femme ou Homme en découle, sans toucher aux enfants.
+const WOMAN_TITLES = ["Mme", "Maman", "Sœur", "Diaconesse"];
+const MAN_TITLES = ["M.", "Papa", "Frère"];
+export function categoryFromTitle(title: string | null | undefined) {
+  if (!title) return null;
+  if (WOMAN_TITLES.includes(title)) return "WOMAN" as const;
+  if (MAN_TITLES.includes(title)) return "MAN" as const;
+  return null;
+}

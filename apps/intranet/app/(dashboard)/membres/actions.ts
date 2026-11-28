@@ -10,7 +10,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAccess } from "@/lib/auth";
 import { checkField } from "@ccr/ui/src/validation";
-import { mergeMembers } from "@/lib/members";
+import { categoryFromTitle, mergeMembers } from "@/lib/members";
 
 // Cases cochées + fonctions libres séparées par des virgules.
 function readFunctions(formData: FormData) {
@@ -63,6 +63,9 @@ export async function saveMember(formData: FormData) {
     notes: text(formData, "notes"),
     functions: readFunctions(formData),
   };
+  // Le titre fixe le sexe : Mme, Maman, Sœur = femme ; M., Papa, Frère = homme.
+  const fromTitle = categoryFromTitle(data.title);
+  if (fromTitle && data.category !== "CHILD") data.category = fromTitle;
   const back = `/membres/${id ?? "nouveau"}?erreur=`;
   if (checkField("name", data.lastName) || checkField("name", data.firstName)) redirect(`${back}nom`);
   if (checkField("phone", data.phone)) redirect(`${back}telephone`);

@@ -42,6 +42,7 @@ enum ProfessionalStatus {
 
 enum ResidencyStatus {
   VALID
+  IN_PROGRESS
   EXPIRED
   NEVER_HAD
 }
@@ -56,6 +57,7 @@ enum Role {
   GROUP_LEADER
   SECRETARY
   SOCIAL_SUPPORT
+  YOUTH_LEADER
   ATTENDANCE_MANAGER
   READ_ONLY
 }
@@ -233,6 +235,8 @@ model Pledge {
   email          String?
   // Engagement pris par la personne elle-même avec le formulaire public.
   fromForm       Boolean  @default(false)
+  // La personne ne souhaite pas que son nom apparaisse.
+  anonymous      Boolean  @default(false)
   payments       PledgePayment[]
   createdAt      DateTime @default(now())
   updatedAt      DateTime @default(now()) @updatedAt
@@ -263,8 +267,18 @@ model SocialSupportRecord {
   member              Member          @relation(fields: [memberId], references: [id], onDelete: Cascade)
   residencyStatus     ResidencyStatus
   documentNumber      String?
+  // Date d'expiration du titre de séjour ou du récépissé.
+  documentExpiry      DateTime?
+  // Procédure : date de dépôt et dernière avancée connue (pour repérer une
+  // procédure qui stagne).
+  procedureStartedAt  DateTime?
+  lastProgressAt      DateTime?
+  missingDocuments    String[]        @default([])
   hasRenewalDocuments Boolean?
   renewalDifficulty   String?
+  // Dernier signalement fait par la personne elle-même (formulaire Ma fiche).
+  lastReportedAt      DateTime?
+  updatedBy           String?
   updatedAt           DateTime        @updatedAt
 }
 
@@ -387,6 +401,13 @@ model MemberSubmission {
   category           MemberCategory?
   professionalStatus ProfessionalStatus?
   functions          String[]            @default([])
+  title              String?
+  // Titre de séjour signalé par la personne (facultatif, confidentiel) :
+  // visible uniquement par les responsables des dossiers de séjour.
+  residencyStatus    ResidencyStatus?
+  residencyExpiry    DateTime?
+  residencyMissing   String[]            @default([])
+  residencyNote      String?
   // [{ departmentId, role }]
   departments        Json                @default("[]")
   message            String?

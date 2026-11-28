@@ -41,10 +41,12 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   const email = str(body.email, 120)?.toLowerCase() ?? null;
   const raw = str(body.amount, 20)?.replace(/\s/g, "").replace(",", ".") ?? null;
   const amount = raw ? Number(raw) : null;
-  if (!lastName || !firstName || checkField("name", lastName) || checkField("name", firstName)) {
+  // Anonyme : ni nom ni prénom ; le numéro reste facultatif (pour le rappel).
+  const anonymous = body.anonymous === true || body.anonymous === "on";
+  if (!anonymous && (!lastName || !firstName || checkField("name", lastName) || checkField("name", firstName))) {
     return Response.json({ ok: false, erreur: "Nom ou prénom non conforme." }, { status: 400, headers });
   }
-  if (!phone || checkField("phone", phone)) {
+  if ((!anonymous && !phone) || (phone && checkField("phone", phone))) {
     return Response.json({ ok: false, erreur: "Numéro de téléphone non conforme. Ex. : +212 6XX XX XX XX" }, { status: 400, headers });
   }
   if (email && checkField("email", email)) {
@@ -53,10 +55,10 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   if (amount !== null && (!Number.isFinite(amount) || amount <= 0 || amount > 10_000_000)) {
     return Response.json({ ok: false, erreur: "Montant non conforme." }, { status: 400, headers });
   }
-  const n = normalizePhone(phone);
-  const local = n && n.length === 9 ? `0${n}` : phone;
-  // Fiche membre reconnue par le numéro de téléphone, si elle existe.
-  const member = n
+  const n = phone ? normalizePhone(phone) : null;
+  const local = phone ? (n && n.length === 9 ? `0${n}` : phone) : null;
+  // Fiche membre reconnue par le numéro de téléphone (jamais pour un anonyme).
+  const member = n && !anonymous
     ? await prisma.member.findFirst({ where: { phone: { contains: n.slice(-9) } }, select: { id: true } })
     : null;
   await prisma.$transaction([
@@ -64,10 +66,11 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       data: {
         campaignId: c.id,
         memberId: member?.id ?? null,
-        donorName: `${firstName} ${lastName.toUpperCase()}`,
+        donorName: anonymous ? "Anonyme" : `${firstName} ${lastName!.toUpperCase()}`,
+        anonymous,
         amountPromised: amount,
         phone: local,
-        email,
+        email: anonymous ? null : email,
         comment: str(body.message, 500),
         fromForm: true,
         updatedBy: "formulaire du site",

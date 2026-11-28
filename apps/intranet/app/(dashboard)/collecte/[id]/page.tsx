@@ -21,7 +21,7 @@ import {
   withMonth,
   type PledgeStatus,
 } from "@/lib/pledges";
-import { deleteCampaign, deletePledge, savePledge } from "../actions";
+import { deleteCampaign, deletePledge, markReminded, savePledge } from "../actions";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://ccr-famille-public.vercel.app";
 
@@ -91,6 +91,12 @@ export default async function CampagnePage({
     : [];
   const formUrl = `${SITE_URL}/engagement/${campaign.id}`;
   const qrSvg = editable ? await QRCode.toString(formUrl, { type: "svg", margin: 1, color: { dark: "#201C16", light: "#ffffff" } }) : null;
+  const qrPng = editable ? await QRCode.toDataURL(formUrl, { margin: 2, width: 1024, color: { dark: "#201C16", light: "#ffffff" } }) : null;
+  const shareText = [
+    `${campaign.name}${campaign.monthly ? " (engagement mensuel)" : ""}`,
+    campaign.description,
+    "Prenez votre engagement ici :",
+  ].filter(Boolean).join("\n");
   const promis = rows.reduce((s, r) => s + Number(r.p.amountPromised ?? 0), 0);
   const recu = rows.reduce((s, r) => s + Number(r.p.amountPaid ?? 0), 0);
   const pct = promis ? Math.round((recu / promis) * 100) : 0;
@@ -202,6 +208,7 @@ export default async function CampagnePage({
                     <div className="mb-1 flex flex-wrap items-center gap-2">
                       <Badge tone={STATUS_LABELS[status].tone}>{STATUS_LABELS[status].label}</Badge>
                       {p.fromForm ? <Badge tone="gold">Formulaire</Badge> : null}
+                      {p.anonymous ? <Badge tone="neutral">Anonyme</Badge> : null}
                       {p.lastReminderAt ? (
                         <span className="text-xs text-ccr-ink/50">
                           Relancé le {formatDate(p.lastReminderAt)}
@@ -239,6 +246,11 @@ export default async function CampagnePage({
                 <div className="flex flex-wrap items-center gap-2">
                   {editable ? <Button type="submit" variant="secondary">OK</Button> : null}
                   {editable && link && status !== "PAYE" ? <RemindButton pledgeId={p.id} href={link} compact /> : null}
+                  {editable && relance ? (
+                    <button type="submit" formAction={markReminded} className="text-xs font-semibold text-ccr-ink/50 hover:text-ccr-ink hover:underline">
+                      Déjà relancé
+                    </button>
+                  ) : null}
                   {editable && !pledgePhone(p) && status !== "PAYE" ? <span className="text-xs text-ccr-ink/40">Sans numéro</span> : null}
                   {editable ? (
                     <button type="submit" formAction={deletePledge} className="text-xs font-semibold text-ccr-magenta hover:underline">
@@ -273,10 +285,22 @@ export default async function CampagnePage({
                   À envoyer aux membres : chacun indique son nom, son téléphone et son montant{campaign.monthly ? " par mois" : ""}. L&rsquo;engagement apparaît ici avec le badge « Formulaire ».
                 </p>
                 <div className="mt-4 grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start">
-                  <ShareLink url={formUrl} message={`Bonjour ! Vous pouvez prendre votre engagement pour « ${campaign.name} » ici :`} />
+                  <div className="min-w-0 space-y-2">
+                    <ShareLink url={formUrl} message={shareText} />
+                    <p className="text-xs text-ccr-ink/50">
+                      « Partager sur WhatsApp » permet de choisir une personne ou un groupe. La campagne s&rsquo;affiche aussi sur le site, page « Prendre un engagement » et section des dons de l&rsquo;accueil.
+                    </p>
+                  </div>
                   {qrSvg ? (
-                    // SVG généré côté serveur par la bibliothèque qrcode (aucun contenu saisi par un tiers).
-                    <div className="w-32 rounded-xl border border-ccr-ink/10 bg-white p-2" dangerouslySetInnerHTML={{ __html: qrSvg }} />
+                    <div className="text-center">
+                      {/* SVG généré côté serveur par la bibliothèque qrcode (aucun contenu saisi par un tiers). */}
+                      <div className="w-32 rounded-xl border border-ccr-ink/10 bg-white p-2" dangerouslySetInnerHTML={{ __html: qrSvg }} />
+                      {qrPng ? (
+                        <a href={qrPng} download={`qr-engagement-${campaign.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.png`} className="mt-1 inline-block text-xs font-semibold text-ccr-blue hover:underline">
+                          Télécharger le QR code
+                        </a>
+                      ) : null}
+                    </div>
                   ) : null}
                 </div>
               </>

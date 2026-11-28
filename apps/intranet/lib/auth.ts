@@ -28,6 +28,7 @@ export type Module =
   | "departements"
   | "collecte"
   | "social"
+  | "sejour"
   | "actualites"
   | "fiches"
   | "taches"
@@ -35,7 +36,7 @@ export type Module =
   | "utilisateurs";
 
 type Level = "view" | "edit";
-const ALL: Module[] = ["membres", "presences", "departements", "collecte", "social", "actualites", "fiches", "taches", "messages", "utilisateurs"];
+const ALL: Module[] = ["membres", "presences", "departements", "collecte", "social", "sejour", "actualites", "fiches", "taches", "messages", "utilisateurs"];
 
 function grant(edit: Module[], view: Module[] = []): Partial<Record<Module, Level>> {
   const out: Partial<Record<Module, Level>> = {};
@@ -58,7 +59,10 @@ const MATRIX: Record<Role, Partial<Record<Module, Level>>> = {
   TREASURER: grant(["collecte"], ["membres"]),
   COMMUNICATION: grant(["presences"]),
   ATTENDANCE_MANAGER: grant(["presences"]),
-  SOCIAL_SUPPORT: grant(["social", "actualites"], ["membres"]),
+  SOCIAL_SUPPORT: grant(["social", "sejour", "actualites"], ["membres"]),
+  // Dossiers de séjour : données très sensibles, module séparé du social,
+  // ouvert au responsable de la jeunesse (beaucoup d'étudiants concernés).
+  YOUTH_LEADER: grant(["sejour"], ["membres", "presences", "departements"]),
   DEPARTMENT_LEADER: grant([], ["membres", "presences", "departements"]),
   GROUP_LEADER: grant([], ["membres", "presences", "departements"]),
   READ_ONLY: grant([], ["membres", "presences", "departements", "actualites"]),
@@ -97,6 +101,7 @@ export const ROLE_LABELS: Record<Role, string> = {
   DEPARTMENT_LEADER: "Responsable de département",
   GROUP_LEADER: "Responsable de groupe",
   SOCIAL_SUPPORT: "Accompagnement social",
+  YOUTH_LEADER: "Responsable de la jeunesse",
   ATTENDANCE_MANAGER: "Gestion des présences",
   READ_ONLY: "Lecture seule",
 };
@@ -111,6 +116,7 @@ export const ROLE_DESCRIPTIONS: Record<Role, string> = {
   DEPARTMENT_LEADER: "Consultation des membres, présences et départements.",
   GROUP_LEADER: "Consultation des membres, présences et départements.",
   SOCIAL_SUPPORT: "Stock de dons, demandes de soutien, appels aux dons et actualités, dossiers de séjour ; consulte les membres.",
+  YOUTH_LEADER: "Dossiers de séjour (procédures, documents manquants, expirations) ; consulte membres, présences et départements.",
   ATTENDANCE_MANAGER: "Valide les présences et absences, rien d'autre.",
   READ_ONLY: "Consultation seule.",
 };

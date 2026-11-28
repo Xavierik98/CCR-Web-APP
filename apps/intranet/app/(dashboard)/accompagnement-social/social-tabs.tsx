@@ -1,11 +1,11 @@
 import Link from "next/link";
 
 // Onglets du module Accompagnement social.
-export function SocialTabs({ current, demandes }: { current: "demandes" | "stock" | "dossiers"; demandes: number }) {
+// Les dossiers de séjour ont leur propre rubrique dans le menu (accès séparé).
+export function SocialTabs({ current, demandes }: { current: "demandes" | "stock"; demandes: number }) {
   const tabs = [
     { key: "demandes", href: "/accompagnement-social/demandes", label: "Demandes de soutien", count: demandes },
     { key: "stock", href: "/accompagnement-social/stock", label: "Stock et distributions", count: 0 },
-    { key: "dossiers", href: "/accompagnement-social", label: "Dossiers de séjour", count: 0 },
   ] as const;
   return (
     <div className="mb-6 flex flex-wrap gap-2">

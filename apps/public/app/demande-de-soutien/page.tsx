@@ -57,30 +57,31 @@ export default function DemandeDeSoutienPage() {
         </div>
       </section>
 
-      <section className="mx-auto -mt-10 grid max-w-6xl gap-6 px-4 pb-20 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:gap-8">
+      {/* Les trois étapes côte à côte, puis le formulaire centré : pas
+          d'espace vide à côté d'une colonne plus courte. */}
+      <section className="mx-auto -mt-10 max-w-4xl px-3 pb-20 sm:px-6">
         <Reveal>
-          <div className="animate-swell grid gap-3 rounded-3xl bg-white p-5 shadow-[0_20px_50px_-25px_rgba(32,28,22,0.35)] sm:p-8 lg:gap-6">
+          <div className="animate-swell grid grid-cols-3 gap-2 sm:gap-4">
             {ETAPES.map((e, i) => (
-              <div key={e.titre} className="flex gap-4">
-                <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${["bg-ccr-gold text-ccr-ink", "bg-ccr-magenta text-ccr-cream", "bg-ccr-blue text-ccr-cream"][i]}`}>
-                  <Icon name={e.icon} className="h-5 w-5" />
+              <div key={e.titre} className="rounded-2xl bg-white p-3 text-center shadow-[0_20px_50px_-25px_rgba(32,28,22,0.35)] sm:p-5">
+                <span className={`mx-auto flex h-8 w-8 items-center justify-center rounded-full sm:h-11 sm:w-11 ${["bg-ccr-gold text-ccr-ink", "bg-ccr-magenta text-ccr-cream", "bg-ccr-blue text-ccr-cream"][i]}`}>
+                  <Icon name={e.icon} className="h-4 w-4 sm:h-5 sm:w-5" />
                 </span>
-                <div>
-                  <h2 className="font-display text-lg font-bold sm:text-xl">{e.titre}</h2>
-                  <p className="mt-0.5 text-sm text-ccr-ink/70">{e.texte}</p>
-                </div>
+                <p className="mt-2 text-[10px] font-semibold uppercase tracking-wider text-ccr-ink/40">Étape {i + 1}</p>
+                <h2 className="font-display text-xs font-bold leading-tight sm:text-lg">{e.titre}</h2>
+                <p className="mt-1 hidden text-sm text-ccr-ink/70 sm:block">{e.texte}</p>
               </div>
             ))}
-            <div className="mt-2 border-t border-ccr-ink/10 pt-4 text-center">
-              <Image src="/images/partenaires/coeur-solidaire-logo.png" alt="Association Cœur Solidaire" width={240} height={164} className="mx-auto h-auto w-40 sm:w-48" />
-            </div>
           </div>
         </Reveal>
         <Reveal delay={100}>
-          <div className="animate-swell-late">
+          <div className="animate-swell-late mt-4 sm:mt-6">
             <SupportForm endpoint={`${INTRANET_URL}/api/soutien`} />
           </div>
         </Reveal>
+        <div className="mt-6 flex items-center justify-center gap-3 text-xs text-ccr-ink/60">
+          <Image src="/images/partenaires/coeur-solidaire-logo.png" alt="Association Cœur Solidaire" width={120} height={82} className="h-auto w-24" />
+        </div>
       </section>
     </main>
   );

@@ -27,9 +27,10 @@ export const PROFESSIONAL_LABELS: Record<ProfessionalStatus, string> = {
 };
 
 export const RESIDENCY_LABELS: Record<ResidencyStatus, string> = {
-  VALID: "Titre valide",
-  EXPIRED: "Titre expiré",
-  NEVER_HAD: "Jamais eu de titre",
+  VALID: "Carte de séjour valide",
+  IN_PROGRESS: "Procédure en cours (récépissé)",
+  EXPIRED: "Carte expirée",
+  NEVER_HAD: "Sans carte de séjour",
 };
 
 export const CONTENT_STATUS_LABELS: Record<ContentStatus, string> = {

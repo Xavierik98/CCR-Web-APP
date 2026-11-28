@@ -4,6 +4,7 @@ import { prisma } from "@ccr/database";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAccess } from "@/lib/auth";
+import { categoryFromTitle } from "@/lib/members";
 
 // Champs qu'une fiche peut écrire sur un membre.
 const SUBMISSION_FIELDS = [
@@ -15,7 +16,26 @@ const SUBMISSION_FIELDS = [
   "neighborhood",
   "category",
   "professionalStatus",
+  "title",
 ] as const;
+
+// Situation de séjour signalée dans la fiche : reportée dans le dossier de
+// séjour (créé au besoin), datée comme signalement de la personne.
+async function applyResidency(memberId: string, sub: { residencyStatus: import("@ccr/database").ResidencyStatus | null; residencyExpiry: Date | null; residencyMissing: string[]; residencyNote: string | null; createdAt: Date }) {
+  if (!sub.residencyStatus && !sub.residencyExpiry && !sub.residencyMissing.length && !sub.residencyNote) return;
+  const existing = await prisma.socialSupportRecord.findUnique({ where: { memberId } });
+  const note = sub.residencyNote ? `Signalé le ${sub.createdAt.toLocaleDateString("fr-FR")} : ${sub.residencyNote}` : null;
+  const data = {
+    ...(sub.residencyStatus ? { residencyStatus: sub.residencyStatus } : {}),
+    ...(sub.residencyExpiry ? { documentExpiry: sub.residencyExpiry } : {}),
+    missingDocuments: sub.residencyMissing,
+    renewalDifficulty: [existing?.renewalDifficulty, note].filter(Boolean).join("\n\n") || null,
+    lastReportedAt: sub.createdAt,
+    updatedBy: "fiche du membre",
+  };
+  if (existing) await prisma.socialSupportRecord.update({ where: { memberId }, data });
+  else await prisma.socialSupportRecord.create({ data: { memberId, residencyStatus: sub.residencyStatus ?? "IN_PROGRESS", ...data } });
+}
 
 type Dept = { departmentId: string; role: string | null };
 
@@ -64,8 +84,11 @@ export async function mergeSubmission(formData: FormData) {
       .join("\n\n");
   }
 
+  const fromTitle = categoryFromTitle((data.title as string | undefined) ?? member.title);
+  if (fromTitle && member.category !== "CHILD" && !apply.has("category")) data.category = fromTitle;
   await prisma.member.update({ where: { id: memberId }, data });
   if (apply.has("departments")) await applyDepartments(memberId, departmentsOf(sub.departments));
+  await applyResidency(memberId, sub);
   await prisma.memberSubmission.update({
     where: { id },
     data: { status: "MERGED", memberId, reviewedBy: user.email, reviewedAt: new Date() },
@@ -86,13 +109,15 @@ export async function createFromSubmission(formData: FormData) {
       email: sub.email,
       birthDate: sub.birthDate,
       neighborhood: sub.neighborhood,
-      category: sub.category,
+      title: sub.title,
+      category: sub.category ?? categoryFromTitle(sub.title),
       professionalStatus: sub.professionalStatus,
       functions: sub.functions,
       notes: sub.message ? `Fiche envoyée le ${sub.createdAt.toLocaleDateString("fr-FR")} : ${sub.message}` : null,
     },
   });
   await applyDepartments(member.id, departmentsOf(sub.departments));
+  await applyResidency(member.id, sub);
   await prisma.memberSubmission.update({
     where: { id },
     data: { status: "CREATED", memberId: member.id, reviewedBy: user.email, reviewedAt: new Date() },

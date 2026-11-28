@@ -5,6 +5,7 @@ import { Badge, Card, Notice, PageHeader } from "@/components/ui";
 import { canEdit, requireAccess } from "@/lib/auth";
 import { formatDate, fullName } from "@/lib/labels";
 import { CampaignForm } from "@/components/campaign-form";
+import { markReminded } from "./actions";
 import { campaignPhase, currentMonth, mad, monthLabel, needsReminder, pledgeStatus, pledgeSummary, pledgesToRemind, reminderLink, withMonth } from "@/lib/pledges";
 
 // Collecte et engagements : vue d'ensemble pour la trésorerie (promis, reçu,
@@ -160,7 +161,16 @@ export default async function CollectePage({
                           {p.lastReminderAt ? `, relancé le ${formatDate(p.lastReminderAt)}` : ", jamais relancé"}
                         </p>
                       </div>
-                      {editable && link ? <RemindButton pledgeId={p.id} href={link} compact /> : null}
+                      {editable ? (
+                        <div className="flex shrink-0 flex-col items-end gap-1">
+                          {link ? <RemindButton pledgeId={p.id} href={link} compact /> : null}
+                          <form action={markReminded}>
+                            <input type="hidden" name="id" value={p.id} />
+                            <input type="hidden" name="retour" value="/collecte" />
+                            <button type="submit" className="text-[11px] font-semibold text-ccr-ink/50 hover:text-ccr-ink hover:underline">Déjà relancé</button>
+                          </form>
+                        </div>
+                      ) : null}
                     </li>
                   );
                 })}

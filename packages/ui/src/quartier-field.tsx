@@ -11,10 +11,12 @@ export function QuartierField({
   name = "neighborhood",
   defaultValue,
   className = "",
+  required = false,
 }: {
   name?: string;
   defaultValue?: string | null;
   className?: string;
+  required?: boolean;
 }) {
   const known = defaultValue ? QUARTIERS_CASABLANCA.find((q) => norm(q) === norm(defaultValue)) : undefined;
   const [choice, setChoice] = useState<string>(known ?? (defaultValue ? AUTRE_QUARTIER : ""));
@@ -22,7 +24,7 @@ export function QuartierField({
   return (
     <>
       <input type="hidden" name={name} value={choice === AUTRE_QUARTIER ? other.trim() : choice} />
-      <select value={choice} onChange={(e) => setChoice(e.target.value)} className={className}>
+      <select value={choice} onChange={(e) => setChoice(e.target.value)} required={required} className={className}>
         <option value="">Choisir un quartier…</option>
         {QUARTIERS_CASABLANCA.map((q) => (
           <option key={q} value={q}>
@@ -32,7 +34,7 @@ export function QuartierField({
         <option value={AUTRE_QUARTIER}>{AUTRE_QUARTIER}…</option>
       </select>
       {choice === AUTRE_QUARTIER ? (
-        <input value={other} onChange={(e) => setOther(e.target.value)} placeholder="Nom du quartier" maxLength={60} className={`${className} mt-2`} />
+        <input value={other} onChange={(e) => setOther(e.target.value)} placeholder="Nom du quartier" maxLength={60} required={required} className={`${className} mt-2`} />
       ) : null}
     </>
   );

@@ -26,6 +26,7 @@ const NAV: (Omit<NavItem, "count"> & { module?: Module })[] = [
   { href: "/messages", label: "Messages du site", icon: "megaphone", module: "messages" },
   { href: "/taches", label: "Tâches des responsables", icon: "list", module: "taches" },
   { href: "/accompagnement-social/demandes", label: "Accompagnement social", icon: "heart", module: "social" },
+  { href: "/dossiers-sejour", label: "Dossiers de séjour", icon: "inbox", module: "sejour" },
   { href: "/utilisateurs", label: "Accès et rôles", icon: "key", module: "utilisateurs" },
 ];
 
