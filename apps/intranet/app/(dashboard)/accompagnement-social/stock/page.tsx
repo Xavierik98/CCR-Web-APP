@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Badge, Button, Card, Field, Input, Notice, PageHeader, Select, Table } from "@/components/ui";
 import { canEdit, requireAccess } from "@/lib/auth";
 import { fullName } from "@/lib/labels";
+import { appealDraft } from "@/lib/appeal";
 import { qty } from "@/lib/stock";
 import { SocialTabs } from "../social-tabs";
 import { addStockItem, adjustStock, distributeStock, publishAppealNow, receiveStock, remindStockNow, toggleAppeal } from "../stock-actions";
@@ -42,6 +43,7 @@ export default async function StockPage({
     prisma.content.findMany({ where: { slug: { startsWith: "appel-aux-dons-" } }, orderBy: { createdAt: "desc" }, take: 6 }),
   ]);
   const message = Object.keys(MESSAGES).find((k) => sp[k]);
+  const draft = editable ? await appealDraft() : null;
   const low = items.filter((i) => Number(i.quantity) <= Number(i.threshold));
   const changes = [
     sp.de !== undefined && sp.a !== undefined ? `quantité corrigée de ${sp.de} à ${sp.a}` : null,
@@ -94,9 +96,9 @@ export default async function StockPage({
             <form action={remindStockNow}>
               <Button type="submit" variant="secondary">Rappel du stock</Button>
             </form>
-            <form action={publishAppealNow}>
-              <Button type="submit">Publier un appel aux dons</Button>
-            </form>
+            <a href="?rediger=1#appel" className="rounded-full bg-ccr-gold px-5 py-2 text-sm font-semibold text-ccr-ink hover:bg-ccr-gold-light">
+              Publier un appel aux dons
+            </a>
           </div>
         ) : null}
       </section>
@@ -127,6 +129,25 @@ export default async function StockPage({
             ))}
           </ul>
         </section>
+      ) : null}
+
+      {draft ? (
+        <details id="appel" open={sp.rediger === "1"} className="group mb-4 scroll-mt-6 rounded-2xl border border-ccr-gold/40 bg-white p-4">
+          <summary className="cursor-pointer list-none text-sm font-semibold">
+            Rédiger l&rsquo;appel aux dons <span className="font-normal text-ccr-ink/50">(texte proposé à partir du stock, modifiable ; aucune photo nécessaire)</span>
+          </summary>
+          <form action={publishAppealNow} className="mt-3 space-y-3">
+            <Input name="title" defaultValue={draft.title} className="mt-0" />
+            <textarea
+              name="body"
+              rows={6}
+              defaultValue={draft.body}
+              className="w-full rounded-xl border border-ccr-ink/15 bg-white px-3 py-2 text-sm outline-none focus:border-ccr-gold"
+            />
+            <p className="text-xs text-ccr-ink/50">Vous pouvez remplacer ce texte par votre propre message (collez-le ici). Un seul appel par mois : il remplace celui du mois s&rsquo;il existe.</p>
+            <Button type="submit">Publier sur le site</Button>
+          </form>
+        </details>
       ) : null}
 
       <section className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4 xl:grid-cols-8">

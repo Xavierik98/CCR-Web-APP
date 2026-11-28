@@ -145,9 +145,9 @@ export async function adjustStock(formData: FormData) {
 }
 
 // Appel aux dons en nature publié tout de suite dans les actualités du site.
-export async function publishAppealNow() {
+export async function publishAppealNow(formData: FormData) {
   const user = await requireAccess("social", "edit");
-  await publishDonationAppeal(user.id);
+  await publishDonationAppeal(user.id, false, { title: text(formData, "title", 120), body: text(formData, "body", 3000) });
   revalidatePath("/cms");
   refresh();
   redirect("/accompagnement-social/stock?appel=1");

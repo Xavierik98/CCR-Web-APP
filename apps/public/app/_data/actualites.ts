@@ -60,10 +60,12 @@ export async function getActualites(): Promise<Actualite[]> {
       // Une image du site lui-même, saisie avec son adresse complète, reste locale.
       image: a.image?.replace(/^https?:\/\/ccr-famille-public\.vercel\.app/, "") || null,
     }));
-    // Pas de doublon : même adresse ou même titre qu'une annonce déjà présente.
+    // Pas de doublon : une annonce gérée dans l'intranet remplace celle de
+    // même adresse ou de même titre écrite ici (les modifications faites dans
+    // l'intranet s'affichent donc bien).
     const key = (t: string) => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
-    const known = new Set(ACTUALITES.flatMap((a) => [a.slug, key(a.titre)]));
-    return [...ACTUALITES, ...live.filter((a) => !known.has(a.slug) && !known.has(key(a.titre)))].sort((a, b) => b.date.localeCompare(a.date));
+    const known = new Set(live.flatMap((a) => [a.slug, key(a.titre)]));
+    return [...live, ...ACTUALITES.filter((a) => !known.has(a.slug) && !known.has(key(a.titre)))].sort((a, b) => b.date.localeCompare(a.date));
   } catch {
     return ACTUALITES;
   }

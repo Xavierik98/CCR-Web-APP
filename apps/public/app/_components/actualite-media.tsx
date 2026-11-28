@@ -55,6 +55,22 @@ export function ActualiteMedia({ article, sizes }: { article: Actualite; sizes: 
       </video>
     );
   }
+  if (!article.image && article.slug.startsWith("appel-aux-dons")) {
+    // Appel aux dons du social : visuel propre, sans photo à fournir.
+    return (
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 overflow-hidden bg-gradient-to-br from-ccr-magenta via-[#b8235f] to-ccr-gold p-4 text-center text-white sm:gap-3">
+        <span aria-hidden="true" className="absolute -left-10 -top-10 h-40 w-40 rounded-full bg-white/15 blur-2xl" />
+        <span aria-hidden="true" className="absolute -bottom-12 -right-8 h-44 w-44 rounded-full bg-ccr-gold/40 blur-2xl" />
+        <span className="relative flex h-10 w-10 items-center justify-center rounded-2xl bg-white/20 backdrop-blur sm:h-14 sm:w-14">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5 sm:h-7 sm:w-7" aria-hidden="true">
+            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+          </svg>
+        </span>
+        <span className="relative text-[10px] font-semibold uppercase tracking-[0.25em] text-white/80 sm:text-xs">Accompagnement social</span>
+        <span className="relative font-display text-lg font-black leading-tight sm:text-3xl">Appel aux dons</span>
+      </div>
+    );
+  }
   if (!article.image) {
     return (
       <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-ccr-ink via-[#2a2118] to-ccr-magenta/60 p-4 text-center">

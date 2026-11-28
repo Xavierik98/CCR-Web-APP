@@ -11,33 +11,45 @@ export async function lowStockItems() {
 
 const monthLabel = (d: Date) => d.toLocaleDateString("fr-FR", { month: "long", year: "numeric", timeZone: "Africa/Casablanca" });
 
-// Appel aux dons en nature publié dans les actualités du site : un seul par
-// mois (mis à jour s'il existe déjà), avec les denrées qui manquent.
-// En automatique (`auto`), un appel déjà existant pour le mois n'est jamais
-// écrasé : une modification ou un retrait fait à la main est respecté.
-export async function publishDonationAppeal(authorId: string, auto = false) {
+// Texte proposé pour l'appel du mois, à partir des articles qui manquent.
+export async function appealDraft() {
   const now = new Date();
-  const month = now.toLocaleDateString("en-CA", { timeZone: "Africa/Casablanca" }).slice(0, 7);
-  const slug = `appel-aux-dons-${month}`;
-  if (auto) {
-    const existing = await prisma.content.findUnique({ where: { slug } });
-    if (existing) return { content: existing, low: await lowStockItems(), created: false };
-  }
   const low = await lowStockItems();
   const all = low.length ? low : await prisma.stockItem.findMany({ where: { active: true }, orderBy: [{ position: "asc" }, { name: "asc" }] });
   const list = all.map((i) => i.name.toLowerCase()).join(", ");
-  const body = [
-    `L'accompagnement social de l'église soutient chaque mois des familles dans le besoin. Pour ${monthLabel(now)}, nous faisons appel à votre générosité.`,
-    low.length ? `Nous avons particulièrement besoin de : ${list}.` : `Les dons les plus utiles : ${list}.`,
-    "Vos dons en nature peuvent être remis à l'équipe de l'accompagnement social. Merci pour votre soutien !",
-  ].join("\n\n");
-  const title = `Appel aux dons en nature : ${monthLabel(now)}`;
+  return {
+    low,
+    title: `Appel aux dons en nature : ${monthLabel(now)}`,
+    body: [
+      `L'accompagnement social de l'église soutient chaque mois des familles dans le besoin. Pour ${monthLabel(now)}, nous faisons appel à votre générosité.`,
+      low.length ? `Nous avons particulièrement besoin de : ${list}.` : `Les dons les plus utiles : ${list}.`,
+      "Vos dons en nature peuvent être remis à l'équipe de l'accompagnement social. Merci pour votre soutien !",
+    ].join("\n\n"),
+  };
+}
+
+// Appel aux dons en nature publié dans les actualités du site : un seul par
+// mois (mis à jour s'il existe déjà). Le texte peut être écrit ou collé par
+// l'accompagnement social (`custom`), sinon il est rédigé à partir du stock.
+// Aucune photo n'est requise. En automatique (`auto`), un appel déjà existant
+// pour le mois n'est jamais écrasé : une modification ou un retrait est respecté.
+export async function publishDonationAppeal(authorId: string, auto = false, custom?: { title?: string | null; body?: string | null }) {
+  const now = new Date();
+  const month = now.toLocaleDateString("en-CA", { timeZone: "Africa/Casablanca" }).slice(0, 7);
+  const slug = `appel-aux-dons-${month}`;
+  const draft = await appealDraft();
+  if (auto) {
+    const existing = await prisma.content.findUnique({ where: { slug } });
+    if (existing) return { content: existing, low: draft.low, created: false };
+  }
+  const title = custom?.title?.trim() || draft.title;
+  const body = custom?.body?.trim() || draft.body;
   const content = await prisma.content.upsert({
     where: { slug },
     update: { title, body, status: "PUBLISHED", publishedAt: now },
     create: { type: "NEWS", slug, title, body, status: "PUBLISHED", publishedAt: now, authorId },
   });
-  return { content, low, created: true };
+  return { content, low: draft.low, created: true };
 }
 
 // Rappel du niveau du stock à l'accompagnement social : tâche dans l'agenda
