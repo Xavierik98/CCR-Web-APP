@@ -48,6 +48,7 @@ export async function saveMember(formData: FormData) {
   const status = (text(formData, "membershipStatus") ?? "ACTIVE") as MembershipStatus;
   const data = {
     firstName: text(formData, "firstName") ?? "",
+    title: text(formData, "title"),
     lastName: text(formData, "lastName") ?? "",
     phone: text(formData, "phone"),
     email: text(formData, "email"),

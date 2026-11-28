@@ -4,7 +4,7 @@ import { sendWhatsApp } from "./whatsapp";
 // E-mail via Resend (facultatif) : RESEND_API_KEY, RESEND_FROM (expéditeur
 // d'un domaine vérifié chez Resend) et SOCIAL_EMAIL (destinataire ; à défaut,
 // les adresses des utilisateurs au rôle Accompagnement social).
-async function sendEmail(to: string[], subject: string, text: string) {
+export async function sendEmail(to: string[], subject: string, text: string) {
   const key = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM;
   if (!key || !from || to.length === 0) return { ok: false, error: "E-mail non configuré" };

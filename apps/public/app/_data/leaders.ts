@@ -46,3 +46,13 @@ export const LEADERS: Leader[] = [
     local: true,
   },
 ];
+
+// Responsables de ministère désignés le 28/11 (sans photo pour l'instant :
+// leurs initiales sont affichées ; ajouter `photo` dès qu'elle est fournie).
+export type MinistryLeader = { nom: string; titre: string; initiales: string; couleur: "gold" | "magenta" | "blue"; photo?: string };
+
+export const RESPONSABLES_MINISTERES: MinistryLeader[] = [
+  { nom: "Jude NDJINGA", titre: "Responsable de la jeunesse", initiales: "JN", couleur: "blue" },
+  { nom: "Mme NEKALO", titre: "Responsable de la trésorerie", initiales: "MN", couleur: "gold" },
+  { nom: "Eliel KOUASSI", titre: "Responsable des chantres (louange)", initiales: "EK", couleur: "magenta" },
+];

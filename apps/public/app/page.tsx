@@ -11,7 +11,7 @@ import { TypeOnce } from "./_components/type-once";
 import { TypewriterWords } from "./_components/typewriter-words";
 import { VisionIcon } from "./_components/vision-icons";
 import { YoutubeBackground } from "./_components/youtube-background";
-import { ACTUALITES, formatDateActualite } from "./_data/actualites";
+import { formatDateActualite, getActualites } from "./_data/actualites";
 import { ADRESSE } from "./_data/contact";
 import { RIB, RIB_DISPONIBLE } from "./_data/dons";
 import { PHOTOS } from "./_data/galerie";
@@ -40,7 +40,8 @@ const RIB_WHATSAPP_URL = buildWhatsAppLink(
   "Bonjour, je souhaite participer à la collecte par virement. Pouvez-vous m'envoyer le RIB de l'église ?",
 );
 
-export default function HomePage() {
+export default async function HomePage() {
+  const ACTUALITES = await getActualites();
   return (
     <main>
       <section className="relative isolate flex min-h-[520px] items-center overflow-hidden md:min-h-[640px]">

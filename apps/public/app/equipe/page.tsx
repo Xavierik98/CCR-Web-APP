@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ImageSlot } from "../_components/image-slot";
-import { LEADERS } from "../_data/leaders";
+import { LEADERS, RESPONSABLES_MINISTERES } from "../_data/leaders";
 
 export const metadata: Metadata = {
   title: "L'équipe",
@@ -30,6 +30,19 @@ export default function EquipePage() {
               <h2 className="font-display text-xl font-bold">{leader.nom}</h2>
               <p className="text-sm font-semibold text-ccr-magenta">{leader.titre}</p>
               {leader.texte ? <p className="mt-3 text-sm text-ccr-ink/70">{leader.texte}</p> : null}
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <h2 className="mt-14 font-display text-2xl font-bold">Responsables de ministère</h2>
+      <div className="mt-5 grid gap-4 sm:grid-cols-3">
+        {RESPONSABLES_MINISTERES.map((r) => (
+          <article key={r.nom} className="flex items-center gap-4 rounded-2xl border border-ccr-ink/10 bg-white p-4">
+            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-ccr-gold/20 font-display text-lg font-black text-[#9a6a0c]">{r.initiales}</span>
+            <div>
+              <h3 className="font-display text-lg font-bold">{r.nom}</h3>
+              <p className="text-xs font-semibold text-ccr-magenta">{r.titre}</p>
             </div>
           </article>
         ))}

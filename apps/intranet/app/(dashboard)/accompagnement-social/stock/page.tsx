@@ -4,13 +4,13 @@ import { canEdit, requireAccess } from "@/lib/auth";
 import { fullName } from "@/lib/labels";
 import { qty } from "@/lib/stock";
 import { SocialTabs } from "../social-tabs";
-import { addStockItem, adjustStock, distributeStock, receiveStock } from "../stock-actions";
+import { addStockItem, adjustStock, distributeStock, publishAppealNow, receiveStock, remindStockNow } from "../stock-actions";
 
 const MESSAGES: Record<string, string> = {
   ajoute: "Article ajouté à la liste.",
   recu: "Réception enregistrée, stock mis à jour.",
   distribue: "Distribution enregistrée, stock mis à jour.",
-  inventaire: "Inventaire corrigé.",
+  appel: "Appel aux dons publié dans les actualités du site.",
 };
 
 const TYPE = { IN: { label: "Réception", tone: "blue" }, OUT: { label: "Distribution", tone: "magenta" }, ADJUST: { label: "Inventaire", tone: "neutral" } } as const;
@@ -38,6 +38,16 @@ export default async function StockPage({
     prisma.supportRequest.count({ where: { status: "NEW" } }),
   ]);
   const message = Object.keys(MESSAGES).find((k) => sp[k]);
+  const low = items.filter((i) => Number(i.quantity) <= Number(i.threshold));
+  const changes = [
+    sp.de !== undefined && sp.a !== undefined ? `quantité corrigée de ${sp.de} à ${sp.a}` : null,
+    sp.seuil !== undefined ? `seuil d'alerte fixé à ${sp.seuil}` : null,
+  ].filter(Boolean);
+  const correction = sp.inventaire
+    ? changes.length
+      ? `${sp.article} : ${changes.join(", ")}.`
+      : "Aucune modification : les valeurs saisies sont déjà celles du stock."
+    : null;
   const today = new Date().toLocaleDateString("en-CA", { timeZone: "Africa/Casablanca" });
   const nowTime = new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone: "Africa/Casablanca" });
   const qtyInputs = (prefix: string) => (
@@ -59,16 +69,45 @@ export default async function StockPage({
       <PageHeader title="Accompagnement social" subtitle="Stock de dons : réceptions, distributions et traçabilité." />
       <SocialTabs current="stock" demandes={demandes} />
       {message ? <Notice>{MESSAGES[message]}</Notice> : null}
-      {sp.erreur ? <Notice tone="magenta">{sp.erreur === "article" ? "Indiquez le nom de l'article." : sp.erreur}</Notice> : null}
+      {correction ? <Notice>{correction}</Notice> : null}
+      {sp.rappel !== undefined ? (
+        <Notice>{sp.rappel === "0" ? "Aucun article sous le seuil d'alerte : pas de rappel nécessaire." : "Rappel du niveau du stock ajouté à l'agenda de l'accompagnement social."}</Notice>
+      ) : null}
+      {sp.erreur ? <Notice tone="magenta">{sp.erreur === "article" ? "Indiquez le nom de l'article." : sp.erreur === "quantite" ? "Indiquez une quantité ou un seuil valide (nombre positif)." : sp.erreur}</Notice> : null}
+
+      <section className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-ccr-ink/[0.06] bg-white p-4">
+        <div>
+          <p className="font-semibold">
+            {low.length === 0 ? "Stock suffisant" : `${low.length} article${low.length > 1 ? "s" : ""} sous le seuil d'alerte`}
+          </p>
+          <p className="text-xs text-ccr-ink/60">
+            {low.length ? low.map((i) => i.name).join(", ") + ". " : ""}
+            Un appel aux dons est publié automatiquement le 1er de chaque mois, et chaque lundi si le stock est bas.
+          </p>
+        </div>
+        {editable ? (
+          <div className="flex flex-wrap gap-2">
+            <form action={remindStockNow}>
+              <Button type="submit" variant="secondary">Rappel du stock</Button>
+            </form>
+            <form action={publishAppealNow}>
+              <Button type="submit">Publier un appel aux dons</Button>
+            </form>
+          </div>
+        ) : null}
+      </section>
 
       <section className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4 xl:grid-cols-8">
         {items.map((it) => {
           const n = Number(it.quantity);
+          const alert = n <= Number(it.threshold);
           return (
-            <div key={it.id} className={`rounded-2xl border bg-white p-4 ${n <= 0 ? "border-ccr-magenta/30" : "border-ccr-ink/[0.06]"}`}>
+            <div key={it.id} className={`rounded-2xl border bg-white p-4 ${alert ? "border-ccr-magenta/30" : "border-ccr-ink/[0.06]"}`}>
               <p className="truncate text-xs text-ccr-ink/60">{it.name}</p>
-              <p className={`font-display text-2xl font-black ${n <= 0 ? "text-ccr-magenta" : ""}`}>{qty(n)}</p>
-              <p className="text-[11px] text-ccr-ink/50">{it.unit}</p>
+              <p className={`font-display text-2xl font-black ${alert ? "text-ccr-magenta" : ""}`}>{qty(n)}</p>
+              <p className="text-[11px] text-ccr-ink/50">
+                {it.unit}, seuil {qty(it.threshold)}
+              </p>
             </div>
           );
         })}
@@ -133,8 +172,13 @@ export default async function StockPage({
                   <td className="px-4 py-2.5"><Badge tone={TYPE[m.type].tone}>{TYPE[m.type].label}</Badge></td>
                   <td className="px-4 py-2.5 font-semibold">{m.item.name}</td>
                   <td className="whitespace-nowrap px-4 py-2.5">
-                    {m.type === "OUT" ? "−" : m.type === "IN" ? "+" : Number(m.quantity) >= 0 ? "+" : ""}
-                    {qty(m.quantity)} {m.item.unit}
+                    {m.type === "OUT" ? "−" : m.type === "IN" ? "+" : Number(m.quantity) >= 0 ? "+" : "−"}
+                    {qty(Math.abs(Number(m.quantity)))} {m.item.unit}
+                    {m.type === "ADJUST" ? (
+                      <span className="block text-xs text-ccr-ink/50">
+                        Corrigé de {qty(Number(m.balanceAfter) - Number(m.quantity))} à {qty(m.balanceAfter)}
+                      </span>
+                    ) : null}
                   </td>
                   <td className="px-4 py-2.5 text-ccr-ink/70">
                     {m.beneficiaryMember ? fullName(m.beneficiaryMember) : m.beneficiaryName ?? (m.request ? fullName(m.request) : "")}
@@ -162,11 +206,15 @@ export default async function StockPage({
             </Card>
             <Card>
               <h2 className="font-display text-lg font-bold">Inventaire</h2>
-              <p className="text-xs text-ccr-ink/50">Corrige une quantité après comptage réel (tracé dans l&rsquo;historique).</p>
-              <form action={adjustStock} className="mt-4 grid grid-cols-[2fr_1fr_auto] gap-2">
-                <Select name="itemId" options={items.map((i) => [i.id, i.name])} className="mt-0" />
-                <Input name="quantity" inputMode="decimal" placeholder="Qté réelle" className="mt-0" required />
-                <Button type="submit" variant="secondary">OK</Button>
+              <p className="text-xs text-ccr-ink/50">
+                Corrige une quantité après comptage réel (l&rsquo;ancienne et la nouvelle valeur restent dans l&rsquo;historique) ou change le seuil d&rsquo;alerte.
+              </p>
+              <form action={adjustStock} className="mt-4 grid grid-cols-2 gap-2">
+                <Select name="itemId" options={items.map((i) => [i.id, `${i.name} (${qty(i.quantity)}, seuil ${qty(i.threshold)})`])} className="col-span-2 mt-0" />
+                <Input name="quantity" inputMode="decimal" placeholder="Quantité réelle" className="mt-0" />
+                <Input name="threshold" inputMode="decimal" placeholder="Seuil d'alerte" className="mt-0" />
+                <Input name="note" placeholder="Motif (facultatif)" className="col-span-2 mt-0" />
+                <Button type="submit" variant="secondary" className="col-span-2 justify-self-start">Enregistrer</Button>
               </form>
             </Card>
           </div>

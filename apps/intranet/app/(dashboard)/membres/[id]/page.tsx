@@ -10,7 +10,7 @@ const ERREURS: Record<string, string> = {
   email: "L'adresse e-mail n'est pas conforme. Exemple : prenom.nom@gmail.com",
 };
 import { canEdit, requireAccess, ROLE_LABELS } from "@/lib/auth";
-import {
+import { TITLES,
   CATEGORY_LABELS,
   PROFESSIONAL_LABELS,
   STATUS_LABELS,
@@ -85,6 +85,9 @@ export default async function MembrePage({
               {member ? <input type="hidden" name="id" value={member.id} /> : null}
               <CheckedField kind="name" label="Nom(s)" name="lastName" defaultValue={member?.lastName} inputClassName={fieldClass} />
               <CheckedField kind="name" label="Prénom(s)" name="firstName" defaultValue={member?.firstName} inputClassName={fieldClass} />
+              <Field label="Titre (facultatif)">
+                <Select name="title" defaultValue={member?.title ?? ""} empty="Aucun" options={TITLES.map((t) => [t, t])} />
+              </Field>
               <CheckedField kind="phone" label="Téléphone" name="phone" defaultValue={member?.phone} inputClassName={fieldClass} />
               <CheckedField kind="email" label="E-mail" name="email" defaultValue={member?.email} inputClassName={fieldClass} />
               <Field label="Catégorie">

@@ -9,6 +9,8 @@ export const CHURCH_FUNCTIONS = [
   "Diacre",
   "Diaconesse",
   "Responsable de département",
+  "Responsable de la jeunesse",
+  "Responsable de la trésorerie",
   "Responsable des chantres (Glad)",
   "Chantre (Glad)",
   "Musicien",

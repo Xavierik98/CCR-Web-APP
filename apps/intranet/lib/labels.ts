@@ -40,9 +40,12 @@ export const CONTENT_STATUS_LABELS: Record<ContentStatus, string> = {
   ARCHIVED: "Archivé",
 };
 
-export function fullName(m: { firstName: string; lastName: string }) {
-  return [m.firstName, m.lastName].filter(Boolean).join(" ");
+// Nom affiché : titre d'usage (s'il est connu), prénom, nom.
+export function fullName(m: { firstName: string; lastName: string; title?: string | null }) {
+  return [m.title, m.firstName, m.lastName].filter(Boolean).join(" ");
 }
+
+export const TITLES = ["Pasteur", "Apôtre", "Ancien", "Diacre", "Diaconesse", "Maman", "Papa", "Mme", "M.", "Frère", "Sœur"];
 
 export function formatDate(d: Date | null | undefined) {
   return d

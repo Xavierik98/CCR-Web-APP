@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ActualiteMedia } from "../_components/actualite-media";
-import { ACTUALITES, formatDateActualite } from "../_data/actualites";
+import { formatDateActualite, getActualites } from "../_data/actualites";
 
 export const metadata: Metadata = {
   title: "Actualités",
@@ -10,7 +10,8 @@ export const metadata: Metadata = {
 // Section 1.G du cahier des charges. A terme, les articles viendront de
 // l'intranet (module Actualités) ; en attendant, ils viennent de
 // _data/actualites.ts, de la plus récente à la plus ancienne.
-export default function ActualitesPage() {
+export default async function ActualitesPage() {
+  const ACTUALITES = await getActualites();
   return (
     <main className="mx-auto max-w-3xl px-6 py-16">
       <h1 className="text-center font-display text-4xl font-black">

@@ -9,7 +9,7 @@ import { Reveal } from "../_components/reveal";
 import { RevealText } from "../_components/reveal-text";
 import { VisionIcon } from "../_components/vision-icons";
 import { A_PROPOS_PHOTOS } from "../_data/a-propos-photos";
-import { LEADERS } from "../_data/leaders";
+import { LEADERS, RESPONSABLES_MINISTERES } from "../_data/leaders";
 
 export const metadata: Metadata = {
   title: "À propos",
@@ -174,6 +174,24 @@ export default function AProposPage() {
                       <p className="mt-2 line-clamp-4 text-xs text-ccr-ink/70 sm:mt-3 sm:line-clamp-none sm:text-sm">{leader.texte}</p>
                     ) : null}
                   </div>
+                </article>
+              </Reveal>
+            ))}
+          </div>
+          {/* Responsables de ministère (initiales tant que la photo n'est pas fournie). */}
+          <div className="mt-4 grid grid-cols-3 gap-2 sm:mt-8 sm:gap-6">
+            {RESPONSABLES_MINISTERES.map((r, i) => (
+              <Reveal key={r.nom} delay={i * 120}>
+                <article className="flex h-full flex-col items-center rounded-2xl bg-white px-2 py-4 text-center sm:px-4 sm:py-6">
+                  <span
+                    className={`flex h-12 w-12 items-center justify-center rounded-full font-display text-base font-black sm:h-16 sm:w-16 sm:text-xl ${
+                      r.couleur === "gold" ? "bg-ccr-gold/20 text-[#9a6a0c]" : r.couleur === "magenta" ? "bg-ccr-magenta/10 text-ccr-magenta" : "bg-ccr-blue/10 text-ccr-blue"
+                    }`}
+                  >
+                    {r.initiales}
+                  </span>
+                  <h3 className="mt-2 font-display text-[13px] font-bold leading-snug sm:mt-3 sm:text-lg">{r.nom}</h3>
+                  <p className="mt-0.5 text-[10px] font-semibold uppercase leading-snug tracking-[0.08em] text-ccr-magenta sm:text-xs sm:tracking-[0.15em]">{r.titre}</p>
                 </article>
               </Reveal>
             ))}

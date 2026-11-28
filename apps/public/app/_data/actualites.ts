@@ -6,7 +6,7 @@ export type Actualite = {
   titre: string;
   texte: string;
   date: string; // AAAA-MM-JJ, date de l'événement
-  image: string;
+  image: string | null;
   video?: string;
   // Affiche verticale : montrée en entier dans le cadre, sur un fond flouté
   // tiré de l'affiche elle-même, au lieu d'être rognée.
@@ -41,6 +41,23 @@ const LISTE: Actualite[] = [
 ];
 
 export const ACTUALITES = [...LISTE].sort((a, b) => b.date.localeCompare(a.date));
+
+const INTRANET_URL = process.env.NEXT_PUBLIC_INTRANET_URL ?? "https://ccr-famille-intranet.vercel.app";
+
+// Actualités du site : celles ajoutées ici, plus celles publiées depuis
+// l'intranet (dont les appels aux dons du social), triées par date. Si
+// l'intranet ne répond pas, seules les premières s'affichent.
+export async function getActualites(): Promise<Actualite[]> {
+  try {
+    const res = await fetch(`${INTRANET_URL}/api/actualites`, { next: { revalidate: 300 } });
+    if (!res.ok) return ACTUALITES;
+    const live = (await res.json()) as Actualite[];
+    const slugs = new Set(ACTUALITES.map((a) => a.slug));
+    return [...ACTUALITES, ...live.filter((a) => !slugs.has(a.slug))].sort((a, b) => b.date.localeCompare(a.date));
+  } catch {
+    return ACTUALITES;
+  }
+}
 
 export function formatDateActualite(date: string) {
   return new Date(`${date}T12:00:00Z`).toLocaleDateString("fr-FR", {

@@ -25,6 +25,7 @@ export default async function MembresPage({
       ? {
           OR: [
             { firstName: { contains: q, mode: "insensitive" } },
+            { title: { contains: q, mode: "insensitive" } },
             { lastName: { contains: q, mode: "insensitive" } },
             { phone: { contains: q } },
           ],

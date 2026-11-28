@@ -1,6 +1,7 @@
 import { prisma } from "@ccr/database";
 import { notFound } from "next/navigation";
 import { SendReportButton } from "@/components/send-report-button";
+import { WhatsAppPreview } from "@/components/whatsapp-preview";
 import { Button, Card, Input, Notice, PageHeader } from "@/components/ui";
 import { canEdit, requireAccess } from "@/lib/auth";
 import { formatDate } from "@/lib/labels";
@@ -96,7 +97,7 @@ export default async function PointagePage({
               </form>
             ) : null}
           </div>
-          <pre className="mt-4 whitespace-pre-wrap rounded-2xl bg-[#e7f8ec] p-4 font-sans text-sm leading-relaxed text-ccr-ink">{report.text}</pre>
+          <WhatsAppPreview text={report.text} className="mt-4 max-w-xl" />
           {editable ? (
             <div className="mt-4 flex flex-wrap items-center gap-3">
               {pastorPhone ? (

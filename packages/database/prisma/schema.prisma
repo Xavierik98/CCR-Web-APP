@@ -82,6 +82,9 @@ enum ContentStatus {
 }
 
 model Member {
+  // Titre d'usage (Pasteur, Ancien, Maman, Papa, Mme, Apôtre, Sœur…),
+  // séparé du prénom.
+  title              String?
   id                 String                 @id @default(cuid())
   firstName          String
   lastName           String
@@ -366,6 +369,9 @@ model StockItem {
   name      String          @unique
   unit      String
   quantity  Decimal         @default(0)
+  // En dessous de ce seuil, l'article est signalé « stock bas » et repris
+  // dans les appels aux dons.
+  threshold Decimal         @default(5)
   position  Int             @default(100)
   active    Boolean         @default(true)
   createdAt DateTime        @default(now())
@@ -423,6 +429,36 @@ model SupportRequest {
   handledAt     DateTime?
   handledBy     String?
   movements     StockMovement[]
+
+  @@index([status, createdAt])
+}
+
+enum MessageKind {
+  CONTACT
+  BESOIN
+}
+
+enum MessageStatus {
+  NEW
+  DONE
+}
+
+// Messages envoyés depuis le site public (Contact, « Mon église a un
+// besoin »), traités dans la boîte de réception de l'intranet.
+model ContactMessage {
+  id         String        @id @default(cuid())
+  kind       MessageKind
+  lastName   String
+  firstName  String
+  phone      String
+  email      String?
+  subject    String?
+  department String?
+  message    String
+  status     MessageStatus @default(NEW)
+  createdAt  DateTime      @default(now())
+  handledAt  DateTime?
+  handledBy  String?
 
   @@index([status, createdAt])
 }

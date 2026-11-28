@@ -31,10 +31,11 @@ export type Module =
   | "actualites"
   | "fiches"
   | "taches"
+  | "messages"
   | "utilisateurs";
 
 type Level = "view" | "edit";
-const ALL: Module[] = ["membres", "presences", "departements", "collecte", "social", "actualites", "fiches", "taches", "utilisateurs"];
+const ALL: Module[] = ["membres", "presences", "departements", "collecte", "social", "actualites", "fiches", "taches", "messages", "utilisateurs"];
 
 function grant(edit: Module[], view: Module[] = []): Partial<Record<Module, Level>> {
   const out: Partial<Record<Module, Level>> = {};
@@ -52,12 +53,12 @@ function grant(edit: Module[], view: Module[] = []): Partial<Record<Module, Leve
 const MATRIX: Record<Role, Partial<Record<Module, Level>>> = {
   SUPER_ADMIN: grant(ALL),
   PASTOR: grant(ALL.filter((m) => m !== "utilisateurs")),
-  ADMIN: grant(["membres", "presences", "departements", "actualites", "fiches", "taches"]),
-  SECRETARY: grant(["membres", "presences", "departements", "actualites", "fiches", "taches"]),
+  ADMIN: grant(["membres", "presences", "departements", "actualites", "fiches", "taches", "messages"]),
+  SECRETARY: grant(["membres", "presences", "departements", "actualites", "fiches", "taches", "messages"]),
   TREASURER: grant(["collecte"], ["membres"]),
   COMMUNICATION: grant(["presences"]),
   ATTENDANCE_MANAGER: grant(["presences"]),
-  SOCIAL_SUPPORT: grant(["social"], ["membres"]),
+  SOCIAL_SUPPORT: grant(["social", "actualites"], ["membres"]),
   DEPARTMENT_LEADER: grant([], ["membres", "presences", "departements"]),
   GROUP_LEADER: grant([], ["membres", "presences", "departements"]),
   READ_ONLY: grant([], ["membres", "presences", "departements", "actualites"]),
@@ -105,11 +106,11 @@ export const ROLE_DESCRIPTIONS: Record<Role, string> = {
   PASTOR: "Voit et modifie tout, sauf les accès.",
   TREASURER: "Collecte et engagements ; consulte les membres.",
   COMMUNICATION: "Valide les présences et absences, rien d'autre.",
-  ADMIN: "Membres, présences, départements, actualités, fiches, tâches.",
-  SECRETARY: "Membres, présences, départements, actualités, fiches, tâches.",
+  ADMIN: "Membres, présences, départements, actualités, fiches, tâches, messages du site.",
+  SECRETARY: "Membres, présences, départements, actualités, fiches, tâches, messages du site.",
   DEPARTMENT_LEADER: "Consultation des membres, présences et départements.",
   GROUP_LEADER: "Consultation des membres, présences et départements.",
-  SOCIAL_SUPPORT: "Dossiers de titre de séjour ; consulte les membres.",
+  SOCIAL_SUPPORT: "Stock de dons, demandes de soutien, appels aux dons et actualités, dossiers de séjour ; consulte les membres.",
   ATTENDANCE_MANAGER: "Valide les présences et absences, rien d'autre.",
   READ_ONLY: "Consultation seule.",
 };

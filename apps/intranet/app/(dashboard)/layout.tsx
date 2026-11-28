@@ -23,6 +23,7 @@ const NAV: (Omit<NavItem, "count"> & { module?: Module })[] = [
   { href: "/collecte", label: "Collecte", icon: "coins", module: "collecte" },
   { href: "/cms", label: "Actualités", icon: "megaphone", module: "actualites" },
   { href: "/fiches", label: "Fiches à valider", icon: "inbox", module: "fiches" },
+  { href: "/messages", label: "Messages du site", icon: "megaphone", module: "messages" },
   { href: "/taches", label: "Tâches des responsables", icon: "list", module: "taches" },
   { href: "/accompagnement-social/demandes", label: "Accompagnement social", icon: "heart", module: "social" },
   { href: "/utilisateurs", label: "Accès et rôles", icon: "key", module: "utilisateurs" },
@@ -38,6 +39,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   ]);
   const myReminders = user.role === "TREASURER" ? (await pledgesToRemind()).length : 0;
   const supportRequests = canView(user.role, "social") ? await prisma.supportRequest.count({ where: { status: "NEW" } }) : 0;
+  const siteMessages = canView(user.role, "messages") ? await prisma.contactMessage.count({ where: { status: "NEW" } }) : 0;
 
   const items: NavItem[] = NAV.filter((n) => !n.module || canView(user.role, n.module)).map(
     ({ module, ...n }) => ({
@@ -47,6 +49,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
           ? pendingFiches
           : module === "social"
             ? supportRequests
+            : module === "messages"
+              ? siteMessages
             : n.href === "/mes-taches"
               ? myTasks + myReminders
               : undefined,

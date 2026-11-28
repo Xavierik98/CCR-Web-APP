@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { CheckedField } from "@ccr/ui/src/checked-field";
 import Image from "next/image";
 import Link from "next/link";
+import { ContactForm } from "./_components/contact-form";
 import { Icon } from "../_components/icon";
 import { Reveal } from "../_components/reveal";
 import { RevealText } from "../_components/reveal-text";
@@ -26,9 +26,6 @@ const SUJETS = [
   "Rejoindre un département",
   "Autre",
 ];
-
-const fieldClass =
-  "mt-1 w-full rounded-xl border border-ccr-ink/15 bg-ccr-cream/60 px-4 py-3 text-sm outline-none transition focus:border-ccr-gold focus:bg-white focus:ring-2 focus:ring-ccr-gold/30";
 
 export default function ContactPage() {
   return (
@@ -148,40 +145,8 @@ export default function ContactPage() {
               Une question, une demande de prière ou l&rsquo;envie de rejoindre
               un département ? Laissez-nous un message.
             </p>
-            {/* Envoi réel du formulaire à câbler une fois le canal de réception
-                (e-mail ou intranet) choisi : pas de traitement côté client pour l'instant. */}
-            <form className="mt-6 grid gap-4 sm:grid-cols-2">
-              <CheckedField kind="name" label="Nom(s)" name="nom" autoComplete="family-name" hint="Exemple : KIFILA" inputClassName={fieldClass} />
-              <CheckedField kind="name" label="Prénom(s)" name="prenom" autoComplete="given-name" hint="Exemple : Arsène" inputClassName={fieldClass} />
-              <CheckedField kind="phone" label="Téléphone" name="telephone" autoComplete="tel" inputClassName={fieldClass} />
-              <CheckedField kind="email" label="Adresse e-mail" name="email" autoComplete="email" inputClassName={fieldClass} />
-              <label className="block sm:col-span-2">
-                <span className="text-sm font-semibold">Sujet</span>
-                <select name="sujet" className={fieldClass}>
-                  {SUJETS.map((s) => (
-                    <option key={s}>{s}</option>
-                  ))}
-                </select>
-              </label>
-              <label className="block sm:col-span-2">
-                <span className="text-sm font-semibold">Votre message</span>
-                <textarea
-                  name="message"
-                  rows={5}
-                  required
-                  placeholder="Dites-nous comment nous pouvons vous aider ou vous accueillir"
-                  className={fieldClass}
-                />
-              </label>
-              <div className="sm:col-span-2">
-                <button
-                  type="submit"
-                  className="rounded-full bg-ccr-gold px-8 py-3 text-sm font-semibold text-ccr-ink transition-colors hover:bg-ccr-gold-light"
-                >
-                  Envoyer le message
-                </button>
-              </div>
-            </form>
+            {/* Le message arrive dans l'intranet, rubrique « Messages du site ». */}
+            <ContactForm sujets={SUJETS} />
           </div>
         </Reveal>
       </section>

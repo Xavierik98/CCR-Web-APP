@@ -7,7 +7,11 @@ import { canEdit, canView, requireUser } from "@/lib/auth";
 import { CONTENT_STATUS_LABELS, formatDate, fullName } from "@/lib/labels";
 import { formatOccurrence, nextCulte, upcoming } from "@/lib/programme";
 import { formatDue } from "@/lib/tasks";
+import { eventReport } from "@/lib/pastor-report";
+import { WhatsAppPreview } from "@/components/whatsapp-preview";
 import { pledgesToRemind } from "@/lib/pledges";
+import { lowStockItems } from "@/lib/appeal";
+import { qty } from "@/lib/stock";
 
 const TONES = {
   gold: "bg-ccr-gold/15 text-[#b07a12]",
@@ -104,8 +108,15 @@ export default async function TableauDeBordPage({
       ? prisma.content.findMany({ orderBy: { updatedAt: "desc" }, take: 3, select: { id: true, title: true, status: true, updatedAt: true } })
       : [],
   ]);
+  // Pasteur (et super administrateur) : le rapport du dernier culte.
+  const dernierCulte =
+    user.role === "PASTOR" || user.role === "SUPER_ADMIN"
+      ? await prisma.serviceEvent.findFirst({ where: { type: "SERVICE", startAt: { lte: new Date() } }, orderBy: { startAt: "desc" } })
+      : null;
+  const rapportPasteur = dernierCulte ? await eventReport(dernierCulte.id) : null;
   const relancesCollecte = user.role === "TREASURER" ? (await pledgesToRemind()).length : 0;
   const demandesSoutien = canEdit(user.role, "social") ? await prisma.supportRequest.count({ where: { status: "NEW" } }) : 0;
+  const stockBas = canEdit(user.role, "social") ? await lowStockItems() : [];
   const rappels = await prisma.task.findMany({
     where: { assigneeId: user.id, doneAt: null },
     orderBy: { dueAt: "asc" },
@@ -181,6 +192,35 @@ export default async function TableauDeBordPage({
 
       {erreur === "role" ? <Notice tone="magenta">Votre rôle ne donne pas accès à cette rubrique.</Notice> : null}
 
+      {rapportPasteur ? (
+        <section className="mb-6 grid gap-5 rounded-2xl border border-ccr-ink/[0.06] bg-white p-5 md:grid-cols-[1fr_1.2fr] md:p-6">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ccr-gold">Rapport du dernier culte</p>
+            <p className="mt-1 font-display text-2xl font-bold">{formatDate(rapportPasteur.event.startAt)}</p>
+            <div className="mt-4 grid grid-cols-4 gap-2 text-center">
+              {[
+                ["Total", rapportPasteur.total],
+                ["Hommes", rapportPasteur.counts.MAN],
+                ["Femmes", rapportPasteur.counts.WOMAN],
+                ["Enfants", rapportPasteur.counts.CHILD],
+              ].map(([label, v]) => (
+                <div key={label} className="rounded-xl bg-ccr-cream p-2">
+                  <p className="font-display text-2xl font-black">{v}</p>
+                  <p className="text-[11px] text-ccr-ink/60">{label}</p>
+                </div>
+              ))}
+            </div>
+            <p className="mt-3 text-xs text-ccr-ink/50">
+              {rapportPasteur.event.attendanceReportSentAt ? "Envoyé sur WhatsApp." : "Pas encore envoyé sur WhatsApp."}{" "}
+              <Link href={`/presences/${rapportPasteur.event.id}`} className="font-semibold text-ccr-magenta hover:underline">
+                Voir le pointage &rarr;
+              </Link>
+            </p>
+          </div>
+          <WhatsAppPreview text={rapportPasteur.text} />
+        </section>
+      ) : null}
+
       {demandesSoutien > 0 ? (
         <Link
           href="/accompagnement-social/demandes"
@@ -198,6 +238,28 @@ export default async function TableauDeBordPage({
             </span>
           </span>
           <Icon name="arrow" className="h-5 w-5 text-ccr-magenta" />
+        </Link>
+      ) : null}
+
+      {stockBas.length > 0 ? (
+        <Link
+          href="/accompagnement-social/stock"
+          className="mb-4 flex items-center justify-between gap-3 rounded-2xl border border-ccr-gold/40 bg-ccr-gold/[0.08] px-5 py-4 transition-colors hover:bg-ccr-gold/15"
+        >
+          <span className="flex items-center gap-3">
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-ccr-gold/20 text-ccr-ink">
+              <Icon name="heart" className="h-5 w-5" />
+            </span>
+            <span>
+              <span className="block font-semibold">
+                Stock bas : {stockBas.length} article{stockBas.length > 1 ? "s" : ""} à réapprovisionner
+              </span>
+              <span className="block text-xs text-ccr-ink/60">
+                {stockBas.map((i) => `${i.name} : ${qty(i.quantity)} ${i.unit}`).join(", ")}
+              </span>
+            </span>
+          </span>
+          <Icon name="arrow" className="h-5 w-5 text-ccr-ink/60" />
         </Link>
       ) : null}
 

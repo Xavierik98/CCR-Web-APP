@@ -72,8 +72,18 @@ export function SupportForm({ endpoint }: { endpoint: string }) {
           <input name="neighborhood" className={field} />
         </label>
         <label className="block">
-          <span className="text-sm font-semibold">Personnes au foyer</span>
-          <input name="householdSize" type="number" min={1} max={50} className={field} />
+          <span className="text-sm font-semibold">
+            Personnes au foyer <span className="font-normal text-ccr-ink/50">(facultatif)</span>
+          </span>
+          <select name="householdSize" className={field} defaultValue="">
+            <option value="">Je préfère ne pas le dire</option>
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
+              <option key={n} value={n}>
+                {n} personne{n > 1 ? "s" : ""}
+              </option>
+            ))}
+            <option value="10">10 personnes ou plus</option>
+          </select>
         </label>
       </div>
 

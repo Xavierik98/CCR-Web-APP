@@ -2,28 +2,13 @@ import { prisma } from "@ccr/database";
 import { checkField } from "@ccr/ui/src/validation";
 import { findDuplicates, normalizePhone } from "@/lib/members";
 import { notifySupportRequest } from "@/lib/notify";
+import { cors, preflight } from "@/lib/public-api";
 
 export const dynamic = "force-dynamic";
 
-// Formulaire « Demande de soutien » du site public. Seul le site public peut
-// l'appeler depuis un navigateur (CORS), et un champ piège écarte les robots.
-const ALLOWED = (process.env.PUBLIC_SITE_ORIGINS ?? "https://ccr-famille-public.vercel.app,http://localhost:3200")
-  .split(",")
-  .map((s) => s.trim());
-
-function cors(request: Request) {
-  const origin = request.headers.get("origin") ?? "";
-  return {
-    "Access-Control-Allow-Origin": ALLOWED.includes(origin) ? origin : ALLOWED[0],
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-    Vary: "Origin",
-  };
-}
-
-export async function OPTIONS(request: Request) {
-  return new Response(null, { status: 204, headers: cors(request) });
-}
+// Formulaire « Demande de soutien » du site public (CORS limité au site,
+// champ piège contre les robots).
+export const OPTIONS = preflight;
 
 const str = (v: unknown, max = 200) => {
   const s = typeof v === "string" ? v.trim().slice(0, max) : "";

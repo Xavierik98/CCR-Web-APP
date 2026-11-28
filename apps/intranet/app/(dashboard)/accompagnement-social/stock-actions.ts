@@ -5,7 +5,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAccess } from "@/lib/auth";
 import { casablancaToUtc } from "@/lib/programme";
-import { StockError, applyMovements, readQuantities } from "@/lib/stock";
+import { publishDonationAppeal, remindStockLevel } from "@/lib/appeal";
+import { StockError, applyMovements, qty, readQuantities } from "@/lib/stock";
 
 function text(formData: FormData, key: string, max = 200) {
   const v = String(formData.get(key) ?? "").trim().slice(0, max);
@@ -89,16 +90,48 @@ export async function rejectRequest(formData: FormData) {
   redirect("/accompagnement-social/demandes?refuse=1");
 }
 
-// Inventaire : corrige la quantité réelle d'un article (mouvement tracé).
+// Inventaire : corrige la quantité réelle d'un article (mouvement tracé) et,
+// au besoin, son seuil d'alerte.
 export async function adjustStock(formData: FormData) {
   const user = await requireAccess("social", "edit");
   const itemId = String(formData.get("itemId"));
-  const n = Number(String(formData.get("quantity") ?? "").replace(",", "."));
-  if (!Number.isFinite(n) || n < 0) redirect("/accompagnement-social/stock?erreur=quantite");
+  const num = (key: string) => {
+    const raw = String(formData.get(key) ?? "").trim().replace(",", ".");
+    if (raw === "") return null;
+    const n = Number(raw);
+    return Number.isFinite(n) && n >= 0 ? n : NaN;
+  };
+  const n = num("quantity");
+  const seuil = num("threshold");
+  if (Number.isNaN(n) || Number.isNaN(seuil) || (n === null && seuil === null)) redirect("/accompagnement-social/stock?erreur=quantite");
   const item = await prisma.stockItem.findUniqueOrThrow({ where: { id: itemId } });
-  if (Number(item.quantity) !== n) {
-    await applyMovements([{ itemId, quantity: n }], { type: "ADJUST", byEmail: user.email, note: "Inventaire" });
+  const params = new URLSearchParams({ article: item.name });
+  if (n !== null && Number(item.quantity) !== n) {
+    await applyMovements([{ itemId, quantity: n }], { type: "ADJUST", byEmail: user.email, note: text(formData, "note", 300) ?? "Inventaire" });
+    params.set("de", qty(item.quantity));
+    params.set("a", qty(n));
+  }
+  if (seuil !== null && Number(item.threshold) !== seuil) {
+    await prisma.stockItem.update({ where: { id: itemId }, data: { threshold: seuil } });
+    params.set("seuil", qty(seuil));
   }
   refresh();
-  redirect("/accompagnement-social/stock?inventaire=1");
+  redirect(`/accompagnement-social/stock?inventaire=1&${params.toString()}`);
+}
+
+// Appel aux dons en nature publié tout de suite dans les actualités du site.
+export async function publishAppealNow() {
+  const user = await requireAccess("social", "edit");
+  await publishDonationAppeal(user.id);
+  revalidatePath("/cms");
+  refresh();
+  redirect("/accompagnement-social/stock?appel=1");
+}
+
+// Rappel du niveau du stock (agenda, et WhatsApp ou e-mail si configurés).
+export async function remindStockNow() {
+  await requireAccess("social", "edit");
+  const r = await remindStockLevel();
+  refresh();
+  redirect(`/accompagnement-social/stock?rappel=${r.low}`);
 }
