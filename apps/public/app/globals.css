@@ -426,3 +426,9 @@ body {
     font-size: 15px;
   }
 }
+
+/* Ancres (#soutenir...) : défilement doux, la section n'est pas cachée par
+   l'en-tête collant. */
+html {
+  scroll-behavior: smooth;
+}

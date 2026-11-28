@@ -122,18 +122,19 @@ export default function HomePage() {
           <div className="-mx-2 mt-8 grid grid-cols-3 gap-2 md:mx-0 md:mt-14 md:gap-10">
             {PILIERS.map((pilier, index) => (
               <Reveal key={pilier.nom} delay={index * 200}>
-                <article className="group flex h-full flex-col items-center rounded-2xl border border-white/10 bg-white/[0.05] px-2 py-4 md:rounded-none md:border-0 md:bg-transparent md:p-0">
+                <article className="group flex h-full flex-col items-center rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.07] to-white/[0.02] px-2 pb-3 pt-4 md:rounded-none md:border-0 md:bg-none md:p-0">
                   <VisionIcon
                     name={pilier.nom as "Rassembler" | "Former" | "Envoyer"}
-                    className={`h-12 w-12 transition-transform duration-500 group-hover:-translate-y-1 group-hover:scale-105 md:h-24 md:w-24 ${VISION_COLORS[pilier.accent]}`}
+                    className={`h-10 w-10 transition-transform duration-500 group-hover:-translate-y-1 group-hover:scale-105 md:h-24 md:w-24 ${VISION_COLORS[pilier.accent]}`}
                   />
-                  <h3 className="mt-3 text-[11px] font-bold uppercase tracking-[0.08em] md:mt-6 md:text-xl md:tracking-[0.15em]">
+                  <h3 className="mt-2.5 text-[10px] font-bold uppercase tracking-[0.1em] md:mt-6 md:text-xl md:tracking-[0.15em]">
                     {pilier.nom}
                   </h3>
-                  <p className="mt-2 max-w-xs text-[10.5px] leading-snug text-ccr-cream/75 md:mt-3 md:text-sm md:leading-relaxed">
+                  <p className="mt-1.5 text-[10px] leading-snug text-ccr-cream/70 md:hidden">{pilier.court}</p>
+                  <p className="mt-3 hidden max-w-xs text-sm leading-relaxed text-ccr-cream/75 md:block">
                     {pilier.texte}
                   </p>
-                  <p className="mt-2 text-[9px] font-semibold uppercase tracking-wide text-ccr-cream/40 md:mt-3 md:text-xs">
+                  <p className="mt-auto pt-2 text-[8.5px] font-semibold uppercase tracking-wide text-ccr-cream/40 md:mt-3 md:pt-0 md:text-xs">
                     {pilier.verset}
                   </p>
                 </article>
@@ -301,7 +302,7 @@ export default function HomePage() {
       {/* Dons et collectes par virement : le RIB n'est affiché que s'il a été
           fourni (voir _data/dons.ts), sinon on invite à le demander. */}
       <Reveal>
-        <section id="soutenir" className="mx-auto max-w-6xl px-4 pb-10 sm:px-6 md:pb-16">
+        <section id="soutenir" className="mx-auto max-w-6xl scroll-mt-32 px-4 pb-10 sm:px-6 md:pb-16">
           <div className="relative overflow-hidden rounded-3xl border border-ccr-gold/30 bg-gradient-to-br from-ccr-gold/15 via-ccr-cream to-ccr-magenta/10 px-5 py-6 sm:px-8 sm:py-10 md:px-12">
             <div className="grid gap-5 sm:gap-8 md:grid-cols-[1.4fr_1fr] md:items-center">
               <div>

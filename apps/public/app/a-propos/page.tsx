@@ -100,30 +100,10 @@ export default function AProposPage() {
       </section>
 
       {/* Notre histoire : texte à gauche, photo 3D de l'apôtre et de son épouse à droite */}
-      <section className="mx-auto grid max-w-6xl items-center gap-12 px-6 py-16 md:grid-cols-2 md:gap-16">
-        <div>
-          <RevealText as="h2" text="Notre histoire" className="font-display text-3xl font-bold" />
-          <div className="mt-6 space-y-4 text-ccr-ink/80">
-            {HISTOIRE.map((paragraphe, i) => (
-              <Reveal key={i} delay={i * 150}>
-                <p>{paragraphe}</p>
-              </Reveal>
-            ))}
-          </div>
-
-          <ol className="mt-10 grid gap-6 sm:grid-cols-3">
-            {FRISE.map((etape, i) => (
-              <Reveal key={etape.periode} delay={i * 150}>
-                <li className="border-t-2 border-ccr-gold pt-3">
-                  <p className="font-display text-sm font-bold">{etape.periode}</p>
-                  <p className="mt-1 text-sm text-ccr-ink/70">{etape.texte}</p>
-                </li>
-              </Reveal>
-            ))}
-          </ol>
-        </div>
-
-        <Reveal delay={200}>
+      {/* Photo de l'apôtre à côté de l'histoire : à droite du texte sur
+          ordinateur, et sur téléphone le texte l'entoure. */}
+      <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6 md:grid md:grid-cols-2 md:items-center md:gap-16 md:py-16">
+        <Reveal delay={200} className="float-right mb-3 ml-4 w-[44%] md:order-2 md:float-none md:m-0 md:w-auto">
           <figure className="relative mx-auto w-full max-w-md">
             <div
               aria-hidden="true"
@@ -145,11 +125,33 @@ export default function AProposPage() {
                 }
               />
             </div>
-            <figcaption className="relative mt-5 text-center text-sm text-ccr-ink/60">
+            <figcaption className="relative mt-2 text-center text-[10px] leading-snug text-ccr-ink/60 md:mt-5 md:text-sm">
               {avecCouple ? "L’apôtre Gel EBA GATSE et son épouse" : "L’apôtre Gel EBA GATSE, père de la maison"}
             </figcaption>
           </figure>
         </Reveal>
+        <div className="md:order-1">
+          <RevealText as="h2" text="Notre histoire" className="font-display text-3xl font-bold" />
+          <div className="mt-4 space-y-3 text-sm leading-relaxed text-ccr-ink/80 md:mt-6 md:space-y-4 md:text-base">
+            {HISTOIRE.map((paragraphe, i) => (
+              <Reveal key={i} delay={i * 150}>
+                <p>{paragraphe}</p>
+              </Reveal>
+            ))}
+          </div>
+
+          <ol className="clear-both mt-8 grid grid-cols-3 gap-3 sm:gap-6 md:mt-10">
+            {FRISE.map((etape, i) => (
+              <Reveal key={etape.periode} delay={i * 150}>
+                <li className="border-t-2 border-ccr-gold pt-3">
+                  <p className="font-display text-xs font-bold sm:text-sm">{etape.periode}</p>
+                  <p className="mt-1 text-[11px] leading-snug text-ccr-ink/70 sm:text-sm">{etape.texte}</p>
+                </li>
+              </Reveal>
+            ))}
+          </ol>
+        </div>
+
       </section>
 
       {/* Nos responsables : pasteur principal et assistant pasteur */}

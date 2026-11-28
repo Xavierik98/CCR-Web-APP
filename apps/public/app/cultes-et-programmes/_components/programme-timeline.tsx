@@ -85,18 +85,18 @@ function TimelineRow({
   const [debut, fin] = item.horaire.split(" - ");
 
   const hidden = (fromRight: boolean) =>
-    `translate-y-6 opacity-0 ${fromRight ? "md:translate-x-12" : "md:-translate-x-12"} md:translate-y-0`;
+    `opacity-0 ${fromRight ? "translate-x-6 md:translate-x-12" : "-translate-x-6 md:-translate-x-12"}`;
   const slide = seen ? "translate-x-0 opacity-100" : hidden(reversed);
   const slideOther = seen ? "translate-x-0 opacity-100" : hidden(!reversed);
 
   return (
     <li
       ref={ref}
-      className="relative grid grid-cols-[1fr_1.1fr] items-center gap-3 pl-8 md:grid-cols-2 md:gap-24 md:pl-0"
+      className="relative grid grid-cols-2 items-center gap-7 md:gap-24"
     >
       <span
         aria-hidden="true"
-        className={`absolute left-4 top-6 flex h-5 w-5 -translate-x-1/2 items-center justify-center rounded-full transition-all duration-700 md:left-1/2 md:top-1/2 md:-translate-y-1/2 ${
+        className={`absolute left-1/2 top-1/2 flex h-4 w-4 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full transition-all duration-700 md:h-5 md:w-5 ${
           seen ? "bg-ccr-gold-light/20 shadow-[0_0_24px_6px_rgba(242,201,77,0.45)]" : "bg-ccr-cream/5"
         }`}
       >
@@ -107,7 +107,7 @@ function TimelineRow({
         />
       </span>
 
-      <div className={`transition-all duration-700 ease-out ${slide} ${reversed ? "md:order-2" : ""}`}>
+      <div className={`transition-all duration-700 ease-out ${slide} ${reversed ? "order-2" : ""}`}>
         <p className={`text-[10px] font-semibold uppercase tracking-[0.12em] md:text-xs md:tracking-[0.2em] ${accent.text}`}>
           {item.horaire}
         </p>
@@ -146,7 +146,7 @@ function TimelineRow({
         onClick={onSelect}
         aria-label={`${item.titre}, ${item.jour}`}
         className={`group relative text-left transition-all delay-150 duration-700 ease-out ${slideOther} ${
-          reversed ? "md:order-1" : ""
+          reversed ? "order-1" : ""
         }`}
       >
         <div
@@ -238,11 +238,11 @@ export function ProgrammeTimeline({ items }: { items: readonly ProgrammeItem[] }
       <div ref={containerRef} className="relative">
         <div
           aria-hidden="true"
-          className="absolute left-4 top-0 h-full w-px -translate-x-1/2 bg-ccr-cream/10 md:left-1/2"
+          className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-ccr-cream/10"
         />
         <div
           aria-hidden="true"
-          className="absolute left-4 top-0 w-px -translate-x-1/2 bg-gradient-to-b from-ccr-gold-light via-ccr-gold to-ccr-gold-light shadow-[0_0_14px_2px_rgba(242,201,77,0.5)] md:left-1/2"
+          className="absolute left-1/2 top-0 w-px -translate-x-1/2 bg-gradient-to-b from-ccr-gold-light via-ccr-gold to-ccr-gold-light shadow-[0_0_14px_2px_rgba(242,201,77,0.5)]"
           style={{ height: `${progress * 100}%` }}
         />
 

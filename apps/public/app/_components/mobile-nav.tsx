@@ -42,7 +42,7 @@ export function MobileNav({
   }, [open]);
 
   const close = () => setOpen(false);
-  const all = [{ href: "/", label: "Accueil" }, ...links];
+  const all = [{ href: "/", label: "Accueil" }, ...links, { href: "/#soutenir", label: "Faire un don" }];
 
   return (
     <div className="md:hidden">
@@ -86,7 +86,7 @@ export function MobileNav({
       <nav
         id="menu-mobile"
         aria-label="Menu principal"
-        className={`fixed inset-x-2 top-2 z-[85] origin-top overflow-hidden rounded-[30px] border border-white/70 bg-[#fbfaf7]/80 px-5 pb-6 pt-20 shadow-[0_30px_80px_-20px_rgba(32,28,22,0.45),inset_0_1px_0_rgba(255,255,255,0.9)] backdrop-blur-2xl backdrop-saturate-150 transition-all duration-500 ease-[cubic-bezier(.2,.8,.2,1)] ${
+        className={`fixed inset-x-2 top-2 z-[85] max-h-[calc(100dvh-1rem)] origin-top overflow-y-auto rounded-[28px] border border-white/70 bg-[#fbfaf7]/80 px-5 pb-5 pt-[4.5rem] shadow-[0_30px_80px_-20px_rgba(32,28,22,0.45),inset_0_1px_0_rgba(255,255,255,0.9)] backdrop-blur-2xl backdrop-saturate-150 transition-all duration-500 ease-[cubic-bezier(.2,.8,.2,1)] ${
           open ? "translate-y-0 scale-100 opacity-100" : "pointer-events-none -translate-y-6 scale-[0.97] opacity-0"
         }`}
       >
@@ -110,7 +110,7 @@ export function MobileNav({
 
         <ul className="divide-y divide-ccr-ink/[0.07]">
           {all.map((link, i) => {
-            const active = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
+            const active = link.href === "/" ? pathname === "/" : !link.href.includes("#") && pathname.startsWith(link.href);
             return (
               <li
                 key={link.href}
@@ -123,12 +123,12 @@ export function MobileNav({
                   href={link.href}
                   onClick={close}
                   aria-current={active ? "page" : undefined}
-                  className="flex items-center justify-between py-3.5 active:opacity-60"
+                  className="flex items-center justify-between py-3 active:opacity-60"
                 >
-                  <span className={`font-display text-[26px] font-bold leading-tight ${active ? "text-ccr-magenta" : "text-ccr-ink"}`}>
+                  <span className={`text-[17px] font-semibold ${active ? "text-ccr-magenta" : "text-ccr-ink"}`}>
                     {link.label}
                   </span>
-                  <svg viewBox="0 0 24 24" className="h-5 w-5 text-ccr-ink/30" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" className="h-4 w-4 text-ccr-ink/30" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <path d="M9 6l6 6-6 6" />
                   </svg>
                 </Link>
@@ -138,13 +138,13 @@ export function MobileNav({
         </ul>
 
         <div
-          className={`mt-6 grid gap-3 transition-all duration-500 ease-[cubic-bezier(.2,.8,.2,1)] ${open ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"}`}
+          className={`mt-5 grid gap-2.5 transition-all duration-500 ease-[cubic-bezier(.2,.8,.2,1)] ${open ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"}`}
           style={{ transitionDelay: open ? `${80 + all.length * 45}ms` : "0ms" }}
         >
           <Link
             href="/cultes-et-programmes"
             onClick={close}
-            className="rounded-2xl bg-ccr-gold px-5 py-3.5 text-center text-[15px] font-semibold text-ccr-ink shadow-[0_8px_20px_-10px_rgba(227,166,56,0.9)] active:scale-[0.98]"
+            className="rounded-2xl bg-ccr-gold px-5 py-3 text-center text-sm font-semibold text-ccr-ink shadow-[0_8px_20px_-10px_rgba(227,166,56,0.9)] active:scale-[0.98]"
           >
             Participer à un culte
           </Link>
