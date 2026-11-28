@@ -24,7 +24,7 @@ const NAV: (Omit<NavItem, "count"> & { module?: Module })[] = [
   { href: "/cms", label: "Actualités", icon: "megaphone", module: "actualites" },
   { href: "/fiches", label: "Fiches à valider", icon: "inbox", module: "fiches" },
   { href: "/taches", label: "Tâches des responsables", icon: "list", module: "taches" },
-  { href: "/accompagnement-social", label: "Accompagnement social", icon: "heart", module: "social" },
+  { href: "/accompagnement-social/demandes", label: "Accompagnement social", icon: "heart", module: "social" },
   { href: "/utilisateurs", label: "Accès et rôles", icon: "key", module: "utilisateurs" },
 ];
 
@@ -37,11 +37,19 @@ export default async function DashboardLayout({ children }: { children: React.Re
     prisma.task.count({ where: { assigneeId: user.id, doneAt: null } }),
   ]);
   const myReminders = user.role === "TREASURER" ? (await pledgesToRemind()).length : 0;
+  const supportRequests = canView(user.role, "social") ? await prisma.supportRequest.count({ where: { status: "NEW" } }) : 0;
 
   const items: NavItem[] = NAV.filter((n) => !n.module || canView(user.role, n.module)).map(
     ({ module, ...n }) => ({
       ...n,
-      count: module === "fiches" ? pendingFiches : n.href === "/mes-taches" ? myTasks + myReminders : undefined,
+      count:
+        module === "fiches"
+          ? pendingFiches
+          : module === "social"
+            ? supportRequests
+            : n.href === "/mes-taches"
+              ? myTasks + myReminders
+              : undefined,
     }),
   );
   const initials = user.email.slice(0, 2).toUpperCase();

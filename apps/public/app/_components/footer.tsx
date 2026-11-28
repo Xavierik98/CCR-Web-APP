@@ -20,6 +20,7 @@ const NAV = [
   { href: "/actualites", label: "Actualités" },
   { href: "/galerie", label: "Galerie" },
   { href: "/#soutenir", label: "Faire un don" },
+  { href: "/demande-de-soutien", label: "Demander un soutien" },
   { href: "/contact", label: "Contact" },
 ];
 

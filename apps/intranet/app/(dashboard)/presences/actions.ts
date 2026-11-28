@@ -4,7 +4,9 @@ import { prisma, type EventType } from "@ccr/database";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAccess } from "@/lib/auth";
+import { eventReport } from "@/lib/pastor-report";
 import { casablancaToUtc, isSunday } from "@/lib/programme";
+import { sendWhatsApp } from "@/lib/whatsapp";
 
 // Date (AAAA-MM-JJ) d'un culte à Casablanca.
 function dayOf(d: Date) {
@@ -71,4 +73,34 @@ export async function deleteEvent(formData: FormData) {
   await prisma.serviceEvent.delete({ where: { id: String(formData.get("id")) } });
   revalidatePath("/presences");
   redirect("/presences");
+}
+
+// Nombre de personnes qui ont suivi le culte en ligne.
+export async function setOnlineCount(formData: FormData) {
+  await requireAccess("presences", "edit");
+  const id = String(formData.get("eventId"));
+  const raw = String(formData.get("onlineCount") ?? "").trim();
+  const n = raw === "" ? null : Math.max(0, Math.floor(Number(raw)));
+  await prisma.serviceEvent.update({ where: { id }, data: { onlineCount: Number.isFinite(n as number) ? n : null } });
+  revalidatePath(`/presences/${id}`);
+  redirect(`/presences/${id}?enligne=1`);
+}
+
+// Envoi immédiat du rapport au pasteur par le service WhatsApp configuré.
+export async function sendPastorReportNow(formData: FormData) {
+  await requireAccess("presences", "edit");
+  const id = String(formData.get("eventId"));
+  const report = await eventReport(id);
+  if (!report) redirect("/presences");
+  const result = await sendWhatsApp("pasteur", report.text);
+  if (result.ok) await prisma.serviceEvent.update({ where: { id }, data: { attendanceReportSentAt: new Date() } });
+  revalidatePath(`/presences/${id}`);
+  redirect(`/presences/${id}?rapport=${result.ok ? "envoye" : "echec"}`);
+}
+
+// Rapport envoyé à la main (bouton qui ouvre WhatsApp) : on le note.
+export async function markReportSent(eventId: string) {
+  await requireAccess("presences", "edit");
+  await prisma.serviceEvent.update({ where: { id: eventId }, data: { attendanceReportSentAt: new Date() } });
+  revalidatePath(`/presences/${eventId}`);
 }

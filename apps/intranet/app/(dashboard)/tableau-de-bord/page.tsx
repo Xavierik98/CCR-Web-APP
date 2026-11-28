@@ -105,6 +105,7 @@ export default async function TableauDeBordPage({
       : [],
   ]);
   const relancesCollecte = user.role === "TREASURER" ? (await pledgesToRemind()).length : 0;
+  const demandesSoutien = canEdit(user.role, "social") ? await prisma.supportRequest.count({ where: { status: "NEW" } }) : 0;
   const rappels = await prisma.task.findMany({
     where: { assigneeId: user.id, doneAt: null },
     orderBy: { dueAt: "asc" },
@@ -179,6 +180,26 @@ export default async function TableauDeBordPage({
       </div>
 
       {erreur === "role" ? <Notice tone="magenta">Votre rôle ne donne pas accès à cette rubrique.</Notice> : null}
+
+      {demandesSoutien > 0 ? (
+        <Link
+          href="/accompagnement-social/demandes"
+          className="mb-4 flex items-center justify-between gap-3 rounded-2xl border border-ccr-magenta/30 bg-ccr-magenta/[0.06] px-5 py-4 transition-colors hover:bg-ccr-magenta/10"
+        >
+          <span className="flex items-center gap-3">
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-ccr-magenta/15 text-ccr-magenta">
+              <Icon name="heart" className="h-5 w-5" />
+            </span>
+            <span>
+              <span className="block font-semibold">
+                {demandesSoutien} demande{demandesSoutien > 1 ? "s" : ""} de soutien à traiter
+              </span>
+              <span className="block text-xs text-ccr-ink/60">Envoyée(s) depuis le site de l&rsquo;église</span>
+            </span>
+          </span>
+          <Icon name="arrow" className="h-5 w-5 text-ccr-magenta" />
+        </Link>
+      ) : null}
 
       {relancesCollecte > 0 ? (
         <Link

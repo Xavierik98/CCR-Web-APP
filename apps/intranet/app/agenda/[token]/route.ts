@@ -39,6 +39,21 @@ export async function GET(_req: Request, { params }: { params: Promise<{ token: 
       });
     }
   }
+  if (user.role === "SOCIAL_SUPPORT") {
+    const now = casablancaNow();
+    let at = casablancaToUtc(now.toISOString().slice(0, 10), "18:00");
+    if (at.getTime() < Date.now()) at = new Date(at.getTime() + 86400000);
+    const demandes = await prisma.supportRequest.findMany({ where: { status: "NEW" }, orderBy: { createdAt: "asc" } });
+    for (const d of demandes) {
+      relances.push({
+        id: `soutien-${d.id}`,
+        title: `Soutien à effectuer : ${d.firstName} ${d.lastName}`,
+        description: `Téléphone : ${d.phone}${d.needs.length ? `. Besoins : ${d.needs.join(", ")}` : ""}`,
+        dueAt: at,
+        createdAt: d.createdAt,
+      });
+    }
+  }
   return new Response(buildIcs([...tasks, ...relances], "CCR Famille : mes tâches"), {
     headers: {
       "Content-Type": "text/calendar; charset=utf-8",

@@ -113,6 +113,8 @@ model Member {
   // distinctes de la fonction tenue dans un département.
   functions          String[]               @default([])
   submissions        MemberSubmission[]
+  stockMovements     StockMovement[]
+  supportRequests    SupportRequest[]
   createdAt          DateTime               @default(now())
   updatedAt          DateTime               @updatedAt
 }
@@ -163,6 +165,8 @@ model ServiceEvent {
   // rapport qui envoie le message") ; null tant qu'aucun rapport n'a été
   // généré pour ce culte.
   attendanceReportSentAt DateTime?
+  // Personnes qui ont suivi le culte en ligne (saisi lors du pointage).
+  onlineCount            Int?
 }
 
 // Une ligne par membre et par culte/événement, créée seulement à la présence
@@ -187,6 +191,9 @@ model Campaign {
   name      String
   startDate DateTime
   pledges   Pledge[]
+  // Suivi de la dernière modification (campagne ou un de ses engagements).
+  updatedAt DateTime @default(now()) @updatedAt
+  updatedBy String?
 }
 
 // Les engagements sont souvent pris par un foyer ("Couple KIFILA") plutôt que
@@ -209,6 +216,8 @@ model Pledge {
   lastReminderAt DateTime?
   reminderCount  Int      @default(0)
   comment        String?
+  updatedAt      DateTime @default(now()) @updatedAt
+  updatedBy      String?
 }
 
 // Table physiquement séparée de Member : la règle d'accès (rôle Accompagnement
@@ -347,4 +356,73 @@ model MemberSubmission {
   reviewedBy         String?
   reviewedAt         DateTime?
   createdAt          DateTime            @default(now())
+}
+
+// Stock du social : denrées et équipements reçus puis distribués. Chaque
+// entrée ou sortie est tracée (date et heure, qui, à qui) ; la quantité en
+// stock est recalculée à chaque mouvement.
+model StockItem {
+  id        String          @id @default(cuid())
+  name      String          @unique
+  unit      String
+  quantity  Decimal         @default(0)
+  position  Int             @default(100)
+  active    Boolean         @default(true)
+  createdAt DateTime        @default(now())
+  movements StockMovement[]
+}
+
+enum StockMovementType {
+  IN
+  OUT
+  ADJUST
+}
+
+model StockMovement {
+  id                  String            @id @default(cuid())
+  itemId              String
+  item                StockItem         @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  type                StockMovementType
+  quantity            Decimal
+  balanceAfter        Decimal
+  // Bénéficiaire d'une sortie : membre de l'église ou personne extérieure.
+  beneficiaryMemberId String?
+  beneficiaryMember   Member?           @relation(fields: [beneficiaryMemberId], references: [id], onDelete: SetNull)
+  beneficiaryName     String?
+  requestId           String?
+  request             SupportRequest?   @relation(fields: [requestId], references: [id], onDelete: SetNull)
+  // Entrée : provenance du don ; sortie : précision libre.
+  note                String?
+  byEmail             String
+  at                  DateTime          @default(now())
+
+  @@index([itemId, at])
+}
+
+enum SupportRequestStatus {
+  NEW
+  DONE
+  REJECTED
+}
+
+// Demande de soutien (alimentaire) envoyée depuis le site public.
+model SupportRequest {
+  id            String               @id @default(cuid())
+  firstName     String
+  lastName      String
+  phone         String
+  email         String?
+  neighborhood  String?
+  householdSize Int?
+  needs         String[]             @default([])
+  message       String?
+  status        SupportRequestStatus @default(NEW)
+  memberId      String?
+  member        Member?              @relation(fields: [memberId], references: [id], onDelete: SetNull)
+  createdAt     DateTime             @default(now())
+  handledAt     DateTime?
+  handledBy     String?
+  movements     StockMovement[]
+
+  @@index([status, createdAt])
 }

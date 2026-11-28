@@ -72,6 +72,10 @@ export default async function CollectePage({
                     <div>
                       <p className="font-display text-lg font-bold">{c.name}</p>
                       <p className="text-xs text-ccr-ink/50">{formatDate(c.startDate)}, {c.pledges.length} engagements</p>
+                      <p className="text-xs text-ccr-ink/40">
+                        Mis à jour le {c.updatedAt.toLocaleString("fr-FR", { dateStyle: "short", timeStyle: "short", timeZone: "Africa/Casablanca" })}
+                        {c.updatedBy ? ` par ${c.updatedBy}` : ""}
+                      </p>
                     </div>
                     {relances ? <Badge tone="magenta">{relances} à relancer</Badge> : <Badge tone="blue">À jour</Badge>}
                   </div>

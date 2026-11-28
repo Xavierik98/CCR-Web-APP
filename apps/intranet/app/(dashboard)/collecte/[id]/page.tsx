@@ -57,7 +57,11 @@ export default async function CampagnePage({
 
   return (
     <>
-      <PageHeader title={campaign.name} subtitle={formatDate(campaign.startDate)} back={{ href: "/collecte", label: "Toutes les campagnes" }} />
+      <PageHeader
+        title={campaign.name}
+        subtitle={`${formatDate(campaign.startDate)}. Dernière mise à jour le ${campaign.updatedAt.toLocaleString("fr-FR", { dateStyle: "long", timeStyle: "short", timeZone: "Africa/Casablanca" })}${campaign.updatedBy ? ` par ${campaign.updatedBy}` : ""}.`}
+        back={{ href: "/collecte", label: "Toutes les campagnes" }}
+      />
       {enregistre ? <Notice>Modifications enregistrées.</Notice> : null}
       {erreur === "nom" ? <Notice tone="magenta">Indiquez un nom ou choisissez un membre.</Notice> : null}
 

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Badge, Button, Card, PageHeader, Select, Table } from "@/components/ui";
 import { requireAccess } from "@/lib/auth";
 import { RESIDENCY_LABELS, fullName } from "@/lib/labels";
+import { SocialTabs } from "./social-tabs";
 
 // Module Accompagnement social (sections 3 et 5) : dossiers de titre de séjour.
 // Accès réservé au rôle Accompagnement social et au super administrateur.
@@ -14,7 +15,7 @@ export default async function AccompagnementSocialPage({
   await requireAccess("social");
   const { statut } = await searchParams;
 
-  const [records, withoutRecord] = await Promise.all([
+  const [records, withoutRecord, demandes] = await Promise.all([
     prisma.socialSupportRecord.findMany({
       where: statut ? { residencyStatus: statut as ResidencyStatus } : {},
       include: { member: true },
@@ -25,11 +26,13 @@ export default async function AccompagnementSocialPage({
       orderBy: { firstName: "asc" },
       select: { id: true, firstName: true, lastName: true },
     }),
+    prisma.supportRequest.count({ where: { status: "NEW" } }),
   ]);
 
   return (
     <>
       <PageHeader title="Accompagnement social" subtitle="Données sensibles : accès restreint." />
+      <SocialTabs current="dossiers" demandes={demandes} />
 
       <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
         <div>

@@ -12,6 +12,7 @@ const routes = [
   "/departements",
   "/mon-eglise-a-un-besoin",
   "/galerie",
+  "/demande-de-soutien",
   "/actualites",
   "/contact",
 ];

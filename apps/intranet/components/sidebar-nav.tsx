@@ -11,7 +11,8 @@ export function SidebarNav({ items }: { items: NavItem[] }) {
   return (
     <nav className="flex gap-1 overflow-x-auto px-3 pb-3 md:flex-1 md:flex-col md:overflow-visible md:pb-0">
       {items.map((item) => {
-        const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+        const seg = (p: string) => p.split("/")[1];
+        const active = pathname === item.href || seg(pathname) === seg(item.href);
         return (
           <Link
             key={item.href}

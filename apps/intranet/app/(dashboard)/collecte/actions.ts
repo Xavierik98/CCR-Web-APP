@@ -15,13 +15,18 @@ function amount(formData: FormData, key = "amountPromised") {
   return v && !Number.isNaN(Number(v)) ? v : null;
 }
 
+// Note qui a modifié la campagne en dernier (et quand, via updatedAt).
+async function touchCampaign(campaignId: string, email: string) {
+  await prisma.campaign.update({ where: { id: campaignId }, data: { updatedBy: email } });
+}
+
 export async function saveCampaign(formData: FormData) {
-  await requireAccess("collecte", "edit");
+  const user = await requireAccess("collecte", "edit");
   const id = text(formData, "id");
   const name = text(formData, "name");
   const day = text(formData, "startDate");
   if (!name || !day) redirect(id ? `/collecte/${id}` : "/collecte?erreur=champs");
-  const data = { name, startDate: new Date(`${day}T00:00:00Z`) };
+  const data = { name, startDate: new Date(`${day}T00:00:00Z`), updatedBy: user.email };
   const c = id
     ? await prisma.campaign.update({ where: { id }, data })
     : await prisma.campaign.create({ data });
@@ -37,7 +42,7 @@ export async function deleteCampaign(formData: FormData) {
 }
 
 export async function savePledge(formData: FormData) {
-  await requireAccess("collecte", "edit");
+  const user = await requireAccess("collecte", "edit");
   const id = text(formData, "id");
   const campaignId = String(formData.get("campaignId"));
   const memberId = text(formData, "memberId");
@@ -53,10 +58,12 @@ export async function savePledge(formData: FormData) {
     amountPaid: amount(formData, "amountPaid"),
     phone: text(formData, "phone"),
     comment: text(formData, "comment"),
+    updatedBy: user.email,
     ...(id ? {} : { memberId }),
   };
   if (id) await prisma.pledge.update({ where: { id }, data });
   else await prisma.pledge.create({ data: { ...data, campaignId } });
+  await touchCampaign(campaignId, user.email);
   revalidatePath(`/collecte/${campaignId}`);
   const back = text(formData, "retour");
   redirect(back?.startsWith(`/collecte/${campaignId}`) ? back : `/collecte/${campaignId}?enregistre=1`);
@@ -65,11 +72,12 @@ export async function savePledge(formData: FormData) {
 // Note qu'une relance WhatsApp vient d'être envoyée (appelé au clic, pendant
 // que WhatsApp s'ouvre avec le message prêt).
 export async function remindPledge(id: string) {
-  await requireAccess("collecte", "edit");
+  const user = await requireAccess("collecte", "edit");
   const p = await prisma.pledge.update({
     where: { id },
-    data: { lastReminderAt: new Date(), reminderCount: { increment: 1 }, followUpDone: true },
+    data: { lastReminderAt: new Date(), reminderCount: { increment: 1 }, followUpDone: true, updatedBy: user.email },
   });
+  await touchCampaign(p.campaignId, user.email);
   revalidatePath("/collecte");
   revalidatePath(`/collecte/${p.campaignId}`);
   revalidatePath("/mes-taches");
@@ -78,8 +86,9 @@ export async function remindPledge(id: string) {
 }
 
 export async function deletePledge(formData: FormData) {
-  await requireAccess("collecte", "edit");
+  const user = await requireAccess("collecte", "edit");
   const p = await prisma.pledge.delete({ where: { id: String(formData.get("id")) } });
+  await touchCampaign(p.campaignId, user.email);
   revalidatePath(`/collecte/${p.campaignId}`);
   redirect(`/collecte/${p.campaignId}`);
 }

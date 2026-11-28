@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useMemo, useState, useTransition } from "react";
 import { setAttendance } from "../actions";
 
@@ -29,6 +30,7 @@ export function Checklist({
 }) {
   const [query, setQuery] = useState("");
   const [checked, setChecked] = useState(() => new Set(rows.filter((r) => r.present).map((r) => r.id)));
+  const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [status, setStatus] = useState<"idle" | "saved" | "error">("idle");
   const [copied, setCopied] = useState(false);
@@ -54,6 +56,7 @@ export function Checklist({
       try {
         await setAttendance(eventId, id, present);
         setStatus("saved");
+        router.refresh();
       } catch {
         setChecked((cur) => {
           const back = new Set(cur);
