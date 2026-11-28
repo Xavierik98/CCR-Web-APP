@@ -3,6 +3,7 @@
 import { prisma, type Role } from "@ccr/database";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { checkField } from "@ccr/ui/src/validation";
 import { requireAccess, ROLE_LABELS } from "@/lib/auth";
 
 function back(formData: FormData, fallback: string) {
@@ -46,4 +47,23 @@ export async function deleteUser(formData: FormData) {
   await prisma.user.deleteMany({ where: { email } });
   revalidatePath("/utilisateurs");
   redirect(`${retour}${sep}revoque=1`);
+}
+
+// Responsable : son e-mail est enregistré sur sa fiche membre et un compte
+// lui est ouvert avec le rôle choisi (lien de connexion envoyé à cette adresse).
+export async function saveLeaderAccess(formData: FormData) {
+  const me = await requireAccess("utilisateurs", "edit");
+  const memberId = String(formData.get("memberId") ?? "");
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  const role = String(formData.get("role") ?? "DEPARTMENT_LEADER") as Role;
+  if (!memberId || !email || checkField("email", email) || !(role in ROLE_LABELS)) redirect("/utilisateurs?erreur=email#responsables");
+  const taken = await prisma.user.findUnique({ where: { email } });
+  if (taken && taken.memberId && taken.memberId !== memberId) redirect("/utilisateurs?erreur=pris#responsables");
+  if (email === me.email && role !== "SUPER_ADMIN") redirect("/utilisateurs?erreur=soi#responsables");
+  await prisma.member.update({ where: { id: memberId }, data: { email } });
+  // Un membre n'a qu'un compte : l'ancienne adresse liée est remplacée.
+  await prisma.user.updateMany({ where: { memberId, NOT: { email } }, data: { memberId: null } });
+  await prisma.user.upsert({ where: { email }, create: { email, role, memberId }, update: { role, memberId } });
+  revalidatePath("/utilisateurs");
+  redirect("/utilisateurs?enregistre=1#responsables");
 }
