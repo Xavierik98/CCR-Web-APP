@@ -1,4 +1,5 @@
 import { prisma } from "@ccr/database";
+import { QuartierField } from "@ccr/ui/src/quartier-field";
 import type { Metadata } from "next";
 import { CheckedField } from "@ccr/ui/src/checked-field";
 import Image from "next/image";
@@ -92,7 +93,7 @@ export default async function MaFichePage({
                   <div className="grid gap-4 sm:grid-cols-2">
                     <label className="block">
                       <span className="text-sm font-semibold">Quartier</span>
-                      <input name="neighborhood" className={field} placeholder="Ex. Maarif" />
+                      <QuartierField className={field} />
                     </label>
                     <label className="block">
                       <span className="text-sm font-semibold">Date de naissance <span className="font-normal text-ccr-ink/50">(facultatif)</span></span>

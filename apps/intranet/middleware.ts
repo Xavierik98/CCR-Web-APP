@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const PUBLIC_PATHS = ["/login", "/auth", "/ma-fiche", "/agenda/", "/api/cron/", "/api/soutien", "/api/message", "/api/actualites"];
+const PUBLIC_PATHS = ["/login", "/auth", "/ma-fiche", "/agenda/", "/api/cron/", "/api/soutien", "/api/message", "/api/actualites", "/api/engagement"];
 
 // Rafraîchit la session Supabase à chaque requête et renvoie vers la page de
 // connexion toute personne non connectée. Les droits fins (rôles) sont

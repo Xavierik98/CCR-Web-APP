@@ -27,7 +27,8 @@ export default async function ActualitesPage() {
           {ACTUALITES.map((article) => (
             <article
               key={article.slug}
-              className="overflow-hidden rounded-2xl border border-ccr-ink/10 bg-white"
+              id={article.slug}
+              className="scroll-mt-32 overflow-hidden rounded-2xl border border-ccr-ink/10 bg-white"
             >
               <div className="relative aspect-[16/9]">
                 <ActualiteMedia article={article} sizes="(min-width: 768px) 672px, 100vw" />

@@ -1,6 +1,7 @@
 "use client";
 
 import { CheckedField } from "@ccr/ui/src/checked-field";
+import { QuartierField } from "@ccr/ui/src/quartier-field";
 import { useState } from "react";
 
 const BESOINS = ["Spaghetti", "Tomate (concentré)", "Semoule", "Farine", "Sucre", "Huile", "Riz", "Lait"];
@@ -27,7 +28,7 @@ export function SupportForm({ endpoint }: { endpoint: string }) {
 
   return (
     <form
-      className="space-y-5 rounded-3xl bg-white p-5 shadow-[0_20px_50px_-25px_rgba(32,28,22,0.35)] sm:p-8"
+      className="space-y-5 rounded-3xl border-2 border-ccr-gold/40 bg-white p-5 shadow-[0_20px_50px_-25px_rgba(32,28,22,0.35)] sm:p-8"
       onSubmit={async (e) => {
         e.preventDefault();
         const fd = new FormData(e.currentTarget);
@@ -69,7 +70,7 @@ export function SupportForm({ endpoint }: { endpoint: string }) {
         <CheckedField kind="email" label="E-mail" name="email" autoComplete="email" required={false} hint="Facultatif" inputClassName={field} />
         <label className="block">
           <span className="text-sm font-semibold">Quartier</span>
-          <input name="neighborhood" className={field} />
+          <QuartierField className={field} />
         </label>
         <label className="block">
           <span className="text-sm font-semibold">

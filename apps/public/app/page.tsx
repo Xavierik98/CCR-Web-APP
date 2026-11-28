@@ -281,12 +281,16 @@ export default async function HomePage() {
                         {article.evenement ? "Événement, " : ""}
                         {formatDateActualite(article.date)}
                       </p>
-                      <h3 className="mt-1 font-display text-sm font-bold leading-snug sm:text-lg">
+                      <h3 className="mt-1 line-clamp-2 font-display text-sm font-bold leading-snug sm:text-lg">
                         {article.titre}
                       </h3>
-                      <p className="mt-1 line-clamp-3 text-xs text-ccr-ink/70 sm:line-clamp-none sm:text-sm">
+                      {/* Texte limité à trois lignes : les cartes gardent la même hauteur. */}
+                      <p className="mt-1 line-clamp-3 text-xs text-ccr-ink/70 sm:text-sm">
                         {article.texte}
                       </p>
+                      <Link href={`/actualites#${article.slug}`} className="mt-2 inline-block text-xs font-semibold text-ccr-magenta hover:underline sm:text-sm">
+                        Lire la suite
+                      </Link>
                     </div>
                   </article>
                 ))}
@@ -345,6 +349,12 @@ export default async function HomePage() {
                   Dîmes, offrandes et collectes peuvent se faire sur place
                   pendant le culte ou par virement bancaire.
                 </p>
+                <Link
+                  href="/engagement"
+                  className="mt-4 inline-flex items-center gap-2 rounded-full border border-ccr-ink/20 bg-white/70 px-5 py-2.5 text-sm font-semibold backdrop-blur transition-colors hover:border-ccr-ink"
+                >
+                  Prendre un engagement (loyer, campagnes) &rarr;
+                </Link>
               </div>
               <div className="rounded-2xl bg-white/80 p-4 shadow-sm backdrop-blur sm:p-6">
                 {RIB_DISPONIBLE ? (

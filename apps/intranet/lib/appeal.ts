@@ -46,7 +46,7 @@ export async function publishDonationAppeal(authorId: string, auto = false, cust
   const body = custom?.body?.trim() || draft.body;
   const content = await prisma.content.upsert({
     where: { slug },
-    update: { title, body, status: "PUBLISHED", publishedAt: now },
+    update: { title, body, status: "PUBLISHED", publishedAt: now, updatedBy: authorId },
     create: { type: "NEWS", slug, title, body, status: "PUBLISHED", publishedAt: now, authorId },
   });
   return { content, low: draft.low, created: true };

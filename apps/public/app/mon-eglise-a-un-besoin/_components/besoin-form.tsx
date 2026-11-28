@@ -32,7 +32,7 @@ export function BesoinForm({ departements }: { departements: Departement[] }) {
       <CheckedField kind="name" label="Prénom(s)" name="prenom" id="prenom" autoComplete="given-name" hint="Exemple : Arsène" inputClassName={cls} />
       <CheckedField kind="phone" label="Téléphone" name="telephone" id="telephone" autoComplete="tel" inputClassName={cls} />
       <CheckedField kind="email" label="E-mail" name="email" id="email" autoComplete="email" inputClassName={cls} />
-      <label className="block col-span-2">
+      <label className="block col-span-full">
         <span className="text-sm font-semibold">Département concerné</span>
         <select name="departement" defaultValue={preselection ?? undefined} className={cls}>
           {departements.map((pole) => (
@@ -41,7 +41,7 @@ export function BesoinForm({ departements }: { departements: Departement[] }) {
           <option>Autre / proposition générale</option>
         </select>
       </label>
-      <label className="block col-span-2">
+      <label className="block col-span-full">
         <span className="text-sm font-semibold">
           Votre proposition<span className="ml-0.5 text-red-600">*</span>
         </span>

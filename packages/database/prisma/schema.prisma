@@ -193,6 +193,17 @@ model Campaign {
   id        String   @id @default(cuid())
   name      String
   startDate DateTime
+  // Fin facultative : une campagne sans fin (ex. loyer) reste en cours.
+  endDate   DateTime?
+  description   String?
+  // Affiche (photo) et vidéo : fichier déposé ou lien de plateforme.
+  coverImageUrl String?
+  videoUrl      String?
+  // Engagement mensuel (ex. loyer de l'église) : le montant promis l'est
+  // chaque mois, les paiements sont suivis mois par mois et relancés chaque mois.
+  monthly   Boolean  @default(false)
+  // Formulaire public d'engagement ouvert (lien à partager depuis la trésorerie).
+  formOpen  Boolean  @default(true)
   pledges   Pledge[]
   // Suivi de la dernière modification (campagne ou un de ses engagements).
   updatedAt DateTime @default(now()) @updatedAt
@@ -219,8 +230,27 @@ model Pledge {
   lastReminderAt DateTime?
   reminderCount  Int      @default(0)
   comment        String?
+  email          String?
+  // Engagement pris par la personne elle-même avec le formulaire public.
+  fromForm       Boolean  @default(false)
+  payments       PledgePayment[]
+  createdAt      DateTime @default(now())
   updatedAt      DateTime @default(now()) @updatedAt
   updatedBy      String?
+}
+
+// Paiement d'un engagement mensuel, rattaché au mois concerné (AAAA-MM).
+model PledgePayment {
+  id       String   @id @default(cuid())
+  pledgeId String
+  pledge   Pledge   @relation(fields: [pledgeId], references: [id], onDelete: Cascade)
+  month    String
+  amount   Decimal
+  paidAt   DateTime @default(now())
+  byEmail  String?
+  note     String?
+
+  @@index([pledgeId, month])
 }
 
 // Table physiquement séparée de Member : la règle d'accès (rôle Accompagnement
@@ -329,6 +359,8 @@ model Content {
   seoDescription String?
   status         ContentStatus @default(DRAFT)
   authorId       String
+  // Dernière personne qui a modifié l'actualité (e-mail).
+  updatedBy      String?
   publishedAt    DateTime?
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
@@ -469,4 +501,17 @@ model ContactMessage {
   handledBy  String?
 
   @@index([status, createdAt])
+}
+
+// Historique des actualités : qui a créé, modifié, publié, retiré ou supprimé
+// une information, et quand. Conservé même après la suppression de l'actualité.
+model ContentEvent {
+  id        String   @id @default(cuid())
+  contentId String
+  title     String
+  action    String
+  byEmail   String
+  at        DateTime @default(now())
+
+  @@index([at])
 }

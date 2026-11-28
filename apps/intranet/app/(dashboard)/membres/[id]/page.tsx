@@ -1,4 +1,5 @@
 import { prisma } from "@ccr/database";
+import { QuartierField } from "@ccr/ui/src/quartier-field";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CheckedField } from "@ccr/ui/src/checked-field";
@@ -97,7 +98,7 @@ export default async function MembrePage({
                 <Input name="birthDate" type="date" defaultValue={toDateInput(member?.birthDate)} />
               </Field>
               <Field label="Quartier">
-                <Input name="neighborhood" defaultValue={member?.neighborhood ?? ""} />
+                <QuartierField defaultValue={member?.neighborhood} className="mt-1 w-full rounded-xl border border-ccr-ink/15 bg-white px-3 py-2 text-sm outline-none focus:border-ccr-gold" />
               </Field>
               <Field label="Situation professionnelle">
                 <Select

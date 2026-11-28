@@ -1,4 +1,5 @@
 import { publishDonationAppeal, remindStockLevel } from "@/lib/appeal";
+import { logContent } from "@/lib/people";
 import { casablancaNow } from "@/lib/programme";
 
 export const dynamic = "force-dynamic";
@@ -21,5 +22,6 @@ export async function GET(request: Request) {
   const rappel = await remindStockLevel();
   if (!firstOfMonth && rappel.low === 0) return Response.json({ fait: false, raison: "stock suffisant" });
   const { content, created } = await publishDonationAppeal("systeme", true);
+  if (created) await logContent(content.id, content.title, "Publiée automatiquement", "systeme");
   return Response.json({ fait: true, appel: content.slug, nouveau: created, rappel });
 }

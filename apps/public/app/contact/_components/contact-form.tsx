@@ -10,7 +10,7 @@ export function ContactForm({ sujets }: { sujets: string[] }) {
   return (
     <SiteForm
       endpoint="/api/message"
-      className="mt-6 grid grid-cols-2 gap-x-3 gap-y-4 sm:gap-4"
+      className="mt-3 grid grid-cols-1 gap-3 sm:mt-6 sm:grid-cols-2 sm:gap-4"
       build={(fd) => ({
         kind: "CONTACT",
         lastName: fd.get("nom"),
@@ -27,7 +27,7 @@ export function ContactForm({ sujets }: { sujets: string[] }) {
       <CheckedField kind="name" label="Prénom(s)" name="prenom" autoComplete="given-name" hint="Exemple : Arsène" inputClassName={fieldClass} />
       <CheckedField kind="phone" label="Téléphone" name="telephone" autoComplete="tel" inputClassName={fieldClass} />
       <CheckedField kind="email" label="Adresse e-mail" name="email" autoComplete="email" inputClassName={fieldClass} />
-      <label className="block col-span-2">
+      <label className="block col-span-full">
         <span className="text-sm font-semibold">Sujet</span>
         <select name="sujet" className={fieldClass}>
           {sujets.map((s) => (
@@ -35,7 +35,7 @@ export function ContactForm({ sujets }: { sujets: string[] }) {
           ))}
         </select>
       </label>
-      <label className="block col-span-2">
+      <label className="block col-span-full">
         <span className="text-sm font-semibold">
           Votre message<span className="ml-0.5 text-red-600">*</span>
         </span>

@@ -13,7 +13,7 @@ export function SiteForm({
   children,
   success,
 }: {
-  endpoint: "/api/message" | "/api/soutien";
+  endpoint: "/api/message" | "/api/soutien" | `/api/engagement/${string}`;
   build: (fd: FormData) => Record<string, unknown>;
   className?: string;
   children: ReactNode;
@@ -49,8 +49,8 @@ export function SiteForm({
     >
       <input type="text" name="site_web" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
       {children}
-      {state === "error" ? <p className="rounded-xl bg-ccr-magenta/10 p-3 text-sm text-ccr-magenta col-span-2">{error}</p> : null}
-      <div className="col-span-2">
+      {state === "error" ? <p className="rounded-xl bg-ccr-magenta/10 p-3 text-sm text-ccr-magenta col-span-full">{error}</p> : null}
+      <div className="col-span-full">
         <button
           type="submit"
           disabled={state === "sending"}

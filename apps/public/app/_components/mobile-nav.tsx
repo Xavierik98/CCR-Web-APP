@@ -42,7 +42,7 @@ export function MobileNav({
   }, [open]);
 
   const close = () => setOpen(false);
-  const all = [{ href: "/", label: "Accueil" }, ...links, { href: "/demande-de-soutien", label: "Demande de soutien" }, { href: "/#soutenir", label: "Faire un don" }];
+  const all = [{ href: "/", label: "Accueil" }, ...links, { href: "/#soutenir", label: "Faire un don" }];
 
   return (
     <div className="md:hidden">
@@ -146,11 +146,11 @@ export function MobileNav({
           style={{ transitionDelay: open ? `${80 + all.length * 45}ms` : "0ms" }}
         >
           <Link
-            href="/cultes-et-programmes"
+            href="/demande-de-soutien"
             onClick={close}
             className="rounded-2xl bg-ccr-gold px-5 py-3 text-center text-sm font-semibold text-ccr-ink shadow-[0_8px_20px_-10px_rgba(227,166,56,0.9)] active:scale-[0.98]"
           >
-            Participer à un culte
+            Besoin d&rsquo;aide ?
           </Link>
           <div className="grid grid-cols-2 gap-3">
             <a

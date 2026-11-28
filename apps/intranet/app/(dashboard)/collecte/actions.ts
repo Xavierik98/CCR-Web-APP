@@ -4,6 +4,7 @@ import { prisma } from "@ccr/database";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAccess } from "@/lib/auth";
+import { currentMonth } from "@/lib/pledges";
 
 function text(formData: FormData, key: string) {
   const v = String(formData.get(key) ?? "").trim();
@@ -25,8 +26,24 @@ export async function saveCampaign(formData: FormData) {
   const id = text(formData, "id");
   const name = text(formData, "name");
   const day = text(formData, "startDate");
-  if (!name || !day) redirect(id ? `/collecte/${id}` : "/collecte?erreur=champs");
-  const data = { name, startDate: new Date(`${day}T00:00:00Z`), updatedBy: user.email };
+  const end = text(formData, "endDate");
+  if (!name || !day || !/^\d{4}-\d{2}-\d{2}$/.test(day)) redirect(id ? `/collecte/${id}?erreur=champs` : "/collecte?erreur=champs");
+  if (end && end < day) redirect(id ? `/collecte/${id}?erreur=dates` : "/collecte?erreur=dates");
+  const url = (key: string) => {
+    const v = text(formData, key);
+    return v && /^https?:\/\//i.test(v) ? v.slice(0, 1000) : null;
+  };
+  const data = {
+    name,
+    startDate: new Date(`${day}T00:00:00Z`),
+    endDate: end && /^\d{4}-\d{2}-\d{2}$/.test(end) ? new Date(`${end}T00:00:00Z`) : null,
+    description: text(formData, "description")?.slice(0, 2000) ?? null,
+    coverImageUrl: url("coverImageUrl"),
+    videoUrl: url("videoUrl"),
+    monthly: formData.get("monthly") === "on",
+    formOpen: formData.get("formOpen") === "on",
+    updatedBy: user.email,
+  };
   const c = id
     ? await prisma.campaign.update({ where: { id }, data })
     : await prisma.campaign.create({ data });
@@ -52,17 +69,30 @@ export async function savePledge(formData: FormData) {
     donorName = m ? [m.firstName, m.lastName].filter(Boolean).join(" ") : null;
   }
   if (!donorName) redirect(`/collecte/${campaignId}?erreur=nom`);
+  const campaign = await prisma.campaign.findUniqueOrThrow({ where: { id: campaignId }, select: { monthly: true } });
   const data = {
     donorName,
     amountPromised: amount(formData),
-    amountPaid: amount(formData, "amountPaid"),
+    // Engagement mensuel : le reçu est enregistré mois par mois (ci-dessous).
+    ...(campaign.monthly ? {} : { amountPaid: amount(formData, "amountPaid") }),
     phone: text(formData, "phone"),
     comment: text(formData, "comment"),
     updatedBy: user.email,
     ...(id ? {} : { memberId }),
   };
-  if (id) await prisma.pledge.update({ where: { id }, data });
-  else await prisma.pledge.create({ data: { ...data, campaignId } });
+  const pledge = id ? await prisma.pledge.update({ where: { id }, data }) : await prisma.pledge.create({ data: { ...data, campaignId } });
+  if (campaign.monthly && formData.has("amountPaid")) {
+    const month = /^\d{4}-\d{2}$/.test(String(formData.get("month"))) ? String(formData.get("month")) : currentMonth();
+    const paid = Number(amount(formData, "amountPaid") ?? 0);
+    const existing = await prisma.pledgePayment.findMany({ where: { pledgeId: pledge.id, month } });
+    const before = existing.reduce((s, x) => s + Number(x.amount), 0);
+    if (paid !== before) {
+      await prisma.$transaction([
+        prisma.pledgePayment.deleteMany({ where: { pledgeId: pledge.id, month } }),
+        ...(paid > 0 ? [prisma.pledgePayment.create({ data: { pledgeId: pledge.id, month, amount: paid, byEmail: user.email } })] : []),
+      ]);
+    }
+  }
   await touchCampaign(campaignId, user.email);
   revalidatePath(`/collecte/${campaignId}`);
   const back = text(formData, "retour");

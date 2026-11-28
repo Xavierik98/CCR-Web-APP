@@ -68,17 +68,19 @@ export default function ContactPage() {
         </div>
       </section>
 
-      <section className="mx-auto -mt-10 grid max-w-6xl gap-8 px-6 pb-16 lg:grid-cols-[0.9fr_1.1fr]">
-        <div className="space-y-6">
+      {/* Côte à côte sur tous les écrans, comme sur ordinateur : informations à
+          gauche (version compacte sur téléphone), formulaire à droite. */}
+      <section className="mx-auto -mt-10 grid max-w-6xl grid-cols-[0.82fr_1.18fr] items-start gap-2.5 px-3 pb-12 sm:gap-8 sm:px-6 sm:pb-16 lg:grid-cols-[0.9fr_1.1fr]">
+        <div className="space-y-2.5 sm:space-y-6">
           <Reveal>
-            <div className="animate-swell rounded-3xl bg-white p-8 shadow-[0_20px_50px_-25px_rgba(32,28,22,0.35)]">
-              <div className="flex gap-4">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ccr-gold text-ccr-ink">
-                  <Icon name="map" className="h-5 w-5" />
+            <div className="animate-swell rounded-2xl bg-white p-3 shadow-[0_20px_50px_-25px_rgba(32,28,22,0.35)] sm:rounded-3xl sm:p-8">
+              <div className="flex flex-col gap-1.5 sm:flex-row sm:gap-4">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full sm:h-11 sm:w-11 bg-ccr-gold text-ccr-ink">
+                  <Icon name="map" className="h-4 w-4 sm:h-5 sm:w-5" />
                 </span>
                 <div>
-                  <h2 className="font-display text-xl font-bold">Adresse</h2>
-                  <p className="mt-1 text-sm text-ccr-ink/70">
+                  <h2 className="font-display text-sm font-bold sm:text-xl">Adresse</h2>
+                  <p className="mt-1 text-[11px] leading-snug text-ccr-ink/70 sm:text-sm">
                     CCR Famille, Centre Chrétien de Restauration
                     <br />
                     {ADRESSE}
@@ -86,15 +88,15 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              <div className="my-6 h-px bg-ccr-ink/10" />
+              <div className="my-3 h-px bg-ccr-ink/10 sm:my-6" />
 
-              <div className="flex gap-4">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ccr-magenta text-ccr-cream">
-                  <Icon name="clock" className="h-5 w-5" />
+              <div className="flex flex-col gap-1.5 sm:flex-row sm:gap-4">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full sm:h-11 sm:w-11 bg-ccr-magenta text-ccr-cream">
+                  <Icon name="clock" className="h-4 w-4 sm:h-5 sm:w-5" />
                 </span>
                 <div>
-                  <h2 className="font-display text-xl font-bold">Horaires des cultes</h2>
-                  <ul className="mt-1 space-y-1 text-sm text-ccr-ink/70">
+                  <h2 className="font-display text-sm font-bold sm:text-xl">Horaires des cultes</h2>
+                  <ul className="mt-1 space-y-1 text-[11px] leading-snug text-ccr-ink/70 sm:text-sm">
                     {HORAIRES.map((item) => (
                       <li key={item.titre}>
                         <span className="font-semibold text-ccr-ink">{item.jour}</span> :{" "}
@@ -104,22 +106,22 @@ export default function ContactPage() {
                   </ul>
                   <Link
                     href="/cultes-et-programmes"
-                    className="mt-2 inline-block text-sm font-semibold text-ccr-magenta hover:underline"
+                    className="mt-2 inline-block text-[11px] font-semibold text-ccr-magenta hover:underline sm:text-sm"
                   >
-                    Tout le programme de la semaine &rarr;
+                    Tout le programme &rarr;
                   </Link>
                 </div>
               </div>
 
-              <div className="my-6 h-px bg-ccr-ink/10" />
+              <div className="my-3 h-px bg-ccr-ink/10 sm:my-6" />
 
-              <div className="flex gap-4">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ccr-blue text-ccr-cream">
-                  <Icon name="mail" className="h-5 w-5" />
+              <div className="flex flex-col gap-1.5 sm:flex-row sm:gap-4">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full sm:h-11 sm:w-11 bg-ccr-blue text-ccr-cream">
+                  <Icon name="mail" className="h-4 w-4 sm:h-5 sm:w-5" />
                 </span>
                 <div>
-                  <h2 className="font-display text-xl font-bold">Coordonnées</h2>
-                  <p className="mt-1 text-sm text-ccr-ink/70">
+                  <h2 className="font-display text-sm font-bold sm:text-xl">Coordonnées</h2>
+                  <p className="mt-1 text-[11px] leading-snug text-ccr-ink/70 sm:text-sm">
                     Téléphone et e-mail à venir. En attendant, écrivez-nous
                     avec le formulaire.
                   </p>
@@ -129,19 +131,19 @@ export default function ContactPage() {
           </Reveal>
 
           <Reveal delay={150}>
-            <div className="flex items-center gap-4 rounded-2xl bg-ccr-gold/15 px-6 py-5">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ccr-gold/30 text-ccr-ink">
-                <Icon name="tram" className="h-5 w-5" />
+            <div className="flex flex-col gap-1.5 rounded-2xl bg-ccr-gold/15 p-3 sm:flex-row sm:items-center sm:gap-4 sm:px-6 sm:py-5">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-ccr-gold/30 text-ccr-ink sm:h-10 sm:w-10">
+                <Icon name="tram" className="h-4 w-4 sm:h-5 sm:w-5" />
               </span>
-              <p className="text-sm text-ccr-ink/80">{ACCES_TRAM}</p>
+              <p className="text-[11px] leading-snug text-ccr-ink/80 sm:text-sm">{ACCES_TRAM}</p>
             </div>
           </Reveal>
         </div>
 
         <Reveal delay={100}>
-          <div className="animate-swell-late h-full rounded-3xl border-2 border-ccr-gold/40 bg-white p-8 shadow-[0_20px_50px_-25px_rgba(32,28,22,0.35)]">
-            <h2 className="font-display text-2xl font-bold">Écrire à l&rsquo;équipe</h2>
-            <p className="mt-1 text-sm text-ccr-ink/60">
+          <div className="animate-swell-late h-full rounded-2xl border-2 border-ccr-gold/40 bg-white p-3 shadow-[0_20px_50px_-25px_rgba(32,28,22,0.35)] sm:rounded-3xl sm:p-8">
+            <h2 className="font-display text-base font-bold sm:text-2xl">Écrire à l&rsquo;équipe</h2>
+            <p className="mt-1 hidden text-sm text-ccr-ink/60 sm:block">
               Une question, une demande de prière ou l&rsquo;envie de rejoindre
               un département ? Laissez-nous un message.
             </p>
@@ -158,12 +160,13 @@ export default function ContactPage() {
             <iframe
               title={`Localisation CCR Famille - ${ADRESSE}`}
               src={MAPS_EMBED_SRC}
-              className="h-[420px] w-full md:h-[480px]"
+              className="block h-[300px] w-full sm:h-[420px] md:h-[480px]"
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
             />
-            <div className="pointer-events-none absolute inset-x-4 bottom-4 md:inset-x-auto md:bottom-auto md:left-6 md:top-6 md:max-w-xs">
-              <div className="pointer-events-auto rounded-2xl bg-ccr-ink/90 p-5 text-ccr-cream shadow-xl backdrop-blur">
+            {/* Sur téléphone, la carte d'accès passe sous le plan pour ne pas le masquer. */}
+            <div className="md:pointer-events-none md:absolute md:left-6 md:top-6 md:max-w-xs">
+              <div className="bg-ccr-ink p-5 text-ccr-cream md:pointer-events-auto md:rounded-2xl md:bg-ccr-ink/90 md:shadow-xl md:backdrop-blur">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-ccr-gold-light">
                   Nous trouver
                 </p>

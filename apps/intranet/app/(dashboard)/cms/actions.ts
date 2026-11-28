@@ -4,6 +4,7 @@ import { prisma, type ContentStatus } from "@ccr/database";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAccess } from "@/lib/auth";
+import { logContent } from "@/lib/people";
 import { casablancaToUtc } from "@/lib/programme";
 
 function text(formData: FormData, key: string) {
@@ -55,20 +56,44 @@ export async function saveNews(formData: FormData) {
     eventAt,
     location: text(formData, "location")?.slice(0, 200) ?? null,
     status,
+    updatedBy: user.email,
     // La date de publication d'origine est conservée lors d'une simple modification.
     publishedAt: status === "PUBLISHED" ? (previous?.status === "PUBLISHED" && previous.publishedAt ? previous.publishedAt : new Date()) : null,
   };
   const item = id
     ? await prisma.content.update({ where: { id }, data })
     : await prisma.content.create({ data: { ...data, authorId: user.email } });
+  await logContent(
+    item.id,
+    item.title,
+    !id ? (status === "PUBLISHED" ? "Créée et publiée" : "Créée (brouillon)") : previous?.status !== status ? (status === "PUBLISHED" ? "Publiée" : status === "ARCHIVED" ? "Retirée du site" : "Statut changé") : "Modifiée",
+    user.email,
+  );
   revalidatePath("/cms");
   revalidatePath("/accompagnement-social/stock");
   redirect(`/cms/${item.id}?enregistre=1`);
 }
 
 export async function deleteNews(formData: FormData) {
-  await requireAccess("actualites", "edit");
-  await prisma.content.delete({ where: { id: String(formData.get("id")) } });
+  const user = await requireAccess("actualites", "edit");
+  const item = await prisma.content.delete({ where: { id: String(formData.get("id")) } });
+  await logContent(item.id, item.title, "Supprimée", user.email);
   revalidatePath("/cms");
-  redirect("/cms");
+  revalidatePath("/accompagnement-social/stock");
+  redirect("/cms?supprime=1");
+}
+
+// Retirer du site (archivée) ou republier, directement depuis la liste.
+export async function toggleNews(formData: FormData) {
+  const user = await requireAccess("actualites", "edit");
+  const id = String(formData.get("id"));
+  const item = await prisma.content.findUniqueOrThrow({ where: { id } });
+  const publish = item.status !== "PUBLISHED";
+  await prisma.content.update({
+    where: { id },
+    data: { status: publish ? "PUBLISHED" : "ARCHIVED", publishedAt: publish ? item.publishedAt ?? new Date() : item.publishedAt, updatedBy: user.email },
+  });
+  await logContent(id, item.title, publish ? "Republiée" : "Retirée du site", user.email);
+  revalidatePath("/cms");
+  redirect(`/cms?${publish ? "republie" : "retire"}=1`);
 }

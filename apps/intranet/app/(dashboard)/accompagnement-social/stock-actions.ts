@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { requireAccess } from "@/lib/auth";
 import { casablancaToUtc } from "@/lib/programme";
 import { publishDonationAppeal, remindStockLevel } from "@/lib/appeal";
+import { logContent } from "@/lib/people";
 import { StockError, applyMovements, qty, readQuantities } from "@/lib/stock";
 
 function text(formData: FormData, key: string, max = 200) {
@@ -147,7 +148,8 @@ export async function adjustStock(formData: FormData) {
 // Appel aux dons en nature publié tout de suite dans les actualités du site.
 export async function publishAppealNow(formData: FormData) {
   const user = await requireAccess("social", "edit");
-  await publishDonationAppeal(user.id, false, { title: text(formData, "title", 120), body: text(formData, "body", 3000) });
+  const { content } = await publishDonationAppeal(user.email, false, { title: text(formData, "title", 120), body: text(formData, "body", 3000) });
+  await logContent(content.id, content.title, "Appel aux dons publié", user.email);
   revalidatePath("/cms");
   refresh();
   redirect("/accompagnement-social/stock?appel=1");
@@ -163,11 +165,12 @@ export async function remindStockNow() {
 
 // Appel aux dons : retirer du site (archivé) ou republier.
 export async function toggleAppeal(formData: FormData) {
-  await requireAccess("social", "edit");
+  const user = await requireAccess("social", "edit");
   const id = String(formData.get("id"));
   const item = await prisma.content.findUniqueOrThrow({ where: { id } });
   const publish = item.status !== "PUBLISHED";
-  await prisma.content.update({ where: { id }, data: { status: publish ? "PUBLISHED" : "ARCHIVED", publishedAt: publish ? new Date() : item.publishedAt } });
+  await prisma.content.update({ where: { id }, data: { status: publish ? "PUBLISHED" : "ARCHIVED", publishedAt: publish ? new Date() : item.publishedAt, updatedBy: user.email } });
+  await logContent(id, item.title, publish ? "Republiée" : "Retirée du site", user.email);
   revalidatePath("/cms");
   refresh();
   redirect(`/accompagnement-social/stock?${publish ? "republie" : "retire"}=1`);

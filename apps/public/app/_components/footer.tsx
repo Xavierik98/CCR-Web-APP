@@ -21,6 +21,7 @@ const NAV = [
   { href: "/galerie", label: "Galerie" },
   { href: "/#soutenir", label: "Faire un don" },
   { href: "/demande-de-soutien", label: "Demander un soutien" },
+  { href: "/engagement", label: "Prendre un engagement" },
   { href: "/contact", label: "Contact" },
 ];
 

@@ -43,9 +43,6 @@ export function Header() {
               {link.label}
             </Link>
           ))}
-          <Link href="/demande-de-soutien" className="font-semibold text-ccr-magenta transition-colors hover:text-ccr-ink">
-            Besoin d&rsquo;aide ?
-          </Link>
         </nav>
 
         <div className="hidden items-center justify-end gap-3 md:flex">
@@ -55,11 +52,16 @@ export function Header() {
           >
             Espace membres
           </a>
+          {/* « Cultes et programmes » est déjà dans le menu : le bouton mène à l'aide. */}
           <Link
-            href="/cultes-et-programmes"
-            className="whitespace-nowrap rounded-full bg-ccr-gold px-5 py-2 text-sm font-semibold text-ccr-ink transition-colors hover:bg-ccr-gold-light"
+            href="/demande-de-soutien"
+            className="group relative inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-ccr-gold px-5 py-2 text-sm font-semibold text-ccr-ink shadow-[0_8px_24px_-10px_rgba(227,166,56,0.9)] transition-colors hover:bg-ccr-gold-light"
           >
-            Participer à un culte
+            <span aria-hidden="true" className="absolute -inset-1 rounded-full bg-ccr-gold/35 blur-md motion-safe:animate-pulse" />
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="relative h-4 w-4" aria-hidden="true">
+              <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+            </svg>
+            <span className="relative">Besoin d&rsquo;aide ?</span>
           </Link>
         </div>
 
