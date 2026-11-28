@@ -315,8 +315,9 @@ export default async function HomePage() {
             className="group relative flex items-center gap-4 overflow-hidden rounded-3xl border border-white/70 bg-white/60 p-5 shadow-[0_20px_50px_-30px_rgba(218,41,121,0.45),inset_0_1px_0_rgba(255,255,255,0.9)] backdrop-blur-xl transition-transform hover:-translate-y-0.5 sm:gap-6 sm:p-7"
           >
             <span aria-hidden="true" className="pointer-events-none absolute -right-10 -top-16 h-48 w-48 rounded-full bg-ccr-magenta/15 blur-3xl" />
-            <span className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-ccr-magenta text-white shadow-lg shadow-ccr-magenta/30 sm:h-16 sm:w-16">
-              <Icon name="heart" className="h-6 w-6 sm:h-8 sm:w-8" />
+            {/* Symbole de l'Association Cœur Solidaire, qui accompagne les demandes de soutien. */}
+            <span className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white p-2 shadow-lg shadow-ccr-magenta/20 ring-1 ring-ccr-magenta/10 sm:h-20 sm:w-20 sm:p-2.5">
+              <Image src="/images/partenaires/coeur-solidaire-symbole.png" alt="Association Cœur Solidaire" width={80} height={74} className="h-full w-full object-contain" />
             </span>
             <span className="relative min-w-0 flex-1">
               <span className="block font-display text-lg font-bold leading-tight sm:text-2xl">Vous traversez une période difficile ?</span>

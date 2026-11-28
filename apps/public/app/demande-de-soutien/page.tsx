@@ -30,6 +30,16 @@ export default function DemandeDeSoutienPage() {
         <div className="relative mx-auto max-w-6xl px-6">
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-ccr-gold-light">Entraide</p>
           <RevealText as="h1" text="Besoin d'aide ?" className="mt-2 font-display text-5xl font-black md:text-6xl" />
+          <Reveal delay={150}>
+            <div className="mt-5 inline-flex items-center gap-3 rounded-2xl bg-white/95 py-2 pl-2 pr-4 shadow-lg backdrop-blur">
+              <Image src="/images/partenaires/coeur-solidaire-symbole.png" alt="" width={44} height={41} className="h-10 w-10 object-contain" />
+              <span className="text-sm font-semibold leading-tight text-ccr-ink">
+                Avec l&rsquo;Association
+                <br />
+                Cœur Solidaire
+              </span>
+            </div>
+          </Reveal>
           <Reveal delay={250}>
             <p className="mt-4 max-w-xl text-ccr-cream/80">
               Vous traversez une période difficile ? L&rsquo;accompagnement social de l&rsquo;église peut vous aider avec
@@ -61,6 +71,9 @@ export default function DemandeDeSoutienPage() {
                 </div>
               </div>
             ))}
+            <div className="mt-2 border-t border-ccr-ink/10 pt-4 text-center">
+              <Image src="/images/partenaires/coeur-solidaire-logo.png" alt="Association Cœur Solidaire" width={240} height={164} className="mx-auto h-auto w-40 sm:w-48" />
+            </div>
           </div>
         </Reveal>
         <Reveal delay={100}>
