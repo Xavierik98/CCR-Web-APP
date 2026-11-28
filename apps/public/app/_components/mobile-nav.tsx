@@ -42,7 +42,7 @@ export function MobileNav({
   }, [open]);
 
   const close = () => setOpen(false);
-  const all = [{ href: "/", label: "Accueil" }, ...links, { href: "/#soutenir", label: "Faire un don" }];
+  const all = [{ href: "/", label: "Accueil" }, ...links, { href: "/demande-de-soutien", label: "Demande de soutien" }, { href: "/#soutenir", label: "Faire un don" }];
 
   return (
     <div className="md:hidden">
@@ -58,13 +58,17 @@ export function MobileNav({
         <span
           aria-hidden="true"
           className={`absolute h-[2px] w-[18px] rounded-full bg-ccr-ink transition-transform duration-300 ease-[cubic-bezier(.2,.8,.2,1)] ${
-            open ? "rotate-45" : "-translate-y-[4px]"
+            open ? "rotate-45" : "-translate-y-[6px]"
           }`}
         />
         <span
           aria-hidden="true"
+          className={`absolute h-[2px] w-[18px] rounded-full bg-ccr-ink transition-all duration-200 ${open ? "scale-x-0 opacity-0" : "opacity-100"}`}
+        />
+        <span
+          aria-hidden="true"
           className={`absolute h-[2px] w-[18px] rounded-full bg-ccr-ink transition-transform duration-300 ease-[cubic-bezier(.2,.8,.2,1)] ${
-            open ? "-rotate-45" : "translate-y-[4px]"
+            open ? "-rotate-45" : "translate-y-[6px]"
           }`}
         />
       </button>

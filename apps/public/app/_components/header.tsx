@@ -43,6 +43,9 @@ export function Header() {
               {link.label}
             </Link>
           ))}
+          <Link href="/demande-de-soutien" className="font-semibold text-ccr-magenta transition-colors hover:text-ccr-ink">
+            Besoin d&rsquo;aide ?
+          </Link>
         </nav>
 
         <div className="hidden items-center justify-end gap-3 md:flex">

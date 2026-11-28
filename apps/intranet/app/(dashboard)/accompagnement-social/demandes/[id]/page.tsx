@@ -24,7 +24,7 @@ export default async function EffectuerSoutienPage({
     prisma.member.findMany({ where: { membershipStatus: "ACTIVE" }, orderBy: { firstName: "asc" }, select: { id: true, firstName: true, lastName: true } }),
   ]);
   if (!request) notFound();
-  if (request.status !== "NEW") redirect("/accompagnement-social/demandes?vue=traitees");
+  if (request.status !== "NEW" && request.status !== "WAITLIST") redirect("/accompagnement-social/demandes?vue=DONE");
   const wanted = new Set(request.needs.map((n) => n.toLowerCase()));
 
   return (

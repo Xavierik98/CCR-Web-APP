@@ -33,13 +33,18 @@ export default async function ActualitesPage() {
                 <ActualiteMedia article={article} sizes="(min-width: 768px) 672px, 100vw" />
               </div>
               <div className="p-6">
-                <p className="text-xs font-semibold uppercase tracking-wide text-ccr-magenta">
+                <p className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-wide text-ccr-magenta">
+                  {article.evenement ? (
+                    <span className="rounded-full bg-ccr-gold/20 px-2 py-0.5 text-[10px] tracking-wider text-ccr-ink">Événement</span>
+                  ) : null}
                   {formatDateActualite(article.date)}
+                  {article.heure ? ` à ${article.heure}` : ""}
                 </p>
                 <h2 className="mt-1 font-display text-xl font-bold">
                   {article.titre}
                 </h2>
-                <p className="mt-2 text-sm text-ccr-ink/70">{article.texte}</p>
+                {article.lieu ? <p className="mt-1 text-sm font-medium text-ccr-ink/80">{article.lieu}</p> : null}
+                <p className="mt-2 whitespace-pre-line text-sm text-ccr-ink/70">{article.texte}</p>
               </div>
             </article>
           ))}

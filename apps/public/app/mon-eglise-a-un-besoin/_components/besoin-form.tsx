@@ -15,7 +15,7 @@ export function BesoinForm({ departements }: { departements: Departement[] }) {
   return (
     <SiteForm
       endpoint="/api/message"
-      className="mt-10 grid gap-4 sm:grid-cols-2"
+      className="mt-10 grid grid-cols-2 gap-x-3 gap-y-4 sm:gap-4"
       build={(fd) => ({
         kind: "BESOIN",
         lastName: fd.get("nom"),
@@ -32,7 +32,7 @@ export function BesoinForm({ departements }: { departements: Departement[] }) {
       <CheckedField kind="name" label="Prénom(s)" name="prenom" id="prenom" autoComplete="given-name" hint="Exemple : Arsène" inputClassName={cls} />
       <CheckedField kind="phone" label="Téléphone" name="telephone" id="telephone" autoComplete="tel" inputClassName={cls} />
       <CheckedField kind="email" label="E-mail" name="email" id="email" autoComplete="email" inputClassName={cls} />
-      <label className="block sm:col-span-2">
+      <label className="block col-span-2">
         <span className="text-sm font-semibold">Département concerné</span>
         <select name="departement" defaultValue={preselection ?? undefined} className={cls}>
           {departements.map((pole) => (
@@ -41,7 +41,7 @@ export function BesoinForm({ departements }: { departements: Departement[] }) {
           <option>Autre / proposition générale</option>
         </select>
       </label>
-      <label className="block sm:col-span-2">
+      <label className="block col-span-2">
         <span className="text-sm font-semibold">
           Votre proposition<span className="ml-0.5 text-red-600">*</span>
         </span>

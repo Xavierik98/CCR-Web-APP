@@ -62,7 +62,7 @@ export function SupportForm({ endpoint }: { endpoint: string }) {
       }}
     >
       <input type="text" name="site_web" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-2 gap-x-3 gap-y-4 sm:gap-4">
         <CheckedField kind="name" label="Nom(s)" name="lastName" autoComplete="family-name" inputClassName={field} />
         <CheckedField kind="name" label="Prénom(s)" name="firstName" autoComplete="given-name" inputClassName={field} />
         <CheckedField kind="phone" label="Téléphone (WhatsApp)" name="phone" autoComplete="tel" inputClassName={field} />

@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { Icon, type IconName } from "@/components/icons";
 import { Notice } from "@/components/ui";
-import { canEdit, canView, requireUser } from "@/lib/auth";
+import { canEdit, canView, getDisplayName, requireUser } from "@/lib/auth";
 import { CONTENT_STATUS_LABELS, formatDate, fullName } from "@/lib/labels";
 import { formatOccurrence, nextCulte, upcoming } from "@/lib/programme";
 import { formatDue } from "@/lib/tasks";
@@ -115,7 +115,7 @@ export default async function TableauDeBordPage({
       : null;
   const rapportPasteur = dernierCulte ? await eventReport(dernierCulte.id) : null;
   const relancesCollecte = user.role === "TREASURER" ? (await pledgesToRemind()).length : 0;
-  const demandesSoutien = canEdit(user.role, "social") ? await prisma.supportRequest.count({ where: { status: "NEW" } }) : 0;
+  const demandesSoutien = canView(user.role, "social") ? await prisma.supportRequest.count({ where: { status: "NEW" } }) : 0;
   const stockBas = canEdit(user.role, "social") ? await lowStockItems() : [];
   const rappels = await prisma.task.findMany({
     where: { assigneeId: user.id, doneAt: null },
@@ -177,8 +177,8 @@ export default async function TableauDeBordPage({
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="text-sm capitalize text-ccr-ink/50">{today}</p>
-          <h1 className="mt-1 font-display text-3xl font-black md:text-4xl">Tableau de bord</h1>
-          <p className="mt-1 text-sm text-ccr-ink/60">La vie de l&rsquo;église en un coup d&rsquo;œil, calculée en direct.</p>
+          <h1 className="mt-1 font-display text-3xl font-black md:text-4xl">Bonjour {(await getDisplayName(user)).first} !</h1>
+          <p className="mt-1 text-sm text-ccr-ink/60">Votre tableau de bord : la vie de l&rsquo;église en un coup d&rsquo;œil, calculée en direct.</p>
         </div>
         {canEdit(user.role, "actualites") ? (
           <Link

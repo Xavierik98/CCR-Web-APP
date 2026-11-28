@@ -13,10 +13,16 @@ const monthLabel = (d: Date) => d.toLocaleDateString("fr-FR", { month: "long", y
 
 // Appel aux dons en nature publié dans les actualités du site : un seul par
 // mois (mis à jour s'il existe déjà), avec les denrées qui manquent.
-export async function publishDonationAppeal(authorId: string) {
+// En automatique (`auto`), un appel déjà existant pour le mois n'est jamais
+// écrasé : une modification ou un retrait fait à la main est respecté.
+export async function publishDonationAppeal(authorId: string, auto = false) {
   const now = new Date();
   const month = now.toLocaleDateString("en-CA", { timeZone: "Africa/Casablanca" }).slice(0, 7);
   const slug = `appel-aux-dons-${month}`;
+  if (auto) {
+    const existing = await prisma.content.findUnique({ where: { slug } });
+    if (existing) return { content: existing, low: await lowStockItems(), created: false };
+  }
   const low = await lowStockItems();
   const all = low.length ? low : await prisma.stockItem.findMany({ where: { active: true }, orderBy: [{ position: "asc" }, { name: "asc" }] });
   const list = all.map((i) => i.name.toLowerCase()).join(", ");
@@ -31,7 +37,7 @@ export async function publishDonationAppeal(authorId: string) {
     update: { title, body, status: "PUBLISHED", publishedAt: now },
     create: { type: "NEWS", slug, title, body, status: "PUBLISHED", publishedAt: now, authorId },
   });
-  return { content, low };
+  return { content, low, created: true };
 }
 
 // Rappel du niveau du stock à l'accompagnement social : tâche dans l'agenda

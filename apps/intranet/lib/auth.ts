@@ -114,3 +114,28 @@ export const ROLE_DESCRIPTIONS: Record<Role, string> = {
   ATTENDANCE_MANAGER: "Valide les présences et absences, rien d'autre.",
   READ_ONLY: "Consultation seule.",
 };
+
+// Nom affiché de la personne connectée : sa fiche membre liée, ou une fiche
+// portant la même adresse e-mail, sinon le début de l'adresse.
+export const getDisplayName = cache(async (user: CurrentUser) => {
+  const row = await prisma.user.findUnique({
+    where: { id: user.id },
+    select: { member: { select: { firstName: true, lastName: true, title: true } } },
+  });
+  const member =
+    row?.member ??
+    (await prisma.member.findFirst({
+      where: { email: { equals: user.email, mode: "insensitive" } },
+      select: { firstName: true, lastName: true, title: true },
+    }));
+  if (member && (member.firstName || member.lastName)) {
+    return {
+      full: [member.title, member.firstName, member.lastName].filter(Boolean).join(" "),
+      first: member.firstName || member.lastName,
+      initials: `${member.firstName?.[0] ?? ""}${member.lastName?.[0] ?? ""}`.toUpperCase() || user.email.slice(0, 2).toUpperCase(),
+    };
+  }
+  const local = user.email.split("@")[0].replace(/[._-]+/g, " ");
+  const pretty = local.replace(/\b\w/g, (c) => c.toUpperCase());
+  return { full: pretty, first: pretty.split(" ")[0], initials: user.email.slice(0, 2).toUpperCase() };
+});

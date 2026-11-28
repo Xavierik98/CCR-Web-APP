@@ -9,10 +9,10 @@ export const OPTIONS = preflight;
 // social), lues par le site public.
 export async function GET(request: Request) {
   const items = await prisma.content.findMany({
-    where: { type: "NEWS", status: "PUBLISHED" },
+    where: { type: { in: ["NEWS", "EVENT"] }, status: "PUBLISHED" },
     orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
     take: 30,
-    select: { slug: true, title: true, body: true, coverImageUrl: true, publishedAt: true, createdAt: true },
+    select: { type: true, slug: true, title: true, body: true, coverImageUrl: true, videoUrl: true, eventAt: true, location: true, publishedAt: true, createdAt: true },
   });
   return Response.json(
     items.map((i) => ({
@@ -20,7 +20,14 @@ export async function GET(request: Request) {
       titre: i.title,
       texte: i.body,
       image: i.coverImageUrl,
-      date: (i.publishedAt ?? i.createdAt).toISOString().slice(0, 10),
+      video: i.videoUrl,
+      evenement: i.type === "EVENT",
+      lieu: i.location,
+      heure:
+        i.eventAt && i.eventAt.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone: "Africa/Casablanca" }) !== "00:00"
+          ? i.eventAt.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone: "Africa/Casablanca" }).replace(":", "h")
+          : null,
+      date: (i.eventAt ?? i.publishedAt ?? i.createdAt).toLocaleDateString("en-CA", { timeZone: "Africa/Casablanca" }),
     })),
     { headers: { ...cors(request), "Cache-Control": "s-maxage=120, stale-while-revalidate=600" } },
   );

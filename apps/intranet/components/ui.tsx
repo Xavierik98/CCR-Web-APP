@@ -109,11 +109,15 @@ export function Button({
   );
 }
 
-export function ButtonLink({ href, children }: { href: string; children: ReactNode }) {
+export function ButtonLink({ href, children, variant = "primary" }: { href: string; children: ReactNode; variant?: "primary" | "secondary" }) {
   return (
     <Link
       href={href}
-      className="rounded-full bg-ccr-gold px-5 py-2 text-sm font-semibold text-ccr-ink transition-colors hover:bg-ccr-gold-light"
+      className={
+        variant === "primary"
+          ? "rounded-full bg-ccr-gold px-5 py-2 text-sm font-semibold text-ccr-ink transition-colors hover:bg-ccr-gold-light"
+          : "rounded-full border border-ccr-ink/20 bg-white px-5 py-2 text-sm font-semibold text-ccr-ink transition-colors hover:border-ccr-ink/50"
+      }
     >
       {children}
     </Link>

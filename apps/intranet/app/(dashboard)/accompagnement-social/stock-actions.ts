@@ -42,8 +42,22 @@ export async function receiveStock(formData: FormData) {
   // Réception datée : jamais dans le futur (sinon l'heure actuelle).
   const at = day && time && /^\d{4}-\d{2}-\d{2}$/.test(day) ? casablancaToUtc(day, time) : new Date();
   if (at.getTime() > Date.now()) at.setTime(Date.now());
+  // Dons non répertoriés (ex. papier hygiénique) : l'article est créé à la volée.
+  const lines = readQuantities(formData);
+  for (let i = 1; i <= 5; i++) {
+    const name = text(formData, `autre_nom_${i}`, 60);
+    const n = Number(String(formData.get(`autre_qte_${i}`) ?? "").replace(",", "."));
+    if (!name) continue;
+    if (!Number.isFinite(n) || n <= 0) redirect(`/accompagnement-social/stock?erreur=${encodeURIComponent(`Indiquez la quantité reçue pour « ${name} ».`)}`);
+    const unit = text(formData, `autre_unite_${i}`, 20) ?? "unité";
+    const found = await prisma.stockItem.findFirst({ where: { name: { equals: name, mode: "insensitive" } } });
+    const item = found
+      ? await prisma.stockItem.update({ where: { id: found.id }, data: { active: true } })
+      : await prisma.stockItem.create({ data: { name: name.charAt(0).toUpperCase() + name.slice(1), unit } });
+    lines.push({ itemId: item.id, quantity: n });
+  }
   try {
-    await applyMovements(readQuantities(formData), { type: "IN", byEmail: user.email, note: text(formData, "note", 300), at });
+    await applyMovements(lines, { type: "IN", byEmail: user.email, note: text(formData, "note", 300), at });
   } catch (e) {
     if (e instanceof StockError) redirect(`/accompagnement-social/stock?erreur=${encodeURIComponent(e.message)}`);
     throw e;
@@ -68,7 +82,7 @@ export async function distributeStock(formData: FormData) {
         ? (tx) =>
             tx.supportRequest.update({
               where: { id: requestId },
-              data: { status: "DONE", handledAt: new Date(), handledBy: user.email, ...(memberId ? { memberId } : {}) },
+              data: { status: "DONE", handledAt: new Date(), handledBy: user.email, decisionNote: text(formData, "note", 300), ...(memberId ? { memberId } : {}) },
             })
         : undefined,
     );
@@ -80,14 +94,25 @@ export async function distributeStock(formData: FormData) {
   redirect(requestId ? "/accompagnement-social/demandes?effectue=1" : "/accompagnement-social/stock?distribue=1");
 }
 
-export async function rejectRequest(formData: FormData) {
+// Décision sur une demande : liste d'attente, refus (avec motif) ou retour
+// dans les demandes à traiter. Qui, quand et pourquoi restent dans l'historique.
+export async function decideRequest(decision: string, formData: FormData) {
   const user = await requireAccess("social", "edit");
+  const id = String(formData.get("id"));
+  if (!["WAITLIST", "REJECTED", "NEW"].includes(decision)) redirect("/accompagnement-social/demandes");
+  const note = text(formData, "note", 500);
+  if (decision === "REJECTED" && !note) redirect("/accompagnement-social/demandes?erreur=motif");
   await prisma.supportRequest.update({
-    where: { id: String(formData.get("id")) },
-    data: { status: "REJECTED", handledAt: new Date(), handledBy: user.email },
+    where: { id },
+    data: {
+      status: decision as "WAITLIST" | "REJECTED" | "NEW",
+      decisionNote: note,
+      handledAt: new Date(),
+      handledBy: user.email,
+    },
   });
   refresh();
-  redirect("/accompagnement-social/demandes?refuse=1");
+  redirect(`/accompagnement-social/demandes?decision=${decision}`);
 }
 
 // Inventaire : corrige la quantité réelle d'un article (mouvement tracé) et,
@@ -134,4 +159,16 @@ export async function remindStockNow() {
   const r = await remindStockLevel();
   refresh();
   redirect(`/accompagnement-social/stock?rappel=${r.low}`);
+}
+
+// Appel aux dons : retirer du site (archivé) ou republier.
+export async function toggleAppeal(formData: FormData) {
+  await requireAccess("social", "edit");
+  const id = String(formData.get("id"));
+  const item = await prisma.content.findUniqueOrThrow({ where: { id } });
+  const publish = item.status !== "PUBLISHED";
+  await prisma.content.update({ where: { id }, data: { status: publish ? "PUBLISHED" : "ARCHIVED", publishedAt: publish ? new Date() : item.publishedAt } });
+  revalidatePath("/cms");
+  refresh();
+  redirect(`/accompagnement-social/stock?${publish ? "republie" : "retire"}=1`);
 }

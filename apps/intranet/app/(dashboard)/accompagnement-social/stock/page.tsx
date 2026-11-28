@@ -1,16 +1,19 @@
 import { prisma } from "@ccr/database";
+import Link from "next/link";
 import { Badge, Button, Card, Field, Input, Notice, PageHeader, Select, Table } from "@/components/ui";
 import { canEdit, requireAccess } from "@/lib/auth";
 import { fullName } from "@/lib/labels";
 import { qty } from "@/lib/stock";
 import { SocialTabs } from "../social-tabs";
-import { addStockItem, adjustStock, distributeStock, publishAppealNow, receiveStock, remindStockNow } from "../stock-actions";
+import { addStockItem, adjustStock, distributeStock, publishAppealNow, receiveStock, remindStockNow, toggleAppeal } from "../stock-actions";
 
 const MESSAGES: Record<string, string> = {
   ajoute: "Article ajouté à la liste.",
   recu: "Réception enregistrée, stock mis à jour.",
   distribue: "Distribution enregistrée, stock mis à jour.",
-  appel: "Appel aux dons publié dans les actualités du site.",
+  appel: "Appel aux dons publié : il apparaît sur le site, page Actualités et accueil.",
+  retire: "Appel aux dons retiré du site.",
+  republie: "Appel aux dons de nouveau visible sur le site.",
 };
 
 const TYPE = { IN: { label: "Réception", tone: "blue" }, OUT: { label: "Distribution", tone: "magenta" }, ADJUST: { label: "Inventaire", tone: "neutral" } } as const;
@@ -27,7 +30,7 @@ export default async function StockPage({
   const user = await requireAccess("social");
   const editable = canEdit(user.role, "social");
   const sp = await searchParams;
-  const [items, movements, members, demandes] = await Promise.all([
+  const [items, movements, members, demandes, appels] = await Promise.all([
     prisma.stockItem.findMany({ where: { active: true }, orderBy: [{ position: "asc" }, { name: "asc" }] }),
     prisma.stockMovement.findMany({
       orderBy: { at: "desc" },
@@ -36,6 +39,7 @@ export default async function StockPage({
     }),
     prisma.member.findMany({ where: { membershipStatus: "ACTIVE" }, orderBy: { firstName: "asc" }, select: { id: true, firstName: true, lastName: true } }),
     prisma.supportRequest.count({ where: { status: "NEW" } }),
+    prisma.content.findMany({ where: { slug: { startsWith: "appel-aux-dons-" } }, orderBy: { createdAt: "desc" }, take: 6 }),
   ]);
   const message = Object.keys(MESSAGES).find((k) => sp[k]);
   const low = items.filter((i) => Number(i.quantity) <= Number(i.threshold));
@@ -97,6 +101,34 @@ export default async function StockPage({
         ) : null}
       </section>
 
+      {appels.length ? (
+        <section className="mb-4 rounded-2xl border border-ccr-ink/[0.06] bg-white p-4">
+          <p className="text-sm font-semibold">Appels aux dons</p>
+          <p className="text-xs text-ccr-ink/50">Publiés sur le site, page Actualités et section actualités de l&rsquo;accueil.</p>
+          <ul className="mt-3 divide-y divide-ccr-ink/[0.06]">
+            {appels.map((a) => (
+              <li key={a.id} className="flex flex-wrap items-center justify-between gap-2 py-2">
+                <span className="min-w-0">
+                  <span className="block truncate text-sm font-medium">{a.title}</span>
+                  <span className="text-xs text-ccr-ink/50">{a.status === "PUBLISHED" ? "Visible sur le site" : "Retiré du site"}</span>
+                </span>
+                {editable ? (
+                  <span className="flex items-center gap-3">
+                    <Link href={`/cms/${a.id}`} className="text-sm font-semibold text-ccr-blue hover:underline">Modifier</Link>
+                    <form action={toggleAppeal}>
+                      <input type="hidden" name="id" value={a.id} />
+                      <button type="submit" className={`text-sm font-semibold hover:underline ${a.status === "PUBLISHED" ? "text-ccr-magenta" : "text-emerald-700"}`}>
+                        {a.status === "PUBLISHED" ? "Retirer du site" : "Republier"}
+                      </button>
+                    </form>
+                  </span>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
       <section className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4 xl:grid-cols-8">
         {items.map((it) => {
           const n = Number(it.quantity);
@@ -120,6 +152,19 @@ export default async function StockPage({
             <p className="text-xs text-ccr-ink/50">Ajoute les quantités reçues au stock.</p>
             <form action={receiveStock} className="mt-4 space-y-4">
               {qtyInputs("in")}
+              <div>
+                <p className="text-xs font-semibold text-ccr-ink/70">Autre don non répertorié</p>
+                <p className="text-[11px] text-ccr-ink/50">Écrivez l&rsquo;objet du don (ex. papier hygiénique, savon) : il est ajouté à la liste automatiquement.</p>
+                <div className="mt-2 space-y-2">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="grid grid-cols-[2fr_1fr_1fr] gap-2">
+                      <input name={`autre_nom_${i}`} placeholder="Objet du don" className="rounded-lg border border-ccr-ink/15 px-2 py-1.5 text-sm outline-none focus:border-ccr-gold" />
+                      <input name={`autre_qte_${i}`} inputMode="decimal" placeholder="Qté" className="rounded-lg border border-ccr-ink/15 px-2 py-1.5 text-sm outline-none focus:border-ccr-gold" />
+                      <input name={`autre_unite_${i}`} placeholder="Unité" className="rounded-lg border border-ccr-ink/15 px-2 py-1.5 text-sm outline-none focus:border-ccr-gold" />
+                    </div>
+                  ))}
+                </div>
+              </div>
               <div className="grid gap-3 sm:grid-cols-[1fr_1fr_2fr]">
                 <Field label="Date de réception">
                   <Input name="date" type="date" defaultValue={today} />

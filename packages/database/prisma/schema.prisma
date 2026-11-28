@@ -319,6 +319,11 @@ model Content {
   title          String
   slug           String        @unique
   coverImageUrl  String?
+  // Vidéo : fichier déposé dans l'intranet ou lien YouTube, Facebook, Instagram, TikTok.
+  videoUrl       String?
+  // Événement exceptionnel : date, heure et lieu.
+  eventAt        DateTime?
+  location       String?
   body           String
   seoTitle       String?
   seoDescription String?
@@ -407,6 +412,7 @@ model StockMovement {
 
 enum SupportRequestStatus {
   NEW
+  WAITLIST
   DONE
   REJECTED
 }
@@ -428,6 +434,8 @@ model SupportRequest {
   createdAt     DateTime             @default(now())
   handledAt     DateTime?
   handledBy     String?
+  // Motif de la décision (refus, mise en liste d'attente, remarque sur le don).
+  decisionNote  String?
   movements     StockMovement[]
 
   @@index([status, createdAt])

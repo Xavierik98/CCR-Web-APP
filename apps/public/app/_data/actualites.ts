@@ -7,7 +7,11 @@ export type Actualite = {
   texte: string;
   date: string; // AAAA-MM-JJ, date de l'événement
   image: string | null;
-  video?: string;
+  video?: string | null;
+  // Événement exceptionnel publié depuis l'intranet : heure et lieu.
+  evenement?: boolean;
+  heure?: string | null;
+  lieu?: string | null;
   // Affiche verticale : montrée en entier dans le cadre, sur un fond flouté
   // tiré de l'affiche elle-même, au lieu d'être rognée.
   portrait?: boolean;
@@ -51,9 +55,15 @@ export async function getActualites(): Promise<Actualite[]> {
   try {
     const res = await fetch(`${INTRANET_URL}/api/actualites`, { next: { revalidate: 300 } });
     if (!res.ok) return ACTUALITES;
-    const live = (await res.json()) as Actualite[];
-    const slugs = new Set(ACTUALITES.map((a) => a.slug));
-    return [...ACTUALITES, ...live.filter((a) => !slugs.has(a.slug))].sort((a, b) => b.date.localeCompare(a.date));
+    const live = ((await res.json()) as Actualite[]).map((a) => ({
+      ...a,
+      // Une image du site lui-même, saisie avec son adresse complète, reste locale.
+      image: a.image?.replace(/^https?:\/\/ccr-famille-public\.vercel\.app/, "") || null,
+    }));
+    // Pas de doublon : même adresse ou même titre qu'une annonce déjà présente.
+    const key = (t: string) => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
+    const known = new Set(ACTUALITES.flatMap((a) => [a.slug, key(a.titre)]));
+    return [...ACTUALITES, ...live.filter((a) => !known.has(a.slug) && !known.has(key(a.titre)))].sort((a, b) => b.date.localeCompare(a.date));
   } catch {
     return ACTUALITES;
   }

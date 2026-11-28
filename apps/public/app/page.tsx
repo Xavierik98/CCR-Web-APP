@@ -231,6 +231,7 @@ export default async function HomePage() {
                     alt={photo.alt}
                     fill
                     sizes="224px"
+                    loading="eager"
                     className="object-cover"
                   />
                 </div>
@@ -277,6 +278,7 @@ export default async function HomePage() {
                     </div>
                     <div className="p-3 sm:p-5">
                       <p className="text-[10px] font-semibold uppercase tracking-wide text-ccr-magenta sm:text-xs">
+                        {article.evenement ? "Événement, " : ""}
                         {formatDateActualite(article.date)}
                       </p>
                       <h3 className="mt-1 font-display text-sm font-bold leading-snug sm:text-lg">
@@ -297,6 +299,32 @@ export default async function HomePage() {
               </Link>
             </>
           )}
+        </section>
+      </Reveal>
+
+      {/* Demande de soutien mise en avant : toute personne dans le besoin doit
+          trouver tout de suite comment demander de l'aide. */}
+      <Reveal>
+        <section className="mx-auto max-w-6xl px-4 pb-8 sm:px-6 md:pb-12">
+          <Link
+            href="/demande-de-soutien"
+            className="group relative flex items-center gap-4 overflow-hidden rounded-3xl border border-white/70 bg-white/60 p-5 shadow-[0_20px_50px_-30px_rgba(218,41,121,0.45),inset_0_1px_0_rgba(255,255,255,0.9)] backdrop-blur-xl transition-transform hover:-translate-y-0.5 sm:gap-6 sm:p-7"
+          >
+            <span aria-hidden="true" className="pointer-events-none absolute -right-10 -top-16 h-48 w-48 rounded-full bg-ccr-magenta/15 blur-3xl" />
+            <span className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-ccr-magenta text-white shadow-lg shadow-ccr-magenta/30 sm:h-16 sm:w-16">
+              <Icon name="heart" className="h-6 w-6 sm:h-8 sm:w-8" />
+            </span>
+            <span className="relative min-w-0 flex-1">
+              <span className="block font-display text-lg font-bold leading-tight sm:text-2xl">Vous traversez une période difficile ?</span>
+              <span className="mt-1 block text-xs text-ccr-ink/70 sm:text-sm">
+                L&rsquo;accompagnement social de l&rsquo;église peut vous aider (denrées alimentaires, produits de première nécessité). Faites une demande en toute discrétion.
+              </span>
+            </span>
+            <span className="relative hidden shrink-0 rounded-full bg-ccr-ink px-5 py-2.5 text-sm font-semibold text-ccr-cream transition-colors group-hover:bg-ccr-magenta sm:inline-block">
+              Demander un soutien
+            </span>
+            <span aria-hidden="true" className="relative text-xl text-ccr-magenta sm:hidden">&rarr;</span>
+          </Link>
         </section>
       </Reveal>
 

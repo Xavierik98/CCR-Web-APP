@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Icon } from "@/components/icons";
 import { SidebarNav, type NavItem } from "@/components/sidebar-nav";
 import { TopBar } from "@/components/top-bar";
-import { ROLE_LABELS, canView, requireUser, type Module } from "@/lib/auth";
+import { ROLE_LABELS, canView, getDisplayName, requireUser, type Module } from "@/lib/auth";
 import { pledgesToRemind } from "@/lib/pledges";
 import { signOut } from "../(auth)/login/actions";
 
@@ -56,7 +56,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
               : undefined,
     }),
   );
-  const initials = user.email.slice(0, 2).toUpperCase();
+  const name = await getDisplayName(user);
+  const initials = name.initials;
 
   return (
     <div className="min-h-screen bg-ccr-cream md:flex print:bg-white">
@@ -75,8 +76,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
               {initials}
             </span>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-xs text-ccr-cream/80">{user.email}</p>
-              <p className="text-xs text-ccr-gold-light">{ROLE_LABELS[user.role]}</p>
+              <p className="truncate text-sm font-semibold text-ccr-cream">{name.full}</p>
+              <p className="text-xs leading-tight text-ccr-gold-light">{ROLE_LABELS[user.role]}</p>
+              <p className="truncate text-[11px] text-ccr-cream/50">{user.email}</p>
             </div>
             <form action={signOut}>
               <button type="submit" title="Se déconnecter" className="rounded-lg p-1.5 text-ccr-cream/50 hover:bg-ccr-cream/10 hover:text-ccr-cream">

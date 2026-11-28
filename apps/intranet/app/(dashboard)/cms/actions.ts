@@ -4,6 +4,7 @@ import { prisma, type ContentStatus } from "@ccr/database";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAccess } from "@/lib/auth";
+import { casablancaToUtc } from "@/lib/programme";
 
 function text(formData: FormData, key: string) {
   const v = String(formData.get(key) ?? "").trim();
@@ -32,18 +33,36 @@ export async function saveNews(formData: FormData) {
   const clash = await prisma.content.findFirst({ where: { slug, NOT: id ? { id } : undefined } });
   if (clash) slug = `${slug}-${Date.now().toString(36)}`;
 
+  const type: "EVENT" | "NEWS" = text(formData, "type") === "EVENT" ? "EVENT" : "NEWS";
+  const day = text(formData, "eventDate");
+  const time = text(formData, "eventTime") ?? "00:00";
+  const eventAt = day && /^\d{4}-\d{2}-\d{2}$/.test(day) && /^\d{2}:\d{2}$/.test(time) ? casablancaToUtc(day, time) : null;
+  if (type === "EVENT" && !eventAt) redirect(`/cms/${id ?? "nouveau"}?erreur=date&type=EVENT`);
+  // Liens acceptés : adresses web (https) uniquement.
+  const url = (key: string) => {
+    const v = text(formData, key);
+    return v && /^https?:\/\//i.test(v) ? v.slice(0, 1000) : v?.startsWith("/") ? v : null;
+  };
+  const previous = id ? await prisma.content.findUnique({ where: { id }, select: { publishedAt: true, status: true } }) : null;
+
   const data = {
+    type,
     title,
     slug,
     body,
-    coverImageUrl: text(formData, "coverImageUrl"),
+    coverImageUrl: url("coverImageUrl"),
+    videoUrl: url("videoUrl"),
+    eventAt,
+    location: text(formData, "location")?.slice(0, 200) ?? null,
     status,
-    publishedAt: status === "PUBLISHED" ? new Date() : null,
+    // La date de publication d'origine est conservée lors d'une simple modification.
+    publishedAt: status === "PUBLISHED" ? (previous?.status === "PUBLISHED" && previous.publishedAt ? previous.publishedAt : new Date()) : null,
   };
   const item = id
     ? await prisma.content.update({ where: { id }, data })
-    : await prisma.content.create({ data: { ...data, type: "NEWS", authorId: user.email } });
+    : await prisma.content.create({ data: { ...data, authorId: user.email } });
   revalidatePath("/cms");
+  revalidatePath("/accompagnement-social/stock");
   redirect(`/cms/${item.id}?enregistre=1`);
 }
 
