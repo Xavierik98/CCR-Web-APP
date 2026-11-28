@@ -2,8 +2,9 @@ import { prisma } from "@ccr/database";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Button, Card, Field, Input, Notice, PageHeader, Select, Textarea } from "@/components/ui";
-import { canEdit, requireAccess } from "@/lib/auth";
+import { canEdit, canView, requireAccess } from "@/lib/auth";
 import { fullName } from "@/lib/labels";
+import { NEED_STATUS } from "@/lib/needs";
 import {
   addDepartmentMember,
   deleteDepartment,
@@ -29,6 +30,7 @@ export default async function DepartementPage({
       where: { id },
       include: {
         memberships: { include: { member: true }, orderBy: { member: { firstName: "asc" } } },
+        needs: { orderBy: { createdAt: "desc" }, take: 5 },
       },
     }),
     prisma.member.findMany({
@@ -38,21 +40,24 @@ export default async function DepartementPage({
     }),
   ]);
   if (!dept) notFound();
+  // Les enfants (Écodim) sont listés à part de l'équipe qui les encadre.
+  const enfants = dept.memberships.filter((m) => m.member.category === "CHILD" || m.role === "Enfant");
+  const equipe = dept.memberships.filter((m) => !enfants.includes(m));
 
   return (
     <>
       <PageHeader
         title={dept.name}
-        subtitle={`${dept.memberships.length} membre(s)`}
+        subtitle={`${equipe.length} dans l'équipe${enfants.length ? `, ${enfants.length} enfant(s)` : ""}`}
         back={{ href: "/departements", label: "Départements et groupes" }}
       />
       {enregistre ? <Notice>Modifications enregistrées.</Notice> : null}
 
       <div className={`grid gap-6 ${editable ? "lg:grid-cols-[2fr_1fr]" : ""}`}>
         <Card>
-          <h2 className="font-display text-lg font-bold">Membres et fonctions</h2>
+          <h2 className="font-display text-lg font-bold">Équipe et fonctions</h2>
           <ul className="mt-4 divide-y divide-ccr-ink/5">
-            {dept.memberships.map((ms) => (
+            {[...equipe].sort((a, b) => Number(!!b.role?.toLowerCase().startsWith("responsable")) - Number(!!a.role?.toLowerCase().startsWith("responsable"))).map((ms) => (
               <li key={ms.id} className="flex flex-wrap items-center gap-3 py-2">
                 <Link href={`/membres/${ms.memberId}`} className="w-48 font-semibold hover:text-ccr-magenta">
                   {fullName(ms.member)}
@@ -75,6 +80,38 @@ export default async function DepartementPage({
               </li>
             ))}
           </ul>
+          {enfants.length ? (
+            <div className="mt-6 border-t border-ccr-ink/10 pt-4">
+              <h3 className="font-display text-base font-bold">Enfants ({enfants.length})</h3>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {enfants.map((ms) => (
+                  <Link key={ms.id} href={`/membres/${ms.memberId}`} className="rounded-full bg-ccr-cream px-3 py-1 text-xs font-semibold hover:bg-ccr-gold/20">
+                    {fullName(ms.member)}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ) : null}
+          <div className="mt-6 border-t border-ccr-ink/10 pt-4">
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="font-display text-base font-bold">États de besoin</h3>
+              {canView(user.role, "besoins") ? (
+                <Link href={`/besoins/nouveau?departement=${dept.id}`} className="text-sm font-semibold text-ccr-magenta hover:underline">+ Faire un état de besoin</Link>
+              ) : null}
+            </div>
+            {dept.needs.length ? (
+              <ul className="mt-2 space-y-1 text-sm">
+                {dept.needs.map((n) => (
+                  <li key={n.id}>
+                    <Link href={`/besoins/${n.id}`} className="hover:text-ccr-magenta">{n.title}</Link>
+                    <span className="text-xs text-ccr-ink/50"> ({NEED_STATUS[n.status].label})</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-1 text-sm text-ccr-ink/50">Aucun pour l&rsquo;instant.</p>
+            )}
+          </div>
           {editable ? (
             <form action={addDepartmentMember} className="mt-6 grid gap-3 border-t border-ccr-ink/10 pt-4 sm:grid-cols-[1fr_1fr_auto]">
               <input type="hidden" name="departmentId" value={dept.id} />

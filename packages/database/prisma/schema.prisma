@@ -133,6 +133,7 @@ model Department {
   isPublished Boolean                @default(false)
   memberships DepartmentMembership[]
   groups      Group[]
+  needs       NeedsStatement[]
 }
 
 // Une personne peut servir dans plusieurs départements, avec une fonction
@@ -535,4 +536,37 @@ model ContentEvent {
   at        DateTime @default(now())
 
   @@index([at])
+}
+
+enum NeedStatus {
+  SUBMITTED
+  APPROVED
+  PARTIAL
+  REJECTED
+  DONE
+}
+
+// État de besoin d'un département : liste chiffrée de ce qu'il faut
+// (matériel, fournitures, budget), validée ou refusée par le pasteur ou la
+// trésorerie, puis marquée réalisée.
+model NeedsStatement {
+  id           String     @id @default(cuid())
+  departmentId String
+  department   Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  title        String
+  purpose      String?
+  // [{ label, quantity, unit, unitPrice }]
+  items        Json       @default("[]")
+  total        Decimal?
+  urgent       Boolean    @default(false)
+  neededBy     DateTime?
+  status       NeedStatus @default(SUBMITTED)
+  createdBy    String
+  createdAt    DateTime   @default(now())
+  decidedBy    String?
+  decidedAt    DateTime?
+  decisionNote String?
+  updatedAt    DateTime   @default(now()) @updatedAt
+
+  @@index([status, createdAt])
 }

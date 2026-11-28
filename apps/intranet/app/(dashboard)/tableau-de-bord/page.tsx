@@ -11,6 +11,7 @@ import { eventReport } from "@/lib/pastor-report";
 import { WhatsAppPreview } from "@/components/whatsapp-preview";
 import { pledgesToRemind } from "@/lib/pledges";
 import { lowStockItems } from "@/lib/appeal";
+import { NEED_STATUS, departmentsFor, mad as madNeed } from "@/lib/needs";
 import { qty } from "@/lib/stock";
 
 const TONES = {
@@ -117,6 +118,19 @@ export default async function TableauDeBordPage({
   const relancesCollecte = user.role === "TREASURER" ? (await pledgesToRemind()).length : 0;
   const demandesSoutien = canView(user.role, "social") ? await prisma.supportRequest.count({ where: { status: "NEW" } }) : 0;
   const stockBas = canEdit(user.role, "social") ? await lowStockItems() : [];
+  // États de besoin : à valider (pasteur, trésorerie) ou ceux de mes départements.
+  const besoinsDecider = canEdit(user.role, "besoins");
+  const mesDepartements = canView(user.role, "besoins") ? await departmentsFor(user) : [];
+  const besoins = canView(user.role, "besoins")
+    ? await prisma.needsStatement.findMany({
+        where: besoinsDecider || ["ADMIN", "SECRETARY"].includes(user.role)
+          ? { status: { in: ["SUBMITTED", "APPROVED", "PARTIAL"] } }
+          : { departmentId: { in: mesDepartements.map((d) => d.id) }, status: { not: "DONE" } },
+        orderBy: [{ status: "asc" }, { urgent: "desc" }, { createdAt: "desc" }],
+        include: { department: { select: { name: true } } },
+        take: 6,
+      })
+    : [];
   const rappels = await prisma.task.findMany({
     where: { assigneeId: user.id, doneAt: null },
     orderBy: { dueAt: "asc" },
@@ -239,6 +253,51 @@ export default async function TableauDeBordPage({
           </span>
           <Icon name="arrow" className="h-5 w-5 text-ccr-magenta" />
         </Link>
+      ) : null}
+
+      {canView(user.role, "besoins") && (besoins.length > 0 || mesDepartements.length > 0) ? (
+        <section className="mb-6 rounded-2xl border border-ccr-ink/[0.06] bg-white p-5">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h2 className="flex items-center gap-2 font-display text-lg font-bold">
+              <Icon name="list" className="h-5 w-5 text-ccr-gold" />
+              États de besoin
+              {besoins.filter((b) => b.status === "SUBMITTED").length ? (
+                <span className="rounded-full bg-ccr-magenta/10 px-2.5 py-0.5 text-sm text-ccr-magenta">
+                  {besoins.filter((b) => b.status === "SUBMITTED").length} à valider
+                </span>
+              ) : null}
+            </h2>
+            <div className="flex items-center gap-4">
+              {mesDepartements.length ? (
+                <Link href="/besoins/nouveau" className="text-sm font-semibold text-ccr-ink hover:underline">+ Faire un état de besoin</Link>
+              ) : null}
+              <Link href="/besoins" className="text-sm font-semibold text-ccr-magenta hover:underline">Tout voir &rarr;</Link>
+            </div>
+          </div>
+          {besoins.length === 0 ? (
+            <p className="mt-2 text-sm text-ccr-ink/60">Aucun état de besoin en cours.</p>
+          ) : (
+            <ul className="mt-3 grid gap-2 md:grid-cols-2">
+              {besoins.map((b) => (
+                <li key={b.id}>
+                  <Link href={`/besoins/${b.id}`} className="flex items-center justify-between gap-3 rounded-xl bg-ccr-cream px-4 py-3 hover:bg-ccr-gold/10">
+                    <span className="min-w-0">
+                      <span className="block truncate font-semibold">{b.title}</span>
+                      <span className="block text-xs text-ccr-ink/60">
+                        {b.department.name}
+                        {b.total !== null ? `, ${madNeed(Number(b.total))}` : ""}
+                        {b.urgent ? ", urgent" : ""}
+                      </span>
+                    </span>
+                    <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${b.status === "SUBMITTED" ? "bg-ccr-magenta/10 text-ccr-magenta" : "bg-ccr-blue/10 text-ccr-blue"}`}>
+                      {NEED_STATUS[b.status].label}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
       ) : null}
 
       {stockBas.length > 0 ? (

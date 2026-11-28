@@ -33,10 +33,11 @@ export type Module =
   | "fiches"
   | "taches"
   | "messages"
+  | "besoins"
   | "utilisateurs";
 
 type Level = "view" | "edit";
-const ALL: Module[] = ["membres", "presences", "departements", "collecte", "social", "sejour", "actualites", "fiches", "taches", "messages", "utilisateurs"];
+const ALL: Module[] = ["membres", "presences", "departements", "collecte", "social", "sejour", "actualites", "fiches", "taches", "messages", "besoins", "utilisateurs"];
 
 function grant(edit: Module[], view: Module[] = []): Partial<Record<Module, Level>> {
   const out: Partial<Record<Module, Level>> = {};
@@ -54,17 +55,19 @@ function grant(edit: Module[], view: Module[] = []): Partial<Record<Module, Leve
 const MATRIX: Record<Role, Partial<Record<Module, Level>>> = {
   SUPER_ADMIN: grant(ALL),
   PASTOR: grant(ALL.filter((m) => m !== "utilisateurs")),
-  ADMIN: grant(["membres", "presences", "departements", "actualites", "fiches", "taches", "messages"]),
-  SECRETARY: grant(["membres", "presences", "departements", "actualites", "fiches", "taches", "messages"]),
-  TREASURER: grant(["collecte"], ["membres"]),
-  COMMUNICATION: grant(["presences"]),
-  ATTENDANCE_MANAGER: grant(["presences"]),
-  SOCIAL_SUPPORT: grant(["social", "sejour", "actualites"], ["membres"]),
+  // États de besoin : « edit » = valider ou refuser (pasteur, trésorerie,
+  // super administrateur) ; « view » = voir et rédiger ceux de ses départements.
+  ADMIN: grant(["membres", "presences", "departements", "actualites", "fiches", "taches", "messages"], ["besoins"]),
+  SECRETARY: grant(["membres", "presences", "departements", "actualites", "fiches", "taches", "messages"], ["besoins"]),
+  TREASURER: grant(["collecte", "besoins"], ["membres"]),
+  COMMUNICATION: grant(["presences"], ["besoins"]),
+  ATTENDANCE_MANAGER: grant(["presences"], ["besoins"]),
+  SOCIAL_SUPPORT: grant(["social", "sejour", "actualites"], ["membres", "besoins"]),
   // Dossiers de séjour : données très sensibles, module séparé du social,
   // ouvert au responsable de la jeunesse (beaucoup d'étudiants concernés).
-  YOUTH_LEADER: grant(["sejour"], ["membres", "presences", "departements"]),
-  DEPARTMENT_LEADER: grant([], ["membres", "presences", "departements"]),
-  GROUP_LEADER: grant([], ["membres", "presences", "departements"]),
+  YOUTH_LEADER: grant(["sejour"], ["membres", "presences", "departements", "besoins"]),
+  DEPARTMENT_LEADER: grant([], ["membres", "presences", "departements", "besoins"]),
+  GROUP_LEADER: grant([], ["membres", "presences", "departements", "besoins"]),
   READ_ONLY: grant([], ["membres", "presences", "departements", "actualites"]),
 };
 

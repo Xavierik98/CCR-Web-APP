@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Icon } from "@/components/icons";
 import { SidebarNav, type NavItem } from "@/components/sidebar-nav";
 import { TopBar } from "@/components/top-bar";
-import { ROLE_LABELS, canView, getDisplayName, requireUser, type Module } from "@/lib/auth";
+import { ROLE_LABELS, canEdit, canView, getDisplayName, requireUser, type Module } from "@/lib/auth";
 import { pledgesToRemind } from "@/lib/pledges";
 import { signOut } from "../(auth)/login/actions";
 
@@ -25,6 +25,7 @@ const NAV: (Omit<NavItem, "count"> & { module?: Module })[] = [
   { href: "/fiches", label: "Fiches à valider", icon: "inbox", module: "fiches" },
   { href: "/messages", label: "Messages du site", icon: "megaphone", module: "messages" },
   { href: "/taches", label: "Tâches des responsables", icon: "list", module: "taches" },
+  { href: "/besoins", label: "États de besoin", icon: "list", module: "besoins" },
   { href: "/accompagnement-social/demandes", label: "Accompagnement social", icon: "heart", module: "social" },
   { href: "/dossiers-sejour", label: "Dossiers de séjour", icon: "inbox", module: "sejour" },
   { href: "/utilisateurs", label: "Accès et rôles", icon: "key", module: "utilisateurs" },
@@ -41,6 +42,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const myReminders = user.role === "TREASURER" ? (await pledgesToRemind()).length : 0;
   const supportRequests = canView(user.role, "social") ? await prisma.supportRequest.count({ where: { status: "NEW" } }) : 0;
   const siteMessages = canView(user.role, "messages") ? await prisma.contactMessage.count({ where: { status: "NEW" } }) : 0;
+  const needsToDecide = canEdit(user.role, "besoins") ? await prisma.needsStatement.count({ where: { status: "SUBMITTED" } }) : 0;
 
   const items: NavItem[] = NAV.filter((n) => !n.module || canView(user.role, n.module)).map(
     ({ module, ...n }) => ({
@@ -52,6 +54,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
             ? supportRequests
             : module === "messages"
               ? siteMessages
+            : module === "besoins"
+              ? needsToDecide
             : n.href === "/mes-taches"
               ? myTasks + myReminders
               : undefined,
